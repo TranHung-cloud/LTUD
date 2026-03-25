@@ -52,6 +52,12 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormQLTS_CN.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormQLTS_CN.Designer.cs">
+      <DependentUpon>FormQLTS_CN.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
