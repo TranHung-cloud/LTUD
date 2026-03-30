@@ -27,16 +27,16 @@ namespace LTUD
             // 
             this.lblTitle.AutoSize = true;
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
-            this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(106)))), ((int)(((byte)(113)))));
+            this.lblTitle.ForeColor = System.Drawing.Color.Black;
             this.lblTitle.Location = new System.Drawing.Point(230, 20);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(342, 37);
+            this.lblTitle.Size = new System.Drawing.Size(351, 37);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "Quản Lý Thông Tin Bảo Trì";
             // 
             // dgvBaoTri
             // 
-            this.dgvBaoTri.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(239)))), ((int)(((byte)(231)))));
+            this.dgvBaoTri.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(154)))), ((int)(((byte)(203)))), ((int)(((byte)(208)))));
             this.dgvBaoTri.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvBaoTri.Location = new System.Drawing.Point(50, 80);
             this.dgvBaoTri.Name = "dgvBaoTri";
@@ -97,6 +97,7 @@ namespace LTUD
             ((System.ComponentModel.ISupportInitialize)(this.dgvBaoTri)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         private System.Windows.Forms.Label lblTitle;

@@ -31,21 +31,30 @@ namespace LTUD
             // 
             this.lblTitle.AutoSize = true;
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
-            this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(106)))), ((int)(((byte)(113)))));
+            this.lblTitle.ForeColor = System.Drawing.Color.Black;
             this.lblTitle.Location = new System.Drawing.Point(260, 10);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(236, 37);
+            this.lblTitle.Size = new System.Drawing.Size(235, 37);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "Quản Lý Gia Đình";
+            // 
+            // dgvNguoiDung
+            // 
+            this.dgvNguoiDung.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(154)))), ((int)(((byte)(203)))), ((int)(((byte)(208)))));
+            this.dgvNguoiDung.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvNguoiDung.Location = new System.Drawing.Point(300, 90);
+            this.dgvNguoiDung.Name = "dgvNguoiDung";
+            this.dgvNguoiDung.Size = new System.Drawing.Size(520, 300);
+            this.dgvNguoiDung.TabIndex = 2;
             // 
             // lblGiaDinh
             // 
             this.lblGiaDinh.AutoSize = true;
             this.lblGiaDinh.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.lblGiaDinh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(106)))), ((int)(((byte)(113)))));
+            this.lblGiaDinh.ForeColor = System.Drawing.Color.Black;
             this.lblGiaDinh.Location = new System.Drawing.Point(30, 60);
             this.lblGiaDinh.Name = "lblGiaDinh";
-            this.lblGiaDinh.Size = new System.Drawing.Size(161, 21);
+            this.lblGiaDinh.Size = new System.Drawing.Size(156, 21);
             this.lblGiaDinh.TabIndex = 3;
             this.lblGiaDinh.Text = "Thông tin Gia đình:";
             // 
@@ -53,10 +62,10 @@ namespace LTUD
             // 
             this.lblMaGiaDinh.AutoSize = true;
             this.lblMaGiaDinh.Font = new System.Drawing.Font("Segoe UI", 12F);
-            this.lblMaGiaDinh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(106)))), ((int)(((byte)(113)))));
+            this.lblMaGiaDinh.ForeColor = System.Drawing.Color.Black;
             this.lblMaGiaDinh.Location = new System.Drawing.Point(30, 90);
             this.lblMaGiaDinh.Name = "lblMaGiaDinh";
-            this.lblMaGiaDinh.Size = new System.Drawing.Size(117, 21);
+            this.lblMaGiaDinh.Size = new System.Drawing.Size(112, 21);
             this.lblMaGiaDinh.TabIndex = 5;
             this.lblMaGiaDinh.Text = "Mã Gia Đình: ...";
             // 
@@ -64,10 +73,10 @@ namespace LTUD
             // 
             this.lblTenGiaDinh.AutoSize = true;
             this.lblTenGiaDinh.Font = new System.Drawing.Font("Segoe UI", 12F);
-            this.lblTenGiaDinh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(106)))), ((int)(((byte)(113)))));
+            this.lblTenGiaDinh.ForeColor = System.Drawing.Color.Black;
             this.lblTenGiaDinh.Location = new System.Drawing.Point(30, 120);
             this.lblTenGiaDinh.Name = "lblTenGiaDinh";
-            this.lblTenGiaDinh.Size = new System.Drawing.Size(118, 21);
+            this.lblTenGiaDinh.Size = new System.Drawing.Size(113, 21);
             this.lblTenGiaDinh.TabIndex = 6;
             this.lblTenGiaDinh.Text = "Tên Gia Đình: ...";
             // 
@@ -75,21 +84,12 @@ namespace LTUD
             // 
             this.lblThanhVien.AutoSize = true;
             this.lblThanhVien.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.lblThanhVien.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(106)))), ((int)(((byte)(113)))));
+            this.lblThanhVien.ForeColor = System.Drawing.Color.Black;
             this.lblThanhVien.Location = new System.Drawing.Point(300, 60);
             this.lblThanhVien.Name = "lblThanhVien";
-            this.lblThanhVien.Size = new System.Drawing.Size(183, 21);
+            this.lblThanhVien.Size = new System.Drawing.Size(178, 21);
             this.lblThanhVien.TabIndex = 4;
             this.lblThanhVien.Text = "Danh sách Thành viên";
-            // 
-            // dgvNguoiDung
-            // 
-            this.dgvNguoiDung.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(239)))), ((int)(((byte)(231)))));
-            this.dgvNguoiDung.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvNguoiDung.Location = new System.Drawing.Point(300, 90);
-            this.dgvNguoiDung.Name = "dgvNguoiDung";
-            this.dgvNguoiDung.Size = new System.Drawing.Size(520, 300);
-            this.dgvNguoiDung.TabIndex = 2;
             // 
             // btnThemTV
             // 
@@ -129,6 +129,7 @@ namespace LTUD
             this.btnXoaTV.TabIndex = 9;
             this.btnXoaTV.Text = "Vô hiệu hóa";
             this.btnXoaTV.UseVisualStyleBackColor = false;
+            // 
             // FormQLGiaDinh
             // 
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(154)))), ((int)(((byte)(203)))), ((int)(((byte)(208)))));
@@ -148,6 +149,7 @@ namespace LTUD
             ((System.ComponentModel.ISupportInitialize)(this.dgvNguoiDung)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         private System.Windows.Forms.Label lblTitle;

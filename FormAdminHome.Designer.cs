@@ -19,10 +19,10 @@ namespace LTUD
             this.btnQLGiaDinh = new System.Windows.Forms.Button();
             this.btnQLBaoTri = new System.Windows.Forms.Button();
             this.pnlDashboard = new System.Windows.Forms.Panel();
-            this.lblTongTaiSan = new System.Windows.Forms.Label();
-            this.lblTongThanhVien = new System.Windows.Forms.Label();
-            this.lblBaoTri = new System.Windows.Forms.Label();
             this.lblTongGiaDinh = new System.Windows.Forms.Label();
+            this.lblBaoTri = new System.Windows.Forms.Label();
+            this.lblTongThanhVien = new System.Windows.Forms.Label();
+            this.lblTongTaiSan = new System.Windows.Forms.Label();
             this.pnlDashboard.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -30,10 +30,10 @@ namespace LTUD
             // 
             this.lblTitle.AutoSize = true;
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Bold);
-            this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(106)))), ((int)(((byte)(113)))));
+            this.lblTitle.ForeColor = System.Drawing.Color.Black;
             this.lblTitle.Location = new System.Drawing.Point(230, 20);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(325, 45);
+            this.lblTitle.Size = new System.Drawing.Size(313, 45);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "Dashboard Quản Lý";
             // 
@@ -67,11 +67,12 @@ namespace LTUD
             // 
             // pnlDashboard
             // 
-            this.pnlDashboard.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(239)))), ((int)(((byte)(231)))));
+            this.pnlDashboard.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(154)))), ((int)(((byte)(203)))), ((int)(((byte)(208)))));
             this.pnlDashboard.Controls.Add(this.lblTongGiaDinh);
             this.pnlDashboard.Controls.Add(this.lblBaoTri);
             this.pnlDashboard.Controls.Add(this.lblTongThanhVien);
             this.pnlDashboard.Controls.Add(this.lblTongTaiSan);
+            this.pnlDashboard.ForeColor = System.Drawing.Color.Black;
             this.pnlDashboard.Location = new System.Drawing.Point(50, 100);
             this.pnlDashboard.Name = "pnlDashboard";
             this.pnlDashboard.Size = new System.Drawing.Size(700, 250);
@@ -81,45 +82,45 @@ namespace LTUD
             // 
             this.lblTongGiaDinh.AutoSize = true;
             this.lblTongGiaDinh.Font = new System.Drawing.Font("Segoe UI", 14F);
-            this.lblTongGiaDinh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(106)))), ((int)(((byte)(113)))));
+            this.lblTongGiaDinh.ForeColor = System.Drawing.Color.Black;
             this.lblTongGiaDinh.Location = new System.Drawing.Point(30, 30);
             this.lblTongGiaDinh.Name = "lblTongGiaDinh";
-            this.lblTongGiaDinh.Size = new System.Drawing.Size(183, 25);
+            this.lblTongGiaDinh.Size = new System.Drawing.Size(180, 25);
             this.lblTongGiaDinh.TabIndex = 4;
             this.lblTongGiaDinh.Text = "Số lượng gia đình: 0";
-            // 
-            // lblTongTaiSan
-            // 
-            this.lblTongTaiSan.AutoSize = true;
-            this.lblTongTaiSan.Font = new System.Drawing.Font("Segoe UI", 14F);
-            this.lblTongTaiSan.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(106)))), ((int)(((byte)(113)))));
-            this.lblTongTaiSan.Location = new System.Drawing.Point(30, 80);
-            this.lblTongTaiSan.Name = "lblTongTaiSan";
-            this.lblTongTaiSan.Size = new System.Drawing.Size(193, 25);
-            this.lblTongTaiSan.TabIndex = 0;
-            this.lblTongTaiSan.Text = "Tổng tài sản sổ hữu: 0";
-            // 
-            // lblTongThanhVien
-            // 
-            this.lblTongThanhVien.AutoSize = true;
-            this.lblTongThanhVien.Font = new System.Drawing.Font("Segoe UI", 14F);
-            this.lblTongThanhVien.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(106)))), ((int)(((byte)(113)))));
-            this.lblTongThanhVien.Location = new System.Drawing.Point(30, 130);
-            this.lblTongThanhVien.Name = "lblTongThanhVien";
-            this.lblTongThanhVien.Size = new System.Drawing.Size(183, 25);
-            this.lblTongThanhVien.TabIndex = 1;
-            this.lblTongThanhVien.Text = "Số lượng thành viên: 0";
             // 
             // lblBaoTri
             // 
             this.lblBaoTri.AutoSize = true;
             this.lblBaoTri.Font = new System.Drawing.Font("Segoe UI", 14F);
-            this.lblBaoTri.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(106)))), ((int)(((byte)(113)))));
+            this.lblBaoTri.ForeColor = System.Drawing.Color.Black;
             this.lblBaoTri.Location = new System.Drawing.Point(30, 180);
             this.lblBaoTri.Name = "lblBaoTri";
-            this.lblBaoTri.Size = new System.Drawing.Size(248, 25);
+            this.lblBaoTri.Size = new System.Drawing.Size(256, 25);
             this.lblBaoTri.TabIndex = 2;
             this.lblBaoTri.Text = "Tài sản sắp đến hạn bảo trì: 0";
+            // 
+            // lblTongThanhVien
+            // 
+            this.lblTongThanhVien.AutoSize = true;
+            this.lblTongThanhVien.Font = new System.Drawing.Font("Segoe UI", 14F);
+            this.lblTongThanhVien.ForeColor = System.Drawing.Color.Black;
+            this.lblTongThanhVien.Location = new System.Drawing.Point(30, 130);
+            this.lblTongThanhVien.Name = "lblTongThanhVien";
+            this.lblTongThanhVien.Size = new System.Drawing.Size(200, 25);
+            this.lblTongThanhVien.TabIndex = 1;
+            this.lblTongThanhVien.Text = "Số lượng thành viên: 0";
+            // 
+            // lblTongTaiSan
+            // 
+            this.lblTongTaiSan.AutoSize = true;
+            this.lblTongTaiSan.Font = new System.Drawing.Font("Segoe UI", 14F);
+            this.lblTongTaiSan.ForeColor = System.Drawing.Color.Black;
+            this.lblTongTaiSan.Location = new System.Drawing.Point(30, 80);
+            this.lblTongTaiSan.Name = "lblTongTaiSan";
+            this.lblTongTaiSan.Size = new System.Drawing.Size(196, 25);
+            this.lblTongTaiSan.TabIndex = 0;
+            this.lblTongTaiSan.Text = "Tổng tài sản sổ hữu: 0";
             // 
             // FormAdminHome
             // 
@@ -137,6 +138,7 @@ namespace LTUD
             this.pnlDashboard.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         private System.Windows.Forms.Label lblTitle;
