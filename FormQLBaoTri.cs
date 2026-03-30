@@ -115,5 +115,10 @@ namespace LTUD
             f.Controls.AddRange(new Control[] { lblLich, txtLich, lblTS, cbTS, lblNgay, dtpNgay, lblTT, cbTT, lblCP, txtCP, lblND, txtND, btnSave });
             if (f.ShowDialog() == DialogResult.OK) LoadBaoTri();
         }
+
+        private void dgvBaoTri_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
     }
 }

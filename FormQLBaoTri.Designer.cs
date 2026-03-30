@@ -36,12 +36,14 @@ namespace LTUD
             // 
             // dgvBaoTri
             // 
+            this.dgvBaoTri.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvBaoTri.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(154)))), ((int)(((byte)(203)))), ((int)(((byte)(208)))));
             this.dgvBaoTri.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvBaoTri.Location = new System.Drawing.Point(50, 80);
             this.dgvBaoTri.Name = "dgvBaoTri";
             this.dgvBaoTri.Size = new System.Drawing.Size(700, 300);
             this.dgvBaoTri.TabIndex = 1;
+            this.dgvBaoTri.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvBaoTri_CellContentClick);
             // 
             // btnThem
             // 

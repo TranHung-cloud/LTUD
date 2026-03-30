@@ -40,6 +40,7 @@ namespace LTUD
             // 
             // dgvNguoiDung
             // 
+            this.dgvNguoiDung.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvNguoiDung.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(154)))), ((int)(((byte)(203)))), ((int)(((byte)(208)))));
             this.dgvNguoiDung.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvNguoiDung.Location = new System.Drawing.Point(300, 90);
@@ -119,7 +120,7 @@ namespace LTUD
             // 
             // btnXoaTV
             // 
-            this.btnXoaTV.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
+            this.btnXoaTV.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(72)))), ((int)(((byte)(166)))), ((int)(((byte)(167)))));
             this.btnXoaTV.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnXoaTV.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnXoaTV.ForeColor = System.Drawing.Color.White;
