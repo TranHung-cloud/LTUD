@@ -39,10 +39,10 @@ namespace LTUD
             // 
             // btnQLGiaDinh
             // 
-            this.btnQLGiaDinh.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(72)))), ((int)(((byte)(166)))), ((int)(((byte)(167)))));
+            this.btnQLGiaDinh.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(239)))), ((int)(((byte)(231)))));
             this.btnQLGiaDinh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnQLGiaDinh.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.btnQLGiaDinh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(239)))), ((int)(((byte)(231)))));
+            this.btnQLGiaDinh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(106)))), ((int)(((byte)(113)))));
             this.btnQLGiaDinh.Location = new System.Drawing.Point(50, 400);
             this.btnQLGiaDinh.Name = "btnQLGiaDinh";
             this.btnQLGiaDinh.Size = new System.Drawing.Size(200, 50);
@@ -53,10 +53,10 @@ namespace LTUD
             // 
             // btnQLBaoTri
             // 
-            this.btnQLBaoTri.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(72)))), ((int)(((byte)(166)))), ((int)(((byte)(167)))));
+            this.btnQLBaoTri.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(239)))), ((int)(((byte)(231)))));
             this.btnQLBaoTri.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnQLBaoTri.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.btnQLBaoTri.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(239)))), ((int)(((byte)(231)))));
+            this.btnQLBaoTri.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(106)))), ((int)(((byte)(113)))));
             this.btnQLBaoTri.Location = new System.Drawing.Point(300, 400);
             this.btnQLBaoTri.Name = "btnQLBaoTri";
             this.btnQLBaoTri.Size = new System.Drawing.Size(200, 50);
@@ -68,6 +68,7 @@ namespace LTUD
             // pnlDashboard
             // 
             this.pnlDashboard.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(154)))), ((int)(((byte)(203)))), ((int)(((byte)(208)))));
+            this.pnlDashboard.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.pnlDashboard.Controls.Add(this.lblTongGiaDinh);
             this.pnlDashboard.Controls.Add(this.lblBaoTri);
             this.pnlDashboard.Controls.Add(this.lblTongThanhVien);
@@ -134,6 +135,7 @@ namespace LTUD
             this.Controls.Add(this.lblTitle);
             this.Name = "FormAdminHome";
             this.Text = "Trang chủ Admin";
+            this.Load += new System.EventHandler(this.FormAdminHome_Load);
             this.pnlDashboard.ResumeLayout(false);
             this.pnlDashboard.PerformLayout();
             this.ResumeLayout(false);

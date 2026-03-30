@@ -59,6 +59,10 @@ namespace LTUD
             {
                 string query = $"SELECT MANGUOIDUNG AS [Mã ND], MAVAITRO AS [Mã Vai Trò], HOTEN AS [Họ Tên], NGAYSINH AS [Ngày Sinh], TRANGTHAI AS [Trạng Thái] FROM NGUOIDUNG WHERE MAGIADINH = '{maGD}' ORDER BY MANGUOIDUNG ASC";
                 dgvNguoiDung.DataSource = DatabaseConnection.GetData(query);
+
+                if (dgvNguoiDung.Columns.Contains("Mã ND")) dgvNguoiDung.Columns["Mã ND"].Visible = false;
+                if (dgvNguoiDung.Columns.Contains("Mã Vai Trò")) dgvNguoiDung.Columns["Mã Vai Trò"].Visible = false;
+                if (dgvNguoiDung.Columns.Contains("Trạng Thái")) dgvNguoiDung.Columns["Trạng Thái"].Visible = false;
             }
             catch (Exception ex)
             {
@@ -88,10 +92,18 @@ namespace LTUD
         {
             if (dgvNguoiDung.CurrentRow == null) return;
             string ma = dgvNguoiDung.CurrentRow.Cells[0].Value.ToString();
-            if (MessageBox.Show("Vô hiệu hóa thành viên này sẽ giải phóng tài sản họ quản lý. Vô hiệu hóa?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
+
+            DataTable checkTS = DatabaseConnection.GetData($"SELECT * FROM TAISAN WHERE MANGUOIDUNG = '{ma}' AND PHAMVI = N'Gia đình'");
+            if (checkTS.Rows.Count > 0)
+            {
+                MessageBox.Show("Không thể xóa người dùng này vì họ đang quản lý tài sản thuộc phạm vi Gia đình!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (MessageBox.Show("Bạn có chắc chắn muốn xóa thành viên này?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 DatabaseConnection.ExecuteQuery($"UPDATE TAISAN SET MANGUOIDUNG = NULL WHERE MANGUOIDUNG = '{ma}'");
-                DatabaseConnection.ExecuteQuery($"UPDATE NGUOIDUNG SET TRANGTHAI = N'Vô hiệu hóa' WHERE MANGUOIDUNG = '{ma}'");
+                DatabaseConnection.ExecuteQuery($"DELETE FROM NGUOIDUNG WHERE MANGUOIDUNG = '{ma}'");
                 LoadThanhVien(currentMaGD);
             }
         }
@@ -108,14 +120,14 @@ namespace LTUD
             cbTT.SelectedItem = string.IsNullOrEmpty(trangThai) ? "Hoạt động" : trangThai;
             Label lblTS = new Label { Left = 20, Top = 223, Text = "Quản lý TS:", AutoSize = true }; ComboBox cbTS = new ComboBox { Left = 120, Top = 220, Width = 330, DropDownStyle = ComboBoxStyle.DropDownList };
 
-            Button btnSave = new Button { Left = 200, Top = 280, Width = 100, Text = "Lưu", BackColor = Color.FromArgb(72, 166, 167), ForeColor = Color.White, FlatStyle = FlatStyle.Flat };
+            Button btnSave = new Button { Left = 200, Top = 280, Width = 100, Text = "Lưu", BackColor = Color.FromArgb(242, 239, 231), ForeColor = Color.FromArgb(0, 106, 113), FlatStyle = FlatStyle.Flat };
 
             // Load Combobox VaiTro
             cbVT.DataSource = DatabaseConnection.GetData("SELECT MAVAITRO, TENVAITRO FROM VAITRO");
             cbVT.DisplayMember = "TENVAITRO"; cbVT.ValueMember = "MAVAITRO"; cbVT.SelectedValue = maVT;
 
             // Load Combobox Tài Sản
-            DataTable dtTS = DatabaseConnection.GetData($"SELECT MATAISAN, TENTAISAN + ' (' + MATAISAN + ')' AS TENDAYDU FROM TAISAN WHERE MANGUOIDUNG IS NULL OR LTRIM(RTRIM(MANGUOIDUNG)) = '' OR MANGUOIDUNG = '{maND}'");
+            DataTable dtTS = DatabaseConnection.GetData($"SELECT MATAISAN, TENTAISAN + ' (' + MATAISAN + ')' AS TENDAYDU FROM TAISAN WHERE (MANGUOIDUNG IS NULL OR LTRIM(RTRIM(MANGUOIDUNG)) = '' OR MANGUOIDUNG = '{maND}') AND PHAMVI = N'Gia đình'");
             DataRow rowNone = dtTS.NewRow();
             rowNone["MATAISAN"] = "NONE";
             rowNone["TENDAYDU"] = "<Không quản lý tài sản nào>";

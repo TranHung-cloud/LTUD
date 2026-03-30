@@ -94,10 +94,10 @@ namespace LTUD
             // 
             // btnThemTV
             // 
-            this.btnThemTV.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(72)))), ((int)(((byte)(166)))), ((int)(((byte)(167)))));
+            this.btnThemTV.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(239)))), ((int)(((byte)(231)))));
             this.btnThemTV.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnThemTV.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnThemTV.ForeColor = System.Drawing.Color.White;
+            this.btnThemTV.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(106)))), ((int)(((byte)(113)))));
             this.btnThemTV.Location = new System.Drawing.Point(300, 410);
             this.btnThemTV.Name = "btnThemTV";
             this.btnThemTV.Size = new System.Drawing.Size(120, 40);
@@ -107,10 +107,10 @@ namespace LTUD
             // 
             // btnSuaTV
             // 
-            this.btnSuaTV.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(72)))), ((int)(((byte)(166)))), ((int)(((byte)(167)))));
+            this.btnSuaTV.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(239)))), ((int)(((byte)(231)))));
             this.btnSuaTV.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSuaTV.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnSuaTV.ForeColor = System.Drawing.Color.White;
+            this.btnSuaTV.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(106)))), ((int)(((byte)(113)))));
             this.btnSuaTV.Location = new System.Drawing.Point(440, 410);
             this.btnSuaTV.Name = "btnSuaTV";
             this.btnSuaTV.Size = new System.Drawing.Size(120, 40);
@@ -120,15 +120,15 @@ namespace LTUD
             // 
             // btnXoaTV
             // 
-            this.btnXoaTV.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(72)))), ((int)(((byte)(166)))), ((int)(((byte)(167)))));
+            this.btnXoaTV.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(239)))), ((int)(((byte)(231)))));
             this.btnXoaTV.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnXoaTV.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnXoaTV.ForeColor = System.Drawing.Color.White;
+            this.btnXoaTV.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(106)))), ((int)(((byte)(113)))));
             this.btnXoaTV.Location = new System.Drawing.Point(580, 410);
             this.btnXoaTV.Name = "btnXoaTV";
             this.btnXoaTV.Size = new System.Drawing.Size(120, 40);
             this.btnXoaTV.TabIndex = 9;
-            this.btnXoaTV.Text = "Vô hiệu hóa";
+            this.btnXoaTV.Text = "Xóa";
             this.btnXoaTV.UseVisualStyleBackColor = false;
             // 
             // FormQLGiaDinh

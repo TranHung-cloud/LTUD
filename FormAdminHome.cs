@@ -60,5 +60,10 @@ namespace LTUD
             frm.FormClosed += (s, args) => LoadDashboardData();
             frm.Show();
         }
+
+        private void FormAdminHome_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
