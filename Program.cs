@@ -16,7 +16,8 @@ namespace LTUD
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            // Giả lập Admin thuộc gia đình GD01 đang đăng nhập
+            Application.Run(new FormAdminHome("GD01"));
         }
     }
 }
