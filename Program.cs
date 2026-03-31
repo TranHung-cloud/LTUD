@@ -16,7 +16,7 @@ namespace LTUD
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FormTrangchu());
+            Application.Run(new FormQLNguoidung());
         }
     }
 }
