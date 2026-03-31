@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Microsoft.Reporting.WinForms;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,7 +20,7 @@ namespace LTUD
         SqlConnection conn;
         string maNguoiDung = "ND01";
         string maGiaDinh = "";
-        string pathHinh = "";
+        byte[] imageData = null;
 
         //public QLTaiSanGiaDinh(string ma)
         public QLTaiSanGiaDinh()
@@ -46,7 +48,7 @@ namespace LTUD
         void loadData()
         {
             connectData();
-            string sql = @"SELECT MATAISAN, HOTEN, TENTAISAN, ts.MALOAI, TENLOAI, NGAYMUA, NGUYENGIA, TINHTRANG, HINHANH 
+            string sql = @"SELECT MATAISAN, HOTEN, TENTAISAN, ts.MALOAI, TENLOAI, CONVERT(DATE, NGAYMUA) AS NGAYMUA, NGUYENGIA, TINHTRANG, HINHANH 
                         FROM TAISAN ts JOIN NGUOIDUNG nd ON ts.MANGUOIDUNG = nd.MANGUOIDUNG 
                         JOIN LOAITAISAN lts ON ts.MALOAI = lts.MALOAI 
                         WHERE nd.MAGIADINH = @ma AND PHAMVI = N'Gia đình'";
@@ -112,19 +114,89 @@ namespace LTUD
             open.Filter = "Image Files(*.jpg; *.jpeg; *.png)|*.jpg; *.jpeg; *.png";
             if (open.ShowDialog() == DialogResult.OK)
             {
-                pathHinh = open.FileName;
-                pic.Image = Image.FromFile(pathHinh);
+                imageData = System.IO.File.ReadAllBytes(open.FileName);
+                try
+                {
+                    using (MemoryStream ms = new MemoryStream(imageData))
+                    {
+                        pic.Image = Image.FromStream(ms);
+                    }
+                }
+                catch
+                {
+                    imageData = null;
+                    pic.Image = null;
+                }
+            }
+        }
+
+        private byte[] ImageToByteArray(Image img)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                img.Save(ms, img.RawFormat);
+                return ms.ToArray();
             }
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
+
+            if(NgayMua.Value > DateTime.Now)
+            {
+                MessageBox.Show("Ngày mua không thể lớn hơn ngày hiện tại!");
+                return;
+            }
+            if (String.IsNullOrEmpty(TenTaiSan.Text) || cboLoaiTaiSan.SelectedIndex == -1 || String.IsNullOrEmpty(NguyenGia.Text))
+            {
+                MessageBox.Show("Vui lòng điền đầy đủ thông tin!");
+                return;
+            }
+
+            if (!decimal.TryParse(NguyenGia.Text, out decimal value))
+            {
+                MessageBox.Show("Vui lòng chỉ nhập số vào ô Nguyên giá!");
+                NguyenGia.Focus();
+                return;
+            }
+
+            if (value <= 0)
+            {
+                MessageBox.Show("Nguyên giá phải là số dương lớn hơn 0!");
+                NguyenGia.Focus();
+                return;
+            }
+
             try
             {
                 connectData();
-                string sql = "INSERT INTO TAISAN VALUES(@mts, @mnd, @ml, @tts, @nm, @ng, @tt, @pv, @ha)";
+                if (imageData == null && pic.Image != null)
+                {
+                    imageData = ImageToByteArray(pic.Image);
+                }
+
+                string maSql = "SELECT MAX(MATAISAN) FROM TAISAN";
+                SqlCommand maCmd = new SqlCommand(maSql, conn);
+                object maObj = maCmd.ExecuteScalar();
+                string nextId;
+                if (maObj == null || maObj == DBNull.Value)
+                {
+                    nextId = "TS001";
+                }
+                else
+                {
+                    string maxId = maObj.ToString();
+                    string prefix = new string(maxId.TakeWhile(c => !char.IsDigit(c)).ToArray());
+                    string numPart = new string(maxId.SkipWhile(c => !char.IsDigit(c)).ToArray());
+                    int num = 0;
+                    if (!int.TryParse(numPart, out num)) num = 0;
+                    num += 1;
+                    nextId = prefix + num.ToString("D2");
+                }
+
+                string sql = "INSERT INTO TAISAN(MATAISAN, MANGUOIDUNG, MALOAI, TENTAISAN, NGAYMUA, NGUYENGIA, TINHTRANG, PHAMVI, HINHANH) VALUES(@mts, @mnd, @ml, @tts, @nm, @ng, @tt, @pv, @ha)";
                 SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@mts", MaTaiSan.Text);
+                cmd.Parameters.AddWithValue("@mts", nextId);
                 cmd.Parameters.AddWithValue("@mnd", maNguoiDung);
                 cmd.Parameters.AddWithValue("@ml", cboLoaiTaiSan.SelectedValue);
                 cmd.Parameters.AddWithValue("@tts", TenTaiSan.Text);
@@ -132,7 +204,14 @@ namespace LTUD
                 cmd.Parameters.AddWithValue("@ng", Convert.ToDecimal(NguyenGia.Text));
                 cmd.Parameters.AddWithValue("@tt", "Tốt");
                 cmd.Parameters.AddWithValue("@pv", "Gia đình");
-                cmd.Parameters.AddWithValue("@ha", pathHinh);
+                string base64 = null;
+                if (imageData != null)
+                {
+                    base64 = Convert.ToBase64String(imageData);
+                }
+
+                var p = new SqlParameter("@ha", SqlDbType.NVarChar, -1) { Value = (object)base64 ?? DBNull.Value };
+                cmd.Parameters.Add(p);
                 cmd.ExecuteNonQuery();
                 MessageBox.Show("Thêm tài sản thành công");
                 loadData();
@@ -181,19 +260,62 @@ namespace LTUD
             if (e.RowIndex >= 0)
             {
                 DataGridViewRow row = dgvTSGD.Rows[e.RowIndex];
-                MaTaiSan.Text = row.Cells["MATAISAN"].Value.ToString();
+                MaTaiSan.Text = row.Cells["MATAISAN"].Value?.ToString();
                 cboLoaiTaiSan.SelectedValue = row.Cells["MALOAI"].Value;
-                TenTaiSan.Text = row.Cells["TENTAISAN"].Value.ToString();
+                TenTaiSan.Text = row.Cells["TENTAISAN"].Value?.ToString();
                 NgayMua.Value = Convert.ToDateTime(row.Cells["NGAYMUA"].Value);
-                NguyenGia.Text = row.Cells["NGUYENGIA"].Value.ToString();
-                pathHinh = row.Cells["HINHANH"].Value.ToString();
-                if (!string.IsNullOrEmpty(pathHinh))
+                NguyenGia.Text = row.Cells["NGUYENGIA"].Value?.ToString();
+
+                var cellVal = row.Cells["HINHANH"].Value;
+                // default clear
+                imageData = null;
+                pic.Image = null;
+
+                if (cellVal == DBNull.Value || cellVal == null)
                 {
-                    pic.Image = Image.FromFile(pathHinh);
+                    // no image stored
                 }
-                else
+                else if (cellVal is byte[])
                 {
-                    pic.Image = null;
+                    imageData = (byte[])cellVal;
+                    try
+                    {
+                        using (var ms = new MemoryStream(imageData))
+                        {
+                            pic.Image = Image.FromStream(ms);
+                        }
+                    }
+                    catch
+                    {
+                        pic.Image = null;
+                    }
+                }
+                else if (cellVal is string)
+                {
+                    string s = cellVal.ToString();
+                    try
+                    {
+                        var bytes = Convert.FromBase64String(s);
+                        imageData = bytes;
+                        using (var ms = new MemoryStream(bytes))
+                        {
+                            pic.Image = Image.FromStream(ms);
+                        }
+                    }
+                    catch
+                    {
+                        try
+                        {
+                            if (File.Exists(s))
+                            {
+                                pic.Image = Image.FromFile(s);
+                            }
+                        }
+                        catch
+                        {
+                            pic.Image = null;
+                        }
+                    }
                 }
             }
         }
@@ -205,7 +327,7 @@ namespace LTUD
             TenTaiSan.Clear();
             NgayMua.Value = DateTime.Now;
             NguyenGia.Clear();
-            pathHinh = "";
+            imageData = null;
             pic.Image = null;
             MaTaiSan.Focus();
         }
@@ -247,6 +369,175 @@ namespace LTUD
                 MessageBox.Show("Lỗi: " + ex.Message);
             }
             finally { conn.Close(); }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                connectData();
+                string famSql = "SELECT TENGIADINH FROM GIADINH WHERE MAGIADINH = @ma";
+                SqlCommand famCmd = new SqlCommand(famSql, conn);
+                famCmd.Parameters.AddWithValue("@ma", maGiaDinh);
+                string tenGD = famCmd.ExecuteScalar().ToString();
+
+                ReportParameter[] parameters = new ReportParameter[]
+                {
+                    new ReportParameter("TenGiaDinh", tenGD)
+                };
+
+                string sql = @"  SELECT ts.MATAISAN, TENTAISAN, HOTEN AS DAIDIENSOHUU, TENLOAI AS LOAITAISAN, CONVERT(DATE, NGAYMUA) AS NGAYMUA, NGUYENGIA, MIN(GIATRICONLAISAUKHAUHAO) AS GIATRIHIENTAI
+                                 FROM TAISAN ts
+                                 JOIN NGUOIDUNG nd ON ts.MANGUOIDUNG = nd.MANGUOIDUNG
+                                 JOIN LOAITAISAN lts ON ts.MALOAI = lts.MALOAI
+                                 JOIN COKHAUHAO ckh ON ckh.MATAISAN = ts.MATAISAN
+                                 WHERE nd.MAGIADINH = @ma AND PHAMVI = N'Gia đình'
+                                 GROUP BY ts.MATAISAN, TENTAISAN, HOTEN, TENLOAI, NGAYMUA, NGUYENGIA, ts.MALOAI";
+
+                SqlDataAdapter da = new SqlDataAdapter(sql, conn);
+                da.SelectCommand.Parameters.AddWithValue("@ma", maGiaDinh);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+
+                Form repForm = new Form();
+                repForm.Text = "Báo cáo tài sản gia đình";
+                repForm.WindowState = FormWindowState.Maximized;
+
+                ReportViewer rv = new ReportViewer();
+                rv.ProcessingMode = ProcessingMode.Local;
+                rv.Dock = DockStyle.Fill;
+
+                string reportPath = Path.Combine(Application.StartupPath, "ThongKeTaiSanGiaDinh.rdlc");
+                rv.LocalReport.ReportPath = reportPath;
+
+                var rds = new ReportDataSource("ThongTinTaiSan", dt);
+                rv.LocalReport.DataSources.Clear();
+                rv.LocalReport.DataSources.Add(rds);
+                rv.LocalReport.SetParameters(parameters);
+
+                rv.RefreshReport();
+
+                repForm.Controls.Add(rv);
+                repForm.ShowDialog(this);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi tạo báo cáo: " + ex.Message);
+            }
+            finally { conn.Close(); }
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            if (NgayMua.Value > DateTime.Now)
+            {
+                MessageBox.Show("Ngày mua không thể lớn hơn ngày hiện tại!");
+                return;
+            }
+            if (String.IsNullOrEmpty(TenTaiSan.Text) || cboLoaiTaiSan.SelectedIndex == -1 || String.IsNullOrEmpty(NguyenGia.Text))
+            {
+                MessageBox.Show("Vui lòng điền đầy đủ thông tin!");
+                return;
+            }
+
+            if (!decimal.TryParse(NguyenGia.Text, out decimal value))
+            {
+                MessageBox.Show("Vui lòng chỉ nhập số vào ô Nguyên giá!");
+                NguyenGia.Focus();
+                return;
+            }
+
+            if (value <= 0)
+            {
+                MessageBox.Show("Nguyên giá phải là số dương lớn hơn 0!");
+                NguyenGia.Focus();
+                return;
+            }
+
+
+            try
+            {
+                connectData();
+                string searchDepSql = "SELECT COUNT(*) FROM COKHAUHAO WHERE MATAISAN = @ma";
+                SqlCommand searchDepCmd = new SqlCommand(searchDepSql, conn);
+                searchDepCmd.Parameters.AddWithValue("@ma", MaTaiSan.Text.Trim());
+                bool hasDepreciation = Convert.ToInt32(searchDepCmd.ExecuteScalar()) > 0;
+
+                string currentMaLoai = "", currentMaNguoiDung = "";
+                DateTime currentNgayMua = DateTime.MinValue;
+                decimal currentNguyenGia = 0;
+
+                string searchSql = @"SELECT MANGUOIDUNG, MALOAI, NGAYMUA, NGUYENGIA FROM TAISAN WHERE MATAISAN = @ma";
+                SqlCommand cmd = new SqlCommand(searchSql, conn);
+                cmd.Parameters.AddWithValue("@ma", MaTaiSan.Text.Trim());
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        currentMaNguoiDung = reader["MANGUOIDUNG"].ToString().Trim();
+                        currentMaLoai = reader["MALOAI"].ToString().Trim();
+                        currentNgayMua = Convert.ToDateTime(reader["NGAYMUA"]);
+                        currentNguyenGia = Convert.ToDecimal(reader["NGUYENGIA"]);
+                    }
+                }
+
+
+                if (currentMaNguoiDung != maNguoiDung.Trim())
+                {
+                    MessageBox.Show("Bạn không có quyền sửa tài sản này!");
+                    return;
+                }
+
+                string updateSql = "";
+                if (hasDepreciation)
+                {
+                    if (currentMaLoai != cboLoaiTaiSan.SelectedValue.ToString().Trim())
+                    {
+                        MessageBox.Show("Tài sản đã có khấu hao, không thể đổi loại!"); return;
+                    }
+                    if (currentNgayMua.Date != NgayMua.Value.Date)
+                    {
+                        MessageBox.Show("Tài sản đã có khấu hao, không thể đổi ngày mua!"); return;
+                    }
+                    if (currentNguyenGia != Convert.ToDecimal(NguyenGia.Text))
+                    {
+                        MessageBox.Show("Tài sản đã có khấu hao, không thể đổi nguyên giá!"); return;
+                    }
+
+                    updateSql = "UPDATE TAISAN SET TENTAISAN = @tts, HINHANH = @ha WHERE MATAISAN = @ma";
+                }
+                else
+                {
+                    updateSql = "UPDATE TAISAN SET TENTAISAN = @tts, MALOAI = @ml, NGUYENGIA = @ng, NGAYMUA = @nm, HINHANH = @ha WHERE MATAISAN = @ma";
+                }
+
+                SqlCommand updateCmd = new SqlCommand(updateSql, conn);
+                updateCmd.Parameters.AddWithValue("@tts", TenTaiSan.Text);
+                updateCmd.Parameters.AddWithValue("@ma", MaTaiSan.Text.Trim());
+
+                string base64 = (imageData != null) ? Convert.ToBase64String(imageData) : null;
+                updateCmd.Parameters.Add(new SqlParameter("@ha", SqlDbType.NVarChar, -1) { Value = (object)base64 ?? DBNull.Value });
+
+                if (!hasDepreciation)
+                {
+                    updateCmd.Parameters.AddWithValue("@ml", cboLoaiTaiSan.SelectedValue);
+                    updateCmd.Parameters.AddWithValue("@ng", Convert.ToDecimal(NguyenGia.Text));
+                    updateCmd.Parameters.AddWithValue("@nm", NgayMua.Value);
+                }
+
+                updateCmd.ExecuteNonQuery();
+                MessageBox.Show("Cập nhật tài sản thành công");
+                loadData();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi hệ thống: " + ex.Message);
+            }
+            finally
+            {
+                conn.Close();
+            }
         }
     }
 }
