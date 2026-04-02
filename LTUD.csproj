@@ -182,6 +182,9 @@
     <EmbeddedResource Include="FormTrangchu.resx">
       <DependentUpon>FormTrangchu.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormXemtaisan.resx">
+      <DependentUpon>FormXemtaisan.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
