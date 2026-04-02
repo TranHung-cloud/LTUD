@@ -82,10 +82,25 @@
     <Compile Include="FormQLGiaDinh.Designer.cs">
       <DependentUpon>FormQLGiaDinh.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormDangKy.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormDangKy.Designer.cs">
+      <DependentUpon>FormDangKy.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormDangNhap.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormDangNhap.Designer.cs">
+      <DependentUpon>FormDangNhap.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="FormAdminHome.resx">
       <DependentUpon>FormAdminHome.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormDangKy.resx">
+      <DependentUpon>FormDangKy.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormQLBaoTri.resx">
       <DependentUpon>FormQLBaoTri.cs</DependentUpon>
