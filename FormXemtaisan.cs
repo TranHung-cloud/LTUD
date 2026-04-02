@@ -31,19 +31,34 @@ namespace LTUD
 
         private void FormXemtaisan_Load(object sender, EventArgs e)
         {
+            KetNoi();
+            LoadTaiSan();
 
         }
-        //void LoadTaiSan()
-        //{
-        //    string sql = "SELECT * FROM TAISAN WHERE MANGUOIDUNG = @ma";
+        void LoadTaiSan()
+{
+    string sql = @"
+    SELECT 
+        MANGUOIDUNG AS [Mã người dùng],
+        TENTAISAN AS [Tên tài sản],
+        NGAYMUA AS [Ngày mua],
+        TINHTRANG AS [Tình trạng],
+        PHAMVI AS [Phạm vi]
+    FROM TAISAN 
+    WHERE MANGUOIDUNG = @ma";
 
-        //    SqlDataAdapter da = new SqlDataAdapter(sql, conn);
-        //    da.SelectCommand.Parameters.AddWithValue("@ma", maND);
+    SqlDataAdapter da = new SqlDataAdapter(sql, conn);
+    da.SelectCommand.Parameters.AddWithValue("@ma", maND);
 
-        //    DataTable dt = new DataTable();
-        //    da.Fill(dt);
+    DataTable dt = new DataTable();
+    da.Fill(dt);
 
-        //    dataGridView1.DataSource = dt;
-        //}
+    dataGridView1.DataSource = dt;
+
+    if (dt.Rows.Count == 0)
+    {
+        MessageBox.Show("Người dùng này chưa có tài sản!");
+    }
+}
     }
 }

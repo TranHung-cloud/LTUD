@@ -17,10 +17,10 @@ namespace LTUD
 
         void KetNoi()
         {
-            //conn = new SqlConnection(
-            //  "Server =FAKEDAT\\SQLEXPRESS; Database = QLTAISAN ; Integrated Security = True; TrustServerCertificate=True");
             conn = new SqlConnection(
-              @"Data Source=.\SQLEXPRESS;Initial Catalog=QLTaiSan_LTUD;Integrated Security=True;TrustServerCertificate=True");
+              "Server =FAKEDAT\\SQLEXPRESS; Database = QLTAISAN ; Integrated Security = True; TrustServerCertificate=True");
+            //conn = new SqlConnection(
+            //  @"Data Source=.\SQLEXPRESS;Initial Catalog=QLTaiSan_LTUD;Integrated Security=True;TrustServerCertificate=True");
             conn.Open();
         }
         public FormQLNguoidung()
@@ -165,7 +165,7 @@ namespace LTUD
             cboVaitro.SelectedIndex = -1;
             cboTrangthai.SelectedIndex = -1;
 
-            dtpNgaysinh.Value = DateTime.Now;
+            dtpNgaysinh.Value = DateTime.Now.Date;
         }
 
         private void btnXoa_Click(object sender, EventArgs e)
@@ -243,8 +243,8 @@ namespace LTUD
 
         private void btnXemtaisan_Click(object sender, EventArgs e)
         {
-            //FormXemtaisan f = new FormXemtaisan(maNguoiDung);
-            //f.Show();
+            FormXemtaisan f = new FormXemtaisan(txtMaND.Text);
+            f.Show();
         }
     }
 }
