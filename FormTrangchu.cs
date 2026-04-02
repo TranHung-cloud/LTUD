@@ -38,11 +38,13 @@ namespace LTUD
         }
         private void đăngXuấtToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            //FormThongtincanhan f = new FormThongtincanhan(maNguoiDung);
+            //f.Show();
         }
         private void btnTaisancanhan_Click(object sender, EventArgs e)
         {
-
+            //FormThongtincanhan f = new FormThongtincanhan(maNguoiDung);
+            //f.Show();
         }
 
         private void btnTaisangiadinh_Click(object sender, EventArgs e)
