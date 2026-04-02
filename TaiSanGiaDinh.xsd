@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="TaiSanGiaDinh" targetNamespace="http://tempuri.org/TaiSanGiaDinh.xsd" xmlns:mstns="http://tempuri.org/TaiSanGiaDinh.xsd" xmlns="http://tempuri.org/TaiSanGiaDinh.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="TaiSanGiaDinh" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:Generator_UserDSName="TaiSanGiaDinh" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="TaiSanGiaDinh">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="DSTaiSanGiaDinh" msprop:Generator_RowEvHandlerName="DSTaiSanGiaDinhRowChangeEventHandler" msprop:Generator_RowDeletedName="DSTaiSanGiaDinhRowDeleted" msprop:Generator_RowDeletingName="DSTaiSanGiaDinhRowDeleting" msprop:Generator_RowEvArgName="DSTaiSanGiaDinhRowChangeEvent" msprop:Generator_TablePropName="DSTaiSanGiaDinh" msprop:Generator_RowChangedName="DSTaiSanGiaDinhRowChanged" msprop:Generator_UserTableName="DSTaiSanGiaDinh" msprop:Generator_RowChangingName="DSTaiSanGiaDinhRowChanging" msprop:Generator_RowClassName="DSTaiSanGiaDinhRow" msprop:Generator_TableClassName="DSTaiSanGiaDinhDataTable" msprop:Generator_TableVarName="tableDSTaiSanGiaDinh">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="MATAISAN" msprop:Generator_ColumnPropNameInTable="MATAISANColumn" msprop:Generator_ColumnPropNameInRow="MATAISAN" msprop:Generator_UserColumnName="MATAISAN" msprop:Generator_ColumnVarNameInTable="columnMATAISAN" type="xs:string" minOccurs="0" />
+              <xs:element name="TENTAISAN" msprop:Generator_ColumnPropNameInTable="TENTAISANColumn" msprop:Generator_ColumnPropNameInRow="TENTAISAN" msprop:Generator_UserColumnName="TENTAISAN" msprop:Generator_ColumnVarNameInTable="columnTENTAISAN" type="xs:string" minOccurs="0" />
+              <xs:element name="DAIDIENSOHUU" msprop:Generator_ColumnPropNameInTable="DAIDIENSOHUUColumn" msprop:Generator_ColumnPropNameInRow="DAIDIENSOHUU" msprop:Generator_UserColumnName="DAIDIENSOHUU" msprop:Generator_ColumnVarNameInTable="columnDAIDIENSOHUU" type="xs:string" minOccurs="0" />
+              <xs:element name="LOAITAISAN" msprop:Generator_UserColumnName="LOAITAISAN" msprop:Generator_ColumnPropNameInTable="LOAITAISANColumn" msprop:Generator_ColumnPropNameInRow="LOAITAISAN" msprop:Generator_ColumnVarNameInTable="columnLOAITAISAN" type="xs:string" minOccurs="0" />
+              <xs:element name="GIATRIHIENTAI" msprop:Generator_UserColumnName="GIATRIHIENTAI" msprop:Generator_ColumnPropNameInTable="GIATRIHIENTAIColumn" msprop:Generator_ColumnPropNameInRow="GIATRIHIENTAI" msprop:Generator_ColumnVarNameInTable="columnGIATRIHIENTAI" type="xs:decimal" minOccurs="0" />
+              <xs:element name="NGUYENGIA" msprop:Generator_UserColumnName="NGUYENGIA" msprop:Generator_ColumnPropNameInTable="NGUYENGIAColumn" msprop:Generator_ColumnPropNameInRow="NGUYENGIA" msprop:Generator_ColumnVarNameInTable="columnNGUYENGIA" type="xs:decimal" minOccurs="0" />
+              <xs:element name="NGAYMUA" msprop:Generator_ColumnPropNameInRow="NGAYMUA" msprop:Generator_ColumnPropNameInTable="NGAYMUAColumn" msprop:Generator_ColumnVarNameInTable="columnNGAYMUA" msprop:Generator_UserColumnName="NGAYMUA" type="xs:dateTime" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
