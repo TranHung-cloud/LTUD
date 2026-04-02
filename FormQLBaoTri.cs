@@ -1,0 +1,222 @@
+using System;
+using System.Data;
+using System.Drawing;
+using System.Windows.Forms;
+
+namespace LTUD
+{
+    public partial class FormQLBaoTri : Form
+    {
+        private string adminMaGD = "";
+
+        public FormQLBaoTri(string maGD = "GD01")
+        {
+            InitializeComponent();
+            adminMaGD = maGD;
+            btnThem.Click += BtnThem_Click;
+            btnSua.Click += BtnSua_Click;
+            btnXoa.Click += BtnXoa_Click;
+        }
+
+        private void FormQLBaoTri_Load(object sender, EventArgs e)
+        {
+            LoadComboBoxPhamVi();
+        }
+
+        private void LoadComboBoxPhamVi()
+        {
+            try
+            {
+                cbPhamViFilter.Items.Clear();
+                cbPhamViFilter.Items.AddRange(new string[] { "Tất cả", "Gia đình", "Cá nhân" });
+                cbPhamViFilter.SelectedIndex = 0;
+                cbPhamViFilter.SelectedIndexChanged += (s, ev) => LoadComboBoxTaiSanFilter();
+                LoadComboBoxTaiSanFilter();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tải danh sách phạm vi: " + ex.Message);
+            }
+        }
+
+        private void LoadComboBoxTaiSanFilter()
+        {
+            if (cbPhamViFilter.SelectedItem == null) return;
+            string selectedPV = cbPhamViFilter.SelectedItem.ToString();
+
+            try
+            {
+                string query = $@"
+                    SELECT MATAISAN, TENTAISAN + ' (' + MATAISAN + ')' AS TENDAYDU 
+                    FROM TAISAN 
+                    WHERE MANGUOIDUNG IN (SELECT MANGUOIDUNG FROM NGUOIDUNG WHERE MAGIADINH = '{adminMaGD}')";
+
+                if (selectedPV != "Tất cả")
+                {
+                    query += $" AND PHAMVI = N'{selectedPV}'";
+                }
+
+                DataTable dtTS = DatabaseConnection.GetData(query);
+                DataRow rowAll = dtTS.NewRow();
+                rowAll["MATAISAN"] = "ALL";
+                rowAll["TENDAYDU"] = "-- Tất cả Tài sản --";
+                dtTS.Rows.InsertAt(rowAll, 0);
+
+                // Unregister event before updating DataSource to prevent firing prematurely
+                cbTaiSanFilter.SelectedIndexChanged -= CbTaiSanFilter_SelectedIndexChanged;
+                cbTaiSanFilter.DataSource = dtTS;
+                cbTaiSanFilter.DisplayMember = "TENDAYDU";
+                cbTaiSanFilter.ValueMember = "MATAISAN";
+                cbTaiSanFilter.SelectedIndexChanged += CbTaiSanFilter_SelectedIndexChanged;
+
+                LoadBaoTri();
+            }
+            catch (Exception ex)
+            {
+                 MessageBox.Show("Lỗi tải danh sách tài sản: " + ex.Message);
+            }
+        }
+
+        private void CbTaiSanFilter_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            LoadBaoTri();
+        }
+
+        private void LoadBaoTri()
+        {
+            if (cbPhamViFilter.SelectedItem == null || cbTaiSanFilter.SelectedValue == null) return;
+            string selectedPV = cbPhamViFilter.SelectedItem.ToString();
+            string selectedTS = cbTaiSanFilter.SelectedValue.ToString();
+
+            try
+            {
+                string query = $@"
+                    SELECT 
+                        B.MALICH AS [Mã Lịch],
+                        T.TENTAISAN AS [Tên Tài Sản],
+                        T.MATAISAN AS [Mã Tài Sản],
+                        T.PHAMVI AS [Phạm Vi],
+                        B.NGAYBAOTRI AS [Ngày Bảo Trì],
+                        B.TRANGTHAI AS [Trạng Thái],
+                        B.CHIPHI AS [Chi Phí],
+                        B.NOIDUNGBAOTRI AS [Nội Dung]
+                    FROM THONGTINBAOTRI B
+                    INNER JOIN TAISAN T ON B.MATAISAN = T.MATAISAN
+                    WHERE T.MANGUOIDUNG IN (SELECT MANGUOIDUNG FROM NGUOIDUNG WHERE MAGIADINH = '{adminMaGD}')";
+
+                if (selectedPV != "Tất cả")
+                {
+                    query += $" AND T.PHAMVI = N'{selectedPV}'";
+                }
+
+                if (selectedTS != "ALL")
+                {
+                    query += $" AND T.MATAISAN = '{selectedTS}'";
+                }
+
+                query += " ORDER BY B.MALICH ASC";
+                dgvBaoTri.DataSource = DatabaseConnection.GetData(query);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tải dữ liệu Bảo trì: " + ex.Message);
+            }
+        }
+
+        private void BtnThem_Click(object sender, EventArgs e)
+        {
+            ShowBaoTriDialog(true, "", "", DateTime.Now, "Đang xử lý", "0", "");
+        }
+
+        private void BtnSua_Click(object sender, EventArgs e)
+        {
+            if (dgvBaoTri.CurrentRow == null) return;
+            string maLich = dgvBaoTri.CurrentRow.Cells[0].Value.ToString();
+            string maTS = dgvBaoTri.CurrentRow.Cells[2].Value.ToString();
+            DateTime ngay = Convert.ToDateTime(dgvBaoTri.CurrentRow.Cells[4].Value);
+            string tt = dgvBaoTri.CurrentRow.Cells[5].Value.ToString();
+            string chiphi = dgvBaoTri.CurrentRow.Cells[6].Value.ToString();
+            string nDung = dgvBaoTri.CurrentRow.Cells[7].Value.ToString();
+            ShowBaoTriDialog(false, maLich, maTS, ngay, tt, chiphi, nDung);
+        }
+
+        private void BtnXoa_Click(object sender, EventArgs e)
+        {
+            if (dgvBaoTri.CurrentRow == null) return;
+            string maLich = dgvBaoTri.CurrentRow.Cells[0].Value.ToString();
+            if (MessageBox.Show("Xác nhận xóa lịch bảo trì này?", "Cảnh báo", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                DatabaseConnection.ExecuteQuery($"DELETE FROM THONGTINBAOTRI WHERE MALICH = '{maLich}'");
+                LoadBaoTri();
+            }
+        }
+
+        private void ShowBaoTriDialog(bool isAdd, string mLich, string mTS, DateTime nBaoTri, string trThai, string cPhi, string nnDung)
+        {
+            Form f = new Form { Width = 500, Height = 420, Text = isAdd ? "Thêm Bảo Trì" : "Sửa Bảo Trì", StartPosition = FormStartPosition.CenterParent, BackColor = Color.FromArgb(154, 203, 208) };
+            Label lblLich = new Label { Left = 20, Top = 23, Text = "Mã Lịch:", AutoSize = true }; TextBox txtLich = new TextBox { Left = 120, Top = 20, Width = 330, Text = mLich, Enabled = isAdd };
+
+            Label lblPV = new Label { Left = 20, Top = 63, Text = "Phạm Vi:", AutoSize = true }; ComboBox cbPV = new ComboBox { Left = 120, Top = 60, DropDownStyle = ComboBoxStyle.DropDownList, Width = 330 };
+            cbPV.Items.AddRange(new string[] { "Gia đình", "Cá nhân" });
+
+            Label lblTS = new Label { Left = 20, Top = 103, Text = "Tài Sản:", AutoSize = true }; ComboBox cbTS = new ComboBox { Left = 120, Top = 100, DropDownStyle = ComboBoxStyle.DropDownList, Width = 330 };
+            Label lblNgay = new Label { Left = 20, Top = 143, Text = "Ngày BT:", AutoSize = true }; DateTimePicker dtpNgay = new DateTimePicker { Left = 120, Top = 140, Width = 330, Format = DateTimePickerFormat.Short, Value = nBaoTri };
+            Label lblTT = new Label { Left = 20, Top = 183, Text = "Trạng Thái:", AutoSize = true }; ComboBox cbTT = new ComboBox { Left = 120, Top = 180, Width = 330, DropDownStyle = ComboBoxStyle.DropDownList };
+            cbTT.Items.AddRange(new string[] { "Hoàn thành", "Đang xử lý", "Chưa xử lý" });
+            cbTT.SelectedItem = string.IsNullOrEmpty(trThai) ? "Đang xử lý" : trThai;
+            Label lblCP = new Label { Left = 20, Top = 223, Text = "Chi Phí:", AutoSize = true }; TextBox txtCP = new TextBox { Left = 120, Top = 220, Width = 330, Text = cPhi };
+            Label lblND = new Label { Left = 20, Top = 263, Text = "Nội Dung:", AutoSize = true }; TextBox txtND = new TextBox { Left = 120, Top = 260, Width = 330, Text = nnDung };
+            Button btnSave = new Button { Left = 200, Top = 320, Width = 100, Text = "Lưu", BackColor = Color.FromArgb(242, 239, 231), ForeColor = Color.FromArgb(0, 106, 113), FlatStyle = FlatStyle.Flat };
+
+            Action loadTS = () => {
+                string pv = cbPV.SelectedItem?.ToString();
+                cbTS.DataSource = DatabaseConnection.GetData($@"
+                    SELECT MATAISAN, TENTAISAN + ' (' + MATAISAN + ')' AS TENDAYDU 
+                    FROM TAISAN 
+                    WHERE PHAMVI = N'{pv}' AND MANGUOIDUNG IN (SELECT MANGUOIDUNG FROM NGUOIDUNG WHERE MAGIADINH = '{adminMaGD}')");
+                cbTS.DisplayMember = "TENDAYDU"; cbTS.ValueMember = "MATAISAN";
+            };
+
+            cbPV.SelectedIndexChanged += (s, e) => loadTS();
+
+            if (!isAdd && !string.IsNullOrEmpty(mTS))
+            {
+                DataTable dtTSInfo = DatabaseConnection.GetData($"SELECT PHAMVI FROM TAISAN WHERE MATAISAN = '{mTS}'");
+                if (dtTSInfo.Rows.Count > 0) cbPV.SelectedItem = dtTSInfo.Rows[0]["PHAMVI"].ToString();
+                else cbPV.SelectedIndex = 0;
+                loadTS();
+                cbTS.SelectedValue = mTS;
+            }
+            else
+            {
+                cbPV.SelectedIndex = 0;
+            }
+
+            btnSave.Click += (s, ev) =>
+            {
+                if(cbTS.SelectedValue == null) { MessageBox.Show("Vui lòng chọn Tài sản!"); return; }
+                try
+                {
+                    string ts = cbTS.SelectedValue.ToString();
+                    string tt = cbTT.SelectedItem.ToString();
+                    string dateStr = dtpNgay.Value.ToString("yyyy-MM-dd");
+                    if (isAdd)
+                        DatabaseConnection.ExecuteQuery($"INSERT INTO THONGTINBAOTRI VALUES ('{txtLich.Text}', '{ts}', '{dateStr}', N'{tt}', {txtCP.Text}, N'{txtND.Text}')");
+                    else
+                        DatabaseConnection.ExecuteQuery($"UPDATE THONGTINBAOTRI SET MATAISAN='{ts}', NGAYBAOTRI='{dateStr}', TRANGTHAI=N'{tt}', CHIPHI={txtCP.Text}, NOIDUNGBAOTRI=N'{txtND.Text}' WHERE MALICH='{txtLich.Text}'");
+                    f.DialogResult = DialogResult.OK;
+                    f.Close();
+                }
+                catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
+            };
+
+            f.Controls.AddRange(new Control[] { lblLich, txtLich, lblPV, cbPV, lblTS, cbTS, lblNgay, dtpNgay, lblTT, cbTT, lblCP, txtCP, lblND, txtND, btnSave });
+            if (f.ShowDialog() == DialogResult.OK) LoadBaoTri();
+        }
+
+        private void dgvBaoTri_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+    }
+}
