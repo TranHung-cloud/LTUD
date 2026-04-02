@@ -115,7 +115,7 @@ namespace LTUD
                 "from taisan t join loaitaisan l on t.maloai = l.maloai " +
                 "left join cokhauhao c on c.mataisan = t.mataisan and c.namkhauhao = " +
                                                                                    "(select max(c2.namkhauhao) from cokhauhao c2 where c2.mataisan = t.mataisan)" +
-                " where t.manguoidung = @userId";
+                " where t.manguoidung = @userId and t.phamvi='Cá nhân'";
             var cmd = new SqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@userId", userId);
             var da = new SqlDataAdapter(cmd);
@@ -212,6 +212,8 @@ namespace LTUD
                 txtGiaThucTe.Text = selectedRow.Cells["giatriconlai"].Value.ToString();
                 txtNguyenGia.Text = selectedRow.Cells["nguyengia"].Value.ToString();
                 string imageName = selectedRow.Cells["hinhanh"].Value.ToString();
+                if (imageName != "")
+                {
                     try
                     {
                         string imagePath = System.IO.Path.Combine(Application.StartupPath, "Images", imageName);
@@ -220,7 +222,7 @@ namespace LTUD
                             using (Image img = Image.FromFile(imagePath))
                             {
                                 pictureBox.Image = new Bitmap(img);
-                            } 
+                            }
                             // Khối using tự động gọi img.Dispose(), tức là mở file xong -> copy -> đóng file ngay lập tức.
                         }
                         else
@@ -234,6 +236,11 @@ namespace LTUD
                         pictureBox.Image = null;
                         MessageBox.Show("Lỗi khi tải hình ảnh: " + ex.Message);
                     }
+                }
+                else
+                {
+                    pictureBox.Image = null;
+                }
             }
         }
 
@@ -246,6 +253,18 @@ namespace LTUD
             }
             else
             {
+                var tryParseResult = decimal.TryParse(txtNguyenGia.Text.Trim(), out decimal nguyenGia);
+                if (!tryParseResult || nguyenGia < 0)
+                {
+                    MessageBox.Show("Sai định dạng nguyên giá");
+                    return;
+                }
+                var dateDiff = (DateTime.Now - dtp.Value).TotalDays;
+                if (dateDiff < 0)
+                {
+                    MessageBox.Show("Ngày mua không thể lớn hơn ngày hiện tại");
+                    return;
+                }
                 string sql = "insert into taisan (mataisan, tentaisan, maloai, ngaymua, nguyengia, tinhtrang, manguoidung, hinhanh, phamvi) " +
                     "values (@mataisan, @tentaisan, @maloai, @ngaymua, @nguyengia, N'Tốt', @manguoidung, @hinhanh, N'Cá nhân')";
                 var cmd = new SqlCommand(sql, conn);
@@ -413,6 +432,18 @@ namespace LTUD
                     }
                     else
                     {
+                        var tryParseResult = decimal.TryParse(txtNguyenGia.Text.Trim(), out decimal nguyenGia);
+                        if (!tryParseResult || nguyenGia < 0)
+                        {
+                            MessageBox.Show("Sai định dạng nguyên giá");
+                            return;
+                        }
+                        var dateDiff = (DateTime.Now - dtp.Value).TotalDays;
+                        if (dateDiff < 0)
+                        {
+                            MessageBox.Show("Ngày mua không thể lớn hơn ngày hiện tại");
+                            return;
+                        }
                         sql = "update taisan set tentaisan = @tentaisan, maloai = @maloai, ngaymua = @ngaymua, nguyengia = @nguyengia, hinhanh = @hinhanh where mataisan = @mataisan";
                         cmd = new SqlCommand(sql, conn);
                         cmd.Parameters.AddWithValue("@tentaisan", txtTenTaiSan.Text.Trim());
