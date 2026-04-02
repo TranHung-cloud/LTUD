@@ -236,6 +236,7 @@
             // dgvKhauHao
             // 
             this.dgvKhauHao.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvKhauHao.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(154)))), ((int)(((byte)(203)))), ((int)(((byte)(208)))));
             this.dgvKhauHao.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvKhauHao.Location = new System.Drawing.Point(6, 19);
             this.dgvKhauHao.Name = "dgvKhauHao";

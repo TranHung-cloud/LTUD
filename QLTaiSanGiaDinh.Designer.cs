@@ -85,6 +85,7 @@
             // dgvTSGD
             // 
             this.dgvTSGD.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvTSGD.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(154)))), ((int)(((byte)(203)))), ((int)(((byte)(208)))));
             this.dgvTSGD.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvTSGD.Location = new System.Drawing.Point(6, 19);
             this.dgvTSGD.Name = "dgvTSGD";
