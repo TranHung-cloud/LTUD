@@ -1,120 +1,12 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\GG_1\\FRIENDS\\HUYNHNHI\\LTUD-main\\LTUD-main\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{1EF1F09C-CCC3-4F30-B969-322C125CCE84}|LTUD.csproj|d:\\gg_1\\friends\\huynhnhi\\ltud-main\\ltud-main\\registerform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1EF1F09C-CCC3-4F30-B969-322C125CCE84}|LTUD.csproj|solutionrelative:registerform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1EF1F09C-CCC3-4F30-B969-322C125CCE84}|LTUD.csproj|d:\\gg_1\\friends\\huynhnhi\\ltud-main\\ltud-main\\registerform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{1EF1F09C-CCC3-4F30-B969-322C125CCE84}|LTUD.csproj|solutionrelative:registerform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1EF1F09C-CCC3-4F30-B969-322C125CCE84}|LTUD.csproj|d:\\gg_1\\friends\\huynhnhi\\ltud-main\\ltud-main\\registerform.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1EF1F09C-CCC3-4F30-B969-322C125CCE84}|LTUD.csproj|solutionrelative:registerform.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1EF1F09C-CCC3-4F30-B969-322C125CCE84}|LTUD.csproj|d:\\gg_1\\friends\\huynhnhi\\ltud-main\\ltud-main\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1EF1F09C-CCC3-4F30-B969-322C125CCE84}|LTUD.csproj|solutionrelative:form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1EF1F09C-CCC3-4F30-B969-322C125CCE84}|LTUD.csproj|d:\\gg_1\\friends\\huynhnhi\\ltud-main\\ltud-main\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{1EF1F09C-CCC3-4F30-B969-322C125CCE84}|LTUD.csproj|solutionrelative:form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1EF1F09C-CCC3-4F30-B969-322C125CCE84}|LTUD.csproj|d:\\gg_1\\friends\\huynhnhi\\ltud-main\\ltud-main\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1EF1F09C-CCC3-4F30-B969-322C125CCE84}|LTUD.csproj|solutionrelative:form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    }
-  ],
+  "WorkspaceRootPath": "C:\\Users\\HP\\source\\repos\\LTUD\\",
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": [
-        {
-          "DockedWidth": 200,
-          "SelectedChildIndex": 0,
-          "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "RegisterForm.cs",
-              "DocumentMoniker": "D:\\GG_1\\FRIENDS\\HUYNHNHI\\LTUD-main\\LTUD-main\\RegisterForm.cs",
-              "RelativeDocumentMoniker": "RegisterForm.cs",
-              "ToolTip": "D:\\GG_1\\FRIENDS\\HUYNHNHI\\LTUD-main\\LTUD-main\\RegisterForm.cs",
-              "RelativeToolTip": "RegisterForm.cs",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAYwB0AAAA4AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-30T15:27:46.374Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "RegisterForm.Designer.cs",
-              "DocumentMoniker": "D:\\GG_1\\FRIENDS\\HUYNHNHI\\LTUD-main\\LTUD-main\\RegisterForm.Designer.cs",
-              "RelativeDocumentMoniker": "RegisterForm.Designer.cs",
-              "ToolTip": "D:\\GG_1\\FRIENDS\\HUYNHNHI\\LTUD-main\\LTUD-main\\RegisterForm.Designer.cs",
-              "RelativeToolTip": "RegisterForm.Designer.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-30T15:27:38.605Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "RegisterForm.cs [Design]",
-              "DocumentMoniker": "D:\\GG_1\\FRIENDS\\HUYNHNHI\\LTUD-main\\LTUD-main\\RegisterForm.cs",
-              "RelativeDocumentMoniker": "RegisterForm.cs",
-              "ToolTip": "D:\\GG_1\\FRIENDS\\HUYNHNHI\\LTUD-main\\LTUD-main\\RegisterForm.cs [Design]",
-              "RelativeToolTip": "RegisterForm.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-30T15:23:35.829Z",
-              "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Form1.cs",
-              "DocumentMoniker": "D:\\GG_1\\FRIENDS\\HUYNHNHI\\LTUD-main\\LTUD-main\\Form1.cs",
-              "RelativeDocumentMoniker": "Form1.cs",
-              "ToolTip": "D:\\GG_1\\FRIENDS\\HUYNHNHI\\LTUD-main\\LTUD-main\\Form1.cs",
-              "RelativeToolTip": "Form1.cs",
-              "ViewState": "AgIAABMAAAAAAAAAAAA3wCcAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-30T15:18:28.001Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Form1.cs [Design]",
-              "DocumentMoniker": "D:\\GG_1\\FRIENDS\\HUYNHNHI\\LTUD-main\\LTUD-main\\Form1.cs",
-              "RelativeDocumentMoniker": "Form1.cs",
-              "ToolTip": "D:\\GG_1\\FRIENDS\\HUYNHNHI\\LTUD-main\\LTUD-main\\Form1.cs [Design]",
-              "RelativeToolTip": "Form1.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-30T15:18:28.639Z",
-              "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Form1.Designer.cs",
-              "DocumentMoniker": "D:\\GG_1\\FRIENDS\\HUYNHNHI\\LTUD-main\\LTUD-main\\Form1.Designer.cs",
-              "RelativeDocumentMoniker": "Form1.Designer.cs",
-              "ToolTip": "D:\\GG_1\\FRIENDS\\HUYNHNHI\\LTUD-main\\LTUD-main\\Form1.Designer.cs",
-              "RelativeToolTip": "Form1.Designer.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAVAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-30T15:18:22.285Z",
-              "EditorCaption": ""
-            }
-          ]
-        }
-      ]
+      "DocumentGroups": []
     }
   ]
 }
