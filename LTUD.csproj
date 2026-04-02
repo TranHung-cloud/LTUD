@@ -153,6 +153,12 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormXemtaisan.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormXemtaisan.Designer.cs">
+      <DependentUpon>FormXemtaisan.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormQLNguoidung.cs">
       <SubType>Form</SubType>
     </Compile>

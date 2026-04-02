@@ -237,5 +237,10 @@ namespace LTUD
             LoadGrid();
             MessageBox.Show("Sửa thành công!");
         }
+
+        private void btnXemtaisan_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
