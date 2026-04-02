@@ -36,6 +36,7 @@ namespace LTUD
             LoadVaiTro();
             LoadTrangThai(); 
             txtMaND.Text = TaoMaTuTang();
+            dtpNgaysinh.MaxDate = DateTime.Now;
         }
 
         void LoadGrid()
@@ -242,7 +243,8 @@ namespace LTUD
 
         private void btnXemtaisan_Click(object sender, EventArgs e)
         {
-
+            //FormXemtaisan f = new FormXemtaisan(maNguoiDung);
+            //f.Show();
         }
     }
 }
