@@ -16,6 +16,8 @@ namespace LTUD
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            //Application.Run(new FormQLTS_CN("ND01"));
+            //Application.Run(new FormReportTSCN());
             Application.Run(new FormQLNguoidung());
         }
     }

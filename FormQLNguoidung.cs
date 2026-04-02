@@ -17,8 +17,10 @@ namespace LTUD
 
         void KetNoi()
         {
+            //conn = new SqlConnection(
+            //  "Server =FAKEDAT\\SQLEXPRESS; Database = QLTAISAN ; Integrated Security = True; TrustServerCertificate=True");
             conn = new SqlConnection(
-              "Server =FAKEDAT\\SQLEXPRESS; Database = QLTAISAN ; Integrated Security = True; TrustServerCertificate=True");
+              @"Data Source=.\SQLEXPRESS;Initial Catalog=QLTaiSan_LTUD;Integrated Security=True;TrustServerCertificate=True");
             conn.Open();
         }
         public FormQLNguoidung()
