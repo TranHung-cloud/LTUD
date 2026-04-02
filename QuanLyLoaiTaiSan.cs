@@ -19,6 +19,9 @@ namespace LTUD
         public QuanLyLoaiTaiSan()
         {
             InitializeComponent();
+            // CHỈNH SỬA: Khóa ô mã loại vì hệ thống sẽ tự sinh
+            txtMaLoai.ReadOnly = true;
+            txtMaLoai.BackColor = Color.LightGray;
         }
 
         private void ApplyButtonColors(Button btn)
@@ -39,7 +42,32 @@ namespace LTUD
             ApplyButtonColors(btnXoa);
             ApplyButtonColors(btnLamMoi);
 
+            LoadComboBoxMaPP();
             LoadDataLoaiTaiSan();
+        }
+
+        private void LoadComboBoxMaPP()
+        {
+            try
+            {
+                conn = new SqlConnection(connectionString);
+                conn.Open();
+                string query = "SELECT MAPP, TENPHUONGPHAP FROM PHUONGPHAPKHAUHAO";
+                SqlDataAdapter adapter = new SqlDataAdapter(query, conn);
+                DataTable dt = new DataTable();
+                adapter.Fill(dt);
+
+                cboMaPP.DataSource = dt;
+                cboMaPP.DisplayMember = "MAPP";
+                cboMaPP.ValueMember = "MAPP";
+
+                cboMaPP.SelectedIndex = -1;
+                conn.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tải danh sách phương pháp: " + ex.Message);
+            }
         }
 
         private void LoadDataLoaiTaiSan()
@@ -62,13 +90,42 @@ namespace LTUD
             }
         }
 
+        // --- HÀM MỚI: TỰ ĐỘNG LẤY MÃ LỚN NHẤT + 1 ---
+        private string TuSinhMaLoai()
+        {
+            string maMoi = "L01";
+            try
+            {
+                using (SqlConnection tempConn = new SqlConnection(connectionString))
+                {
+                    tempConn.Open();
+                    string query = "SELECT MALOAI FROM LOAITAISAN";
+                    SqlCommand cmd = new SqlCommand(query, tempConn);
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    int max = 0;
+                    while (reader.Read())
+                    {
+                        string s = reader["MALOAI"].ToString();
+                        if (s.StartsWith("L0"))
+                        {
+                            int num = int.Parse(s.Substring(1));
+                            if (num > max) max = num;
+                        }
+                    }
+                    maMoi = "L0" + (max + 1);
+                }
+            }
+            catch { maMoi = "L01"; }
+            return maMoi;
+        }
+
         private void dgvLoaiTaiSan_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
             {
                 DataGridViewRow row = dgvLoaiTaiSan.Rows[e.RowIndex];
                 txtMaLoai.Text = row.Cells["MALOAI"].Value.ToString();
-                txtMaPP.Text = row.Cells["MAPP"].Value.ToString();
+                cboMaPP.SelectedValue = row.Cells["MAPP"].Value.ToString();
                 txtTenLoai.Text = row.Cells["TENLOAI"].Value.ToString();
                 txtSoNam.Text = row.Cells["SONAMSUDUNG"].Value.ToString();
                 txtChuKy.Text = row.Cells["CHUKYBAOTRI"].Value.ToString();
@@ -80,7 +137,7 @@ namespace LTUD
         private void btnLamMoi_Click(object sender, EventArgs e)
         {
             txtMaLoai.Clear();
-            txtMaPP.Clear();
+            cboMaPP.SelectedIndex = -1;
             txtTenLoai.Clear();
             txtSoNam.Clear();
             txtChuKy.Clear();
@@ -90,19 +147,41 @@ namespace LTUD
 
         private void btnThem_Click(object sender, EventArgs e)
         {
+            // CHỈNH SỬA: Kiểm tra tên loại trước khi thêm
+            if (string.IsNullOrWhiteSpace(txtTenLoai.Text))
+            {
+                MessageBox.Show("Vui lòng nhập tên loại tài sản!");
+                return;
+            }
+
+            if (cboMaPP.SelectedValue == null)
+            {
+                MessageBox.Show("Vui lòng chọn Mã phương pháp!");
+                return;
+            }
+
             try
             {
+                // CHỈNH SỬA: Gọi hàm tự sinh mã
+                string maTuDong = TuSinhMaLoai();
+
                 conn.Open();
                 string query = "INSERT INTO LOAITAISAN (MALOAI, MAPP, TENLOAI, SONAMSUDUNG, CHUKYBAOTRI) VALUES (@MaLoai, @MaPP, @TenLoai, @SoNam, @ChuKy)";
                 SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@MaLoai", txtMaLoai.Text);
-                cmd.Parameters.AddWithValue("@MaPP", txtMaPP.Text);
+
+                cmd.Parameters.AddWithValue("@MaLoai", maTuDong); // Dùng mã tự sinh
+                cmd.Parameters.AddWithValue("@MaPP", cboMaPP.SelectedValue.ToString());
                 cmd.Parameters.AddWithValue("@TenLoai", txtTenLoai.Text);
-                cmd.Parameters.AddWithValue("@SoNam", int.Parse(txtSoNam.Text));
-                cmd.Parameters.AddWithValue("@ChuKy", int.Parse(txtChuKy.Text));
+
+                // CHỈNH SỬA: Dùng TryParse để tránh lỗi nhập chữ vào ô số
+                int soNam, chuKy;
+                int.TryParse(txtSoNam.Text, out soNam);
+                int.TryParse(txtChuKy.Text, out chuKy);
+                cmd.Parameters.AddWithValue("@SoNam", soNam);
+                cmd.Parameters.AddWithValue("@ChuKy", chuKy);
 
                 cmd.ExecuteNonQuery();
-                MessageBox.Show("Thêm thành công!");
+                MessageBox.Show("Thêm thành công! Mã mới là: " + maTuDong);
                 conn.Close();
                 LoadDataLoaiTaiSan();
                 btnLamMoi_Click(sender, e);
@@ -110,22 +189,32 @@ namespace LTUD
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi thêm dữ liệu: " + ex.Message);
-                conn.Close();
+                if (conn.State == ConnectionState.Open) conn.Close();
             }
         }
 
         private void btnSua_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(txtMaLoai.Text))
+            {
+                MessageBox.Show("Vui lòng chọn loại tài sản cần sửa!");
+                return;
+            }
+
             try
             {
                 conn.Open();
                 string query = "UPDATE LOAITAISAN SET MAPP = @MaPP, TENLOAI = @TenLoai, SONAMSUDUNG = @SoNam, CHUKYBAOTRI = @ChuKy WHERE MALOAI = @MaLoai";
                 SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@MaLoai", txtMaLoai.Text);
-                cmd.Parameters.AddWithValue("@MaPP", txtMaPP.Text);
+                cmd.Parameters.AddWithValue("@MaPP", cboMaPP.SelectedValue.ToString());
                 cmd.Parameters.AddWithValue("@TenLoai", txtTenLoai.Text);
-                cmd.Parameters.AddWithValue("@SoNam", int.Parse(txtSoNam.Text));
-                cmd.Parameters.AddWithValue("@ChuKy", int.Parse(txtChuKy.Text));
+
+                int soNam, chuKy;
+                int.TryParse(txtSoNam.Text, out soNam);
+                int.TryParse(txtChuKy.Text, out chuKy);
+                cmd.Parameters.AddWithValue("@SoNam", soNam);
+                cmd.Parameters.AddWithValue("@ChuKy", chuKy);
 
                 cmd.ExecuteNonQuery();
                 MessageBox.Show("Sửa thành công!");
@@ -136,12 +225,14 @@ namespace LTUD
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi sửa dữ liệu: " + ex.Message);
-                conn.Close();
+                if (conn.State == ConnectionState.Open) conn.Close();
             }
         }
 
         private void btnXoa_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(txtMaLoai.Text)) return;
+
             DialogResult dialogResult = MessageBox.Show("Bạn có chắc chắn muốn xóa loại tài sản này?", "Xác nhận", MessageBoxButtons.YesNo);
             if (dialogResult == DialogResult.Yes)
             {
@@ -160,8 +251,8 @@ namespace LTUD
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Lỗi xóa dữ liệu (Có thể do đang có Tài sản thuộc Loại này): " + ex.Message);
-                    conn.Close();
+                    MessageBox.Show("Lỗi xóa: Có thể loại này đang được dùng cho một tài sản khác!");
+                    if (conn.State == ConnectionState.Open) conn.Close();
                 }
             }
         }

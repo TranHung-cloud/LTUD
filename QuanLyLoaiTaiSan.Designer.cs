@@ -36,7 +36,6 @@
             this.txtMaLoai = new System.Windows.Forms.TextBox();
             this.txtTenLoai = new System.Windows.Forms.TextBox();
             this.txtSoNam = new System.Windows.Forms.TextBox();
-            this.txtMaPP = new System.Windows.Forms.TextBox();
             this.txtChuKy = new System.Windows.Forms.TextBox();
             this.btnThem = new System.Windows.Forms.Button();
             this.btnSua = new System.Windows.Forms.Button();
@@ -44,6 +43,7 @@
             this.btnLamMoi = new System.Windows.Forms.Button();
             this.dgvLoaiTaiSan = new System.Windows.Forms.DataGridView();
             this.button1 = new System.Windows.Forms.Button();
+            this.cboMaPP = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvLoaiTaiSan)).BeginInit();
             this.SuspendLayout();
             // 
@@ -113,13 +113,6 @@
             this.txtSoNam.Size = new System.Drawing.Size(100, 20);
             this.txtSoNam.TabIndex = 7;
             // 
-            // txtMaPP
-            // 
-            this.txtMaPP.Location = new System.Drawing.Point(228, 155);
-            this.txtMaPP.Name = "txtMaPP";
-            this.txtMaPP.Size = new System.Drawing.Size(100, 20);
-            this.txtMaPP.TabIndex = 8;
-            // 
             // txtChuKy
             // 
             this.txtChuKy.Location = new System.Drawing.Point(513, 119);
@@ -186,15 +179,14 @@
             // dgvLoaiTaiSan
             // 
             this.dgvLoaiTaiSan.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvLoaiTaiSan.Location = new System.Drawing.Point(104, 248);
+            this.dgvLoaiTaiSan.Location = new System.Drawing.Point(57, 248);
             this.dgvLoaiTaiSan.Name = "dgvLoaiTaiSan";
-            this.dgvLoaiTaiSan.Size = new System.Drawing.Size(581, 190);
+            this.dgvLoaiTaiSan.Size = new System.Drawing.Size(684, 190);
             this.dgvLoaiTaiSan.TabIndex = 14;
             this.dgvLoaiTaiSan.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvLoaiTaiSan_CellClick);
             // 
             // button1
             // 
-            this.button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(239)))), ((int)(((byte)(231)))));
             this.button1.FlatAppearance.BorderSize = 0;
             this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button1.Font = new System.Drawing.Font("Arial", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -206,11 +198,21 @@
             this.button1.Text = "Quản Lý Loại Tài Sản";
             this.button1.UseVisualStyleBackColor = false;
             // 
+            // cboMaPP
+            // 
+            this.cboMaPP.FormattingEnabled = true;
+            this.cboMaPP.Location = new System.Drawing.Point(228, 154);
+            this.cboMaPP.Name = "cboMaPP";
+            this.cboMaPP.Size = new System.Drawing.Size(121, 21);
+            this.cboMaPP.TabIndex = 16;
+            // 
             // QuanLyLoaiTaiSan
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(154)))), ((int)(((byte)(203)))), ((int)(((byte)(208)))));
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.cboMaPP);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.dgvLoaiTaiSan);
             this.Controls.Add(this.btnLamMoi);
@@ -218,7 +220,6 @@
             this.Controls.Add(this.btnSua);
             this.Controls.Add(this.btnThem);
             this.Controls.Add(this.txtChuKy);
-            this.Controls.Add(this.txtMaPP);
             this.Controls.Add(this.txtSoNam);
             this.Controls.Add(this.txtTenLoai);
             this.Controls.Add(this.txtMaLoai);
@@ -246,7 +247,6 @@
         private System.Windows.Forms.TextBox txtMaLoai;
         private System.Windows.Forms.TextBox txtTenLoai;
         private System.Windows.Forms.TextBox txtSoNam;
-        private System.Windows.Forms.TextBox txtMaPP;
         private System.Windows.Forms.TextBox txtChuKy;
         private System.Windows.Forms.Button btnThem;
         private System.Windows.Forms.Button btnSua;
@@ -254,5 +254,6 @@
         private System.Windows.Forms.Button btnLamMoi;
         private System.Windows.Forms.DataGridView dgvLoaiTaiSan;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ComboBox cboMaPP;
     }
 }
