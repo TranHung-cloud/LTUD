@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
-using System.Data.SqlClient;
 using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Data.SqlClient;
 
 namespace LTUD
 {
@@ -60,7 +65,7 @@ namespace LTUD
             }
         }
 
-        // --- HÀM TỰ SINH MÃ PHƯƠNG PHÁP (PP1, PP2,...) ---
+        // --- HÀM TỰ SINH MÃ PHƯƠNG PHÁP
         private string TuSinhMaPP()
         {
             string maMoi = "PP01";
@@ -76,20 +81,56 @@ namespace LTUD
                     while (reader.Read())
                     {
                         string s = reader["MAPP"].ToString();
-                        // Tách phần số sau chữ 'PP'
-                        if (s.StartsWith("PP0"))
+
+                        // Chỉ kiểm tra chuỗi bắt đầu bằng "PP" và có độ dài lớn hơn 2
+                        if (s.StartsWith("PP") && s.Length > 2)
                         {
+                            // Cắt bỏ 2 ký tự đầu ("PP"), lấy phần số phía sau để ép kiểu
                             if (int.TryParse(s.Substring(2), out int num))
                             {
                                 if (num > max) max = num;
                             }
                         }
                     }
-                    maMoi = "PP0" + (max + 1);
+
+                    // max + 1 là số tiếp theo. 
+                    // .ToString("D2") sẽ định dạng: 1 -> "01", 9 -> "09", 10 -> "10", 99 -> "99"
+                    maMoi = "PP" + (max + 1).ToString("D2");
                 }
             }
-            catch { maMoi = "PP01"; }
+            catch
+            {
+                maMoi = "PP01";
+            }
             return maMoi;
+        }
+
+        // --- HÀM MỚI: KIỂM TRA XEM PHƯƠNG PHÁP NÀY ĐÃ ĐƯỢC GÁN CHO LOẠI TÀI SẢN NÀO CHƯA ---
+        private bool KiemTraPPDangSuDung(string maPP)
+        {
+            bool dangSuDung = false;
+            try
+            {
+                using (SqlConnection tempConn = new SqlConnection(connectionString))
+                {
+                    tempConn.Open();
+                    // Đếm xem có Loại tài sản nào đang dùng MAPP này không
+                    string query = "SELECT COUNT(*) FROM LOAITAISAN WHERE MAPP = @MaPP";
+                    SqlCommand cmd = new SqlCommand(query, tempConn);
+                    cmd.Parameters.AddWithValue("@MaPP", maPP);
+
+                    int count = (int)cmd.ExecuteScalar();
+                    if (count > 0)
+                    {
+                        dangSuDung = true;
+                    }
+                }
+            }
+            catch
+            {
+                // Bỏ qua lỗi kết nối
+            }
+            return dangSuDung;
         }
 
         private void dgvPhuongPhap_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -116,37 +157,41 @@ namespace LTUD
 
         private void btnThem_Click(object sender, EventArgs e)
         {
-            // Kiểm tra ràng buộc tên không được để trống
             if (string.IsNullOrWhiteSpace(txtTenPP.Text))
             {
                 MessageBox.Show("Vui lòng nhập tên phương pháp!");
                 return;
             }
 
+            // --- CHỈNH SỬA: KIỂM TRA NGƯỜI DÙNG NHẬP CHỮ VÀO Ô TỶ LỆ ---
+            float? tyLe = null; // Dùng kiểu nullable float để xử lý trường hợp cho phép rỗng
+            if (!string.IsNullOrWhiteSpace(txtTyLe.Text))
+            {
+                if (!float.TryParse(txtTyLe.Text, out float parsedTyLe) || parsedTyLe < 0)
+                {
+                    MessageBox.Show("Lỗi: 'Tỷ lệ khấu hao' phải là một số không âm (Không được nhập chữ)!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtTyLe.Focus();
+                    return;
+                }
+                tyLe = parsedTyLe;
+            }
+
             try
             {
-                // Gọi hàm tự sinh mã trước khi thêm
                 string maPPAuto = TuSinhMaPP();
 
                 conn.Open();
                 string query = "INSERT INTO PHUONGPHAPKHAUHAO (MAPP, TENPHUONGPHAP, TYLE) VALUES (@MaPP, @TenPP, @TyLe)";
                 SqlCommand cmd = new SqlCommand(query, conn);
 
-                cmd.Parameters.AddWithValue("@MaPP", maPPAuto); // Sử dụng mã tự sinh
+                cmd.Parameters.AddWithValue("@MaPP", maPPAuto);
                 cmd.Parameters.AddWithValue("@TenPP", txtTenPP.Text.Trim());
 
-                // Xử lý tỷ lệ khấu hao (cho phép null hoặc số thực)
-                if (string.IsNullOrWhiteSpace(txtTyLe.Text))
-                {
-                    cmd.Parameters.AddWithValue("@TyLe", DBNull.Value);
-                }
+                // Gán tỷ lệ hoặc gán NULL nếu để trống
+                if (tyLe.HasValue)
+                    cmd.Parameters.AddWithValue("@TyLe", tyLe.Value);
                 else
-                {
-                    if (float.TryParse(txtTyLe.Text, out float tyLe))
-                        cmd.Parameters.AddWithValue("@TyLe", tyLe);
-                    else
-                        cmd.Parameters.AddWithValue("@TyLe", DBNull.Value);
-                }
+                    cmd.Parameters.AddWithValue("@TyLe", DBNull.Value);
 
                 cmd.ExecuteNonQuery();
                 MessageBox.Show("Thêm thành công! Mã phương pháp mới là: " + maPPAuto);
@@ -169,6 +214,26 @@ namespace LTUD
                 return;
             }
 
+            // --- CHỈNH SỬA: RÀNG BUỘC KHÔNG CHO SỬA NẾU ĐÃ ĐƯỢC ÁP DỤNG ---
+            if (KiemTraPPDangSuDung(txtMaPP.Text))
+            {
+                MessageBox.Show("Từ chối: Không thể sửa Phương pháp này vì nó đã được áp dụng cho các Loại tài sản trong hệ thống!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // --- CHỈNH SỬA: KIỂM TRA NGƯỜI DÙNG NHẬP CHỮ VÀO Ô TỶ LỆ ---
+            float? tyLe = null;
+            if (!string.IsNullOrWhiteSpace(txtTyLe.Text))
+            {
+                if (!float.TryParse(txtTyLe.Text, out float parsedTyLe) || parsedTyLe < 0)
+                {
+                    MessageBox.Show("Lỗi: 'Tỷ lệ khấu hao' phải là một số không âm (Không được nhập chữ)!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtTyLe.Focus();
+                    return;
+                }
+                tyLe = parsedTyLe;
+            }
+
             try
             {
                 conn.Open();
@@ -177,16 +242,11 @@ namespace LTUD
                 cmd.Parameters.AddWithValue("@MaPP", txtMaPP.Text);
                 cmd.Parameters.AddWithValue("@TenPP", txtTenPP.Text.Trim());
 
-                if (string.IsNullOrWhiteSpace(txtTyLe.Text))
-                    cmd.Parameters.AddWithValue("@TyLe", DBNull.Value);
+                // Gán tỷ lệ hoặc gán NULL nếu để trống
+                if (tyLe.HasValue)
+                    cmd.Parameters.AddWithValue("@TyLe", tyLe.Value);
                 else
-                {
-                    float tyLe;
-                    if (float.TryParse(txtTyLe.Text, out tyLe))
-                        cmd.Parameters.AddWithValue("@TyLe", tyLe);
-                    else
-                        cmd.Parameters.AddWithValue("@TyLe", DBNull.Value);
-                }
+                    cmd.Parameters.AddWithValue("@TyLe", DBNull.Value);
 
                 cmd.ExecuteNonQuery();
                 MessageBox.Show("Sửa thành công!");
@@ -204,6 +264,13 @@ namespace LTUD
         private void btnXoa_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(txtMaPP.Text)) return;
+
+            // --- CHỈNH SỬA: RÀNG BUỘC KHÔNG CHO XÓA NẾU ĐÃ ĐƯỢC ÁP DỤNG ---
+            if (KiemTraPPDangSuDung(txtMaPP.Text))
+            {
+                MessageBox.Show("Từ chối: Không thể xóa Phương pháp này vì nó đang được liên kết với các Loại tài sản trong hệ thống!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             DialogResult dialogResult = MessageBox.Show("Bạn có chắc chắn muốn xóa phương pháp này?", "Xác nhận", MessageBoxButtons.YesNo);
             if (dialogResult == DialogResult.Yes)
@@ -223,7 +290,7 @@ namespace LTUD
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Không thể xóa do phương pháp này đang được sử dụng ở bảng LOẠI TÀI SẢN!\nLỗi chi tiết: " + ex.Message);
+                    MessageBox.Show("Không thể xóa do phương pháp này đang được sử dụng!\nLỗi chi tiết: " + ex.Message);
                     if (conn.State == ConnectionState.Open) conn.Close();
                 }
             }

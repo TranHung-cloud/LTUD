@@ -19,7 +19,6 @@ namespace LTUD
         public QuanLyLoaiTaiSan()
         {
             InitializeComponent();
-            // CHỈNH SỬA: Khóa ô mã loại vì hệ thống sẽ tự sinh
             txtMaLoai.ReadOnly = true;
             txtMaLoai.BackColor = Color.LightGray;
         }
@@ -90,7 +89,6 @@ namespace LTUD
             }
         }
 
-        // --- HÀM MỚI: TỰ ĐỘNG LẤY MÃ LỚN NHẤT + 1 ---
         private string TuSinhMaLoai()
         {
             string maMoi = "L01";
@@ -119,6 +117,34 @@ namespace LTUD
             return maMoi;
         }
 
+        // --- HÀM MỚI: KIỂM TRA XEM LOẠI TÀI SẢN ĐÃ CÓ TÀI SẢN NÀO SỬ DỤNG CHƯA ---
+        private bool KiemTraLoaiTaiSanDangSuDung(string maLoai)
+        {
+            bool dangSuDung = false;
+            try
+            {
+                using (SqlConnection tempConn = new SqlConnection(connectionString))
+                {
+                    tempConn.Open();
+                    // Đếm xem có bao nhiêu tài sản đang dùng MALOAI này
+                    string query = "SELECT COUNT(*) FROM TAISAN WHERE MALOAI = @MaLoai";
+                    SqlCommand cmd = new SqlCommand(query, tempConn);
+                    cmd.Parameters.AddWithValue("@MaLoai", maLoai);
+
+                    int count = (int)cmd.ExecuteScalar();
+                    if (count > 0)
+                    {
+                        dangSuDung = true;
+                    }
+                }
+            }
+            catch
+            {
+                // Bỏ qua lỗi kết nối
+            }
+            return dangSuDung;
+        }
+
         private void dgvLoaiTaiSan_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
@@ -142,12 +168,11 @@ namespace LTUD
             txtSoNam.Clear();
             txtChuKy.Clear();
             txtMaLoai.Enabled = true;
-            txtMaLoai.Focus();
+            txtTenLoai.Focus();
         }
 
         private void btnThem_Click(object sender, EventArgs e)
         {
-            // CHỈNH SỬA: Kiểm tra tên loại trước khi thêm
             if (string.IsNullOrWhiteSpace(txtTenLoai.Text))
             {
                 MessageBox.Show("Vui lòng nhập tên loại tài sản!");
@@ -160,23 +185,32 @@ namespace LTUD
                 return;
             }
 
+            // --- CHỈNH SỬA: RÀNG BUỘC PHẢI NHẬP SỐ ---
+            if (!int.TryParse(txtSoNam.Text, out int soNam) || soNam <= 0)
+            {
+                MessageBox.Show("Lỗi: 'Số năm sử dụng' phải là một số nguyên lớn hơn 0 (Không được nhập chữ)!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtSoNam.Focus();
+                return;
+            }
+
+            if (!int.TryParse(txtChuKy.Text, out int chuKy) || chuKy <= 0)
+            {
+                MessageBox.Show("Lỗi: 'Chu kỳ bảo trì' phải là một số nguyên lớn hơn 0 (Không được nhập chữ)!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtChuKy.Focus();
+                return;
+            }
+
             try
             {
-                // CHỈNH SỬA: Gọi hàm tự sinh mã
                 string maTuDong = TuSinhMaLoai();
 
                 conn.Open();
                 string query = "INSERT INTO LOAITAISAN (MALOAI, MAPP, TENLOAI, SONAMSUDUNG, CHUKYBAOTRI) VALUES (@MaLoai, @MaPP, @TenLoai, @SoNam, @ChuKy)";
                 SqlCommand cmd = new SqlCommand(query, conn);
 
-                cmd.Parameters.AddWithValue("@MaLoai", maTuDong); // Dùng mã tự sinh
+                cmd.Parameters.AddWithValue("@MaLoai", maTuDong);
                 cmd.Parameters.AddWithValue("@MaPP", cboMaPP.SelectedValue.ToString());
                 cmd.Parameters.AddWithValue("@TenLoai", txtTenLoai.Text);
-
-                // CHỈNH SỬA: Dùng TryParse để tránh lỗi nhập chữ vào ô số
-                int soNam, chuKy;
-                int.TryParse(txtSoNam.Text, out soNam);
-                int.TryParse(txtChuKy.Text, out chuKy);
                 cmd.Parameters.AddWithValue("@SoNam", soNam);
                 cmd.Parameters.AddWithValue("@ChuKy", chuKy);
 
@@ -201,6 +235,28 @@ namespace LTUD
                 return;
             }
 
+            // --- CHỈNH SỬA: RÀNG BUỘC KHÔNG CHO SỬA NẾU ĐÃ ĐƯỢC ÁP DỤNG CHO TÀI SẢN ---
+            if (KiemTraLoaiTaiSanDangSuDung(txtMaLoai.Text))
+            {
+                MessageBox.Show("Từ chối: Không thể sửa Loại tài sản này vì nó đã được cấp cho các tài sản đang sử dụng trong hệ thống!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // --- CHỈNH SỬA: RÀNG BUỘC PHẢI NHẬP SỐ ---
+            if (!int.TryParse(txtSoNam.Text, out int soNam) || soNam <= 0)
+            {
+                MessageBox.Show("Lỗi: 'Số năm sử dụng' phải là một số nguyên lớn hơn 0 (Không được nhập chữ)!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtSoNam.Focus();
+                return;
+            }
+
+            if (!int.TryParse(txtChuKy.Text, out int chuKy) || chuKy <= 0)
+            {
+                MessageBox.Show("Lỗi: 'Chu kỳ bảo trì' phải là một số nguyên lớn hơn 0 (Không được nhập chữ)!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtChuKy.Focus();
+                return;
+            }
+
             try
             {
                 conn.Open();
@@ -209,10 +265,6 @@ namespace LTUD
                 cmd.Parameters.AddWithValue("@MaLoai", txtMaLoai.Text);
                 cmd.Parameters.AddWithValue("@MaPP", cboMaPP.SelectedValue.ToString());
                 cmd.Parameters.AddWithValue("@TenLoai", txtTenLoai.Text);
-
-                int soNam, chuKy;
-                int.TryParse(txtSoNam.Text, out soNam);
-                int.TryParse(txtChuKy.Text, out chuKy);
                 cmd.Parameters.AddWithValue("@SoNam", soNam);
                 cmd.Parameters.AddWithValue("@ChuKy", chuKy);
 
@@ -233,6 +285,13 @@ namespace LTUD
         {
             if (string.IsNullOrEmpty(txtMaLoai.Text)) return;
 
+            // --- CHỈNH SỬA: RÀNG BUỘC KHÔNG CHO XÓA NẾU ĐÃ ĐƯỢC ÁP DỤNG CHO TÀI SẢN ---
+            if (KiemTraLoaiTaiSanDangSuDung(txtMaLoai.Text))
+            {
+                MessageBox.Show("Từ chối: Không thể xóa Loại tài sản này vì nó đang được liên kết với các tài sản trong hệ thống!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             DialogResult dialogResult = MessageBox.Show("Bạn có chắc chắn muốn xóa loại tài sản này?", "Xác nhận", MessageBoxButtons.YesNo);
             if (dialogResult == DialogResult.Yes)
             {
@@ -251,7 +310,7 @@ namespace LTUD
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Lỗi xóa: Có thể loại này đang được dùng cho một tài sản khác!");
+                    MessageBox.Show("Lỗi xóa: " + ex.Message);
                     if (conn.State == ConnectionState.Open) conn.Close();
                 }
             }
