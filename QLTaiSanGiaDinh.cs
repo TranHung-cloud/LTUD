@@ -18,15 +18,15 @@ namespace LTUD
     {
         string connectString = @"Server =.\SQLEXPRESS; Database = QLTaiSan_LTUD; Integrated Security = True; TrustServerCertificate=True";
         SqlConnection conn;
-        string maNguoiDung = "ND01";
+        string maNguoiDung = "";
         string maGiaDinh = "";
         byte[] imageData = null;
 
-        //public QLTaiSanGiaDinh(string ma)
-        public QLTaiSanGiaDinh()
+        public QLTaiSanGiaDinh(string ma)
+        //public QLTaiSanGiaDinh()
         {
             InitializeComponent();
-            //maNguoiDung = ma;
+            maNguoiDung = ma;
         }
         private void QLTaiSanGiaDinh_Load(object sender, EventArgs e)
         {
