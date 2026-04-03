@@ -42,26 +42,35 @@ namespace LTUD
         }
         private void đăngXuấtToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //FormThongtincanhan f = new FormThongtincanhan(maNguoiDung);
-            //f.Show();
+            FormDangNhap f = new FormDangNhap();
+            this.Hide();
+            f.Show();
         }
         private void btnTaisancanhan_Click(object sender, EventArgs e)
         {
-            //FormThongtincanhan f = new FormThongtincanhan(maNguoiDung);
-            //f.Show();
+            FormQLTS_CN f = new FormQLTS_CN(maNguoiDung);
+            //this.Hide();
+            f.Show();
         }
 
         private void btnTaisangiadinh_Click(object sender, EventArgs e)
         {
-
+            QLTaiSanGiaDinh f = new QLTaiSanGiaDinh(maNguoiDung);
+            //this.Hide();
+            f.Show();
         }
 
         private void btnThongtinbaotri_Click(object sender, EventArgs e)
         {
             FormQLBaoTri frm = new FormQLBaoTri(maGiaDinh, maNguoiDung, vaiTro);
+            //this.Hide();
             frm.Show();
         }
 
-        
+        private void btnQuanlygiadinh_Click(object sender, EventArgs e)
+        {
+            FormQLGiaDinh f = new FormQLGiaDinh(maGiaDinh, vaiTro);
+            f.Show();
+        }
     }
 }
