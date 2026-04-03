@@ -37,6 +37,7 @@ namespace LTUD
             this.btnTaisancanhan = new System.Windows.Forms.Button();
             this.btnTaisangiadinh = new System.Windows.Forms.Button();
             this.btnThongtinbaotri = new System.Windows.Forms.Button();
+            this.btnQuanlygiadinh = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -50,7 +51,7 @@ namespace LTUD
             this.đăngXuấtToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(784, 37);
+            this.menuStrip1.Size = new System.Drawing.Size(784, 49);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -60,7 +61,7 @@ namespace LTUD
             this.thôngTinGiaĐìnhToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(239)))), ((int)(((byte)(231)))));
             this.thôngTinGiaĐìnhToolStripMenuItem.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.thôngTinGiaĐìnhToolStripMenuItem.Name = "thôngTinGiaĐìnhToolStripMenuItem";
-            this.thôngTinGiaĐìnhToolStripMenuItem.Size = new System.Drawing.Size(163, 33);
+            this.thôngTinGiaĐìnhToolStripMenuItem.Size = new System.Drawing.Size(126, 45);
             this.thôngTinGiaĐìnhToolStripMenuItem.Text = "Thông tin gia đình";
             this.thôngTinGiaĐìnhToolStripMenuItem.Click += new System.EventHandler(this.thôngTinGiaĐìnhToolStripMenuItem_Click);
             // 
@@ -70,7 +71,7 @@ namespace LTUD
             this.thôngTinCáNhânToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(239)))), ((int)(((byte)(231)))));
             this.thôngTinCáNhânToolStripMenuItem.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.thôngTinCáNhânToolStripMenuItem.Name = "thôngTinCáNhânToolStripMenuItem";
-            this.thôngTinCáNhânToolStripMenuItem.Size = new System.Drawing.Size(164, 33);
+            this.thôngTinCáNhânToolStripMenuItem.Size = new System.Drawing.Size(126, 45);
             this.thôngTinCáNhânToolStripMenuItem.Text = "Thông tin cá nhân";
             this.thôngTinCáNhânToolStripMenuItem.Click += new System.EventHandler(this.thôngTinCáNhânToolStripMenuItem_Click);
             // 
@@ -82,7 +83,7 @@ namespace LTUD
             this.đăngXuấtToolStripMenuItem.Margin = new System.Windows.Forms.Padding(0, 0, 4, 0);
             this.đăngXuấtToolStripMenuItem.Name = "đăngXuấtToolStripMenuItem";
             this.đăngXuấtToolStripMenuItem.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.đăngXuấtToolStripMenuItem.Size = new System.Drawing.Size(105, 33);
+            this.đăngXuấtToolStripMenuItem.Size = new System.Drawing.Size(86, 45);
             this.đăngXuấtToolStripMenuItem.Text = "Đăng xuất";
             this.đăngXuấtToolStripMenuItem.Click += new System.EventHandler(this.đăngXuấtToolStripMenuItem_Click);
             // 
@@ -92,7 +93,7 @@ namespace LTUD
             this.btnTaisancanhan.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(239)))), ((int)(((byte)(231)))));
             this.btnTaisancanhan.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnTaisancanhan.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(106)))), ((int)(((byte)(113)))));
-            this.btnTaisancanhan.Location = new System.Drawing.Point(240, 131);
+            this.btnTaisancanhan.Location = new System.Drawing.Point(257, 113);
             this.btnTaisancanhan.Name = "btnTaisancanhan";
             this.btnTaisancanhan.Size = new System.Drawing.Size(285, 62);
             this.btnTaisancanhan.TabIndex = 1;
@@ -106,7 +107,7 @@ namespace LTUD
             this.btnTaisangiadinh.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(239)))), ((int)(((byte)(231)))));
             this.btnTaisangiadinh.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnTaisangiadinh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(106)))), ((int)(((byte)(113)))));
-            this.btnTaisangiadinh.Location = new System.Drawing.Point(240, 217);
+            this.btnTaisangiadinh.Location = new System.Drawing.Point(257, 249);
             this.btnTaisangiadinh.Name = "btnTaisangiadinh";
             this.btnTaisangiadinh.Size = new System.Drawing.Size(285, 62);
             this.btnTaisangiadinh.TabIndex = 2;
@@ -120,7 +121,7 @@ namespace LTUD
             this.btnThongtinbaotri.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(239)))), ((int)(((byte)(231)))));
             this.btnThongtinbaotri.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnThongtinbaotri.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(106)))), ((int)(((byte)(113)))));
-            this.btnThongtinbaotri.Location = new System.Drawing.Point(240, 307);
+            this.btnThongtinbaotri.Location = new System.Drawing.Point(257, 181);
             this.btnThongtinbaotri.Name = "btnThongtinbaotri";
             this.btnThongtinbaotri.Size = new System.Drawing.Size(285, 62);
             this.btnThongtinbaotri.TabIndex = 3;
@@ -128,12 +129,27 @@ namespace LTUD
             this.btnThongtinbaotri.UseVisualStyleBackColor = false;
             this.btnThongtinbaotri.Click += new System.EventHandler(this.btnThongtinbaotri_Click);
             // 
+            // btnQuanlygiadinh
+            // 
+            this.btnQuanlygiadinh.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.btnQuanlygiadinh.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(239)))), ((int)(((byte)(231)))));
+            this.btnQuanlygiadinh.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnQuanlygiadinh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(106)))), ((int)(((byte)(113)))));
+            this.btnQuanlygiadinh.Location = new System.Drawing.Point(257, 317);
+            this.btnQuanlygiadinh.Name = "btnQuanlygiadinh";
+            this.btnQuanlygiadinh.Size = new System.Drawing.Size(285, 62);
+            this.btnQuanlygiadinh.TabIndex = 4;
+            this.btnQuanlygiadinh.Text = "Quản lý gia đình";
+            this.btnQuanlygiadinh.UseVisualStyleBackColor = false;
+            this.btnQuanlygiadinh.Click += new System.EventHandler(this.btnQuanlygiadinh_Click);
+            // 
             // FormTrangchu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(154)))), ((int)(((byte)(203)))), ((int)(((byte)(208)))));
             this.ClientSize = new System.Drawing.Size(784, 490);
+            this.Controls.Add(this.btnQuanlygiadinh);
             this.Controls.Add(this.btnThongtinbaotri);
             this.Controls.Add(this.btnTaisangiadinh);
             this.Controls.Add(this.btnTaisancanhan);
@@ -158,5 +174,6 @@ namespace LTUD
         private System.Windows.Forms.Button btnTaisancanhan;
         private System.Windows.Forms.Button btnTaisangiadinh;
         private System.Windows.Forms.Button btnThongtinbaotri;
+        private System.Windows.Forms.Button btnQuanlygiadinh;
     }
 }

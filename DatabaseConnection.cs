@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -6,7 +6,7 @@ namespace LTUD
 {
     public class DatabaseConnection
     {
-        private static string connectionString = @"Server =.\SQLEXPRESS; Database = QLTaiSan_LTUD ; Integrated Security = True; TrustServerCertificate=True";
+        private static string connectionString = @"Server =.\SQLEXPRESS; Database = QLTaiSan_LTUD; Integrated Security = True; TrustServerCertificate=True";
 
         public static SqlConnection GetConnection()
         {

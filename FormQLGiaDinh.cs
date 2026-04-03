@@ -87,47 +87,111 @@ namespace LTUD
         {
             if (string.IsNullOrEmpty(currentMaGD)) { MessageBox.Show("Vui lòng chọn 1 gia đình trước!"); return; }
 
-            Form f = new Form { Width = 500, Height = 200, Text = "Thêm Thành Viên Vào Gia Đình", StartPosition = FormStartPosition.CenterParent, BackColor = Color.FromArgb(154, 203, 208) };
+            Form f = new Form { Width = 500, Height = 320, Text = "Thêm Thành Viên Vào Gia Đình", StartPosition = FormStartPosition.CenterParent, BackColor = Color.FromArgb(154, 203, 208) };
             f.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
 
-            Label lblUser = new Label { Left = 20, Top = 33, Text = "Người dùng chưa có GĐ:", AutoSize = true };
-            ComboBox cbUser = new ComboBox { Left = 180, Top = 30, Width = 230, DropDownStyle = ComboBoxStyle.DropDownList };
+            Label lblInput = new Label { Left = 20, Top = 23, Text = "Nhập Mã ND:", AutoSize = true };
+            TextBox txtSearch = new TextBox { Left = 130, Top = 20, Width = 200 };
 
-            DataTable dtUsers = DatabaseConnection.GetData("SELECT MANGUOIDUNG, HOTEN + ' (' + MANGUOIDUNG + ')' AS TENDAYDU FROM NGUOIDUNG WHERE MAGIADINH IS NULL OR LTRIM(RTRIM(MAGIADINH)) = ''");
+            Label lblResMa = new Label { Left = 20, Top = 70, Text = "Mã ND: ", AutoSize = true, Font = new Font("Segoe UI", 9.75F, FontStyle.Bold) };
+            Label lblResTen = new Label { Left = 20, Top = 100, Text = "Họ Tên: ", AutoSize = true, Font = new Font("Segoe UI", 9.75F, FontStyle.Bold) };
+            Label lblResNgay = new Label { Left = 20, Top = 130, Text = "Ngày Sinh: ", AutoSize = true, Font = new Font("Segoe UI", 9.75F, FontStyle.Bold) };
+            Label lblResStatus = new Label { Left = 20, Top = 160, Text = "", AutoSize = true, Font = new Font("Segoe UI", 9.75F, FontStyle.Italic), ForeColor = Color.Red };
 
-            if (dtUsers.Rows.Count == 0)
+            Button btnSave = new Button { Left = 200, Top = 210, Width = 100, Text = "Thêm vào", BackColor = Color.FromArgb(242, 239, 231), ForeColor = Color.FromArgb(0, 106, 113), FlatStyle = FlatStyle.Flat, Enabled = false };
+
+            string targetMaND = "";
+
+            txtSearch.TextChanged += (s, ev) =>
             {
-                MessageBox.Show("Không có người dùng nào chưa có gia đình để thêm!");
-                return;
-            }
+                string searchMa = txtSearch.Text.Trim();
+                if (string.IsNullOrEmpty(searchMa))
+                {
+                    lblResMa.Text = "Mã ND: ";
+                    lblResTen.Text = "Họ Tên: ";
+                    lblResNgay.Text = "Ngày Sinh: ";
+                    lblResStatus.Text = "";
+                    btnSave.Enabled = false;
+                    targetMaND = "";
+                    return;
+                }
 
-            cbUser.DataSource = dtUsers;
-            cbUser.DisplayMember = "TENDAYDU";
-            cbUser.ValueMember = "MANGUOIDUNG";
-
-            Button btnSave = new Button { Left = 200, Top = 100, Width = 100, Text = "Thêm vào", BackColor = Color.FromArgb(242, 239, 231), ForeColor = Color.FromArgb(0, 106, 113), FlatStyle = FlatStyle.Flat };
-
-            btnSave.Click += (s, ev) =>
-            {
                 try
                 {
-                    if (cbUser.SelectedValue != null)
+                    DataTable dt = DatabaseConnection.GetData($"SELECT MANGUOIDUNG, HOTEN, NGAYSINH, MAGIADINH, MAVAITRO FROM NGUOIDUNG WHERE MANGUOIDUNG = '{searchMa}'");
+                    if (dt.Rows.Count > 0)
                     {
-                        string maUser = cbUser.SelectedValue.ToString();
-                        DatabaseConnection.ExecuteQuery($"UPDATE NGUOIDUNG SET MAGIADINH = '{currentMaGD}' WHERE MANGUOIDUNG = '{maUser}'");
-                        MessageBox.Show("Thêm thành viên vào gia đình thành công!");
-                        f.DialogResult = DialogResult.OK;
-                        f.Close();
+                        string maND = dt.Rows[0]["MANGUOIDUNG"].ToString();
+                        string hoTen = dt.Rows[0]["HOTEN"].ToString();
+                        string ngaySinh = "";
+                        if (dt.Rows[0]["NGAYSINH"] != DBNull.Value)
+                        {
+                            ngaySinh = Convert.ToDateTime(dt.Rows[0]["NGAYSINH"]).ToString("dd/MM/yyyy");
+                        }
+                        string maGD = dt.Rows[0]["MAGIADINH"].ToString().Trim();
+                        string vaiTro = dt.Rows[0]["MAVAITRO"].ToString().Trim();
+
+                        lblResMa.Text = "Mã ND: " + maND;
+                        lblResTen.Text = "Họ Tên: " + hoTen;
+                        lblResNgay.Text = "Ngày Sinh: " + ngaySinh;
+
+                        if (vaiTro == "VT01")
+                        {
+                            lblResStatus.Text = "Không thể thêm Quản trị viên vào gia đình!";
+                            lblResStatus.ForeColor = Color.Red;
+                            btnSave.Enabled = false;
+                        }
+                        else if (!string.IsNullOrEmpty(maGD))
+                        {
+                            lblResStatus.Text = "Người dùng này đã thuộc một gia đình!";
+                            lblResStatus.ForeColor = Color.Red;
+                            btnSave.Enabled = false;
+                        }
+                        else
+                        {
+                            lblResStatus.Text = "Hợp lệ. Có thể thêm vào gia đình.";
+                            lblResStatus.ForeColor = Color.Green;
+                            targetMaND = maND;
+                            btnSave.Enabled = true;
+                        }
+                    }
+                    else
+                    {
+                        lblResMa.Text = "Mã ND: ";
+                        lblResTen.Text = "Họ Tên: ";
+                        lblResNgay.Text = "Ngày Sinh: ";
+                        lblResStatus.Text = "Không tìm thấy người dùng!";
+                        lblResStatus.ForeColor = Color.Red;
+                        btnSave.Enabled = false;
+                        targetMaND = "";
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Lỗi: " + ex.Message);
+                    lblResStatus.Text = "Lỗi: " + ex.Message;
                 }
             };
-            
-            f.Controls.AddRange(new Control[] { lblUser, cbUser, btnSave });
-            
+
+            btnSave.Click += (s, ev) =>
+            {
+                if (!string.IsNullOrEmpty(targetMaND))
+                {
+                    try
+                    {
+                        DatabaseConnection.ExecuteQuery($"UPDATE NGUOIDUNG SET MAGIADINH = '{currentMaGD}', MAVAITRO = 'VT02' WHERE MANGUOIDUNG = '{targetMaND}'");
+                        MessageBox.Show("Thêm thành viên vào gia đình thành công!");
+                        f.DialogResult = DialogResult.OK;
+                        f.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Lỗi: " + ex.Message);
+                    }
+                }
+            };
+
+            f.Controls.AddRange(new Control[] { lblInput, txtSearch, lblResMa, lblResTen, lblResNgay, lblResStatus, btnSave });
+
             if (f.ShowDialog() == DialogResult.OK)
             {
                 LoadThanhVien(currentMaGD);
@@ -167,69 +231,90 @@ namespace LTUD
 
         private void ShowThanhVienDialog(bool isAdd, string maND, string maVT, string hoTen, DateTime ngaySinh, string trangThai)
         {
-            Form f = new Form { Width = 500, Height = 400, Text = isAdd ? "Thêm TV" : "Sửa TV", StartPosition = FormStartPosition.CenterParent, BackColor = Color.FromArgb(154, 203, 208) };
+            Form f = new Form { Width = 600, Height = 530, Text = "Sửa Thành Viên", StartPosition = FormStartPosition.CenterParent, BackColor = Color.FromArgb(154, 203, 208) };
             f.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
-            Label lblMa = new Label { Left = 20, Top = 23, Text = "Mã ND:", AutoSize = true }; TextBox txtMa = new TextBox { Left = 120, Top = 20, Width = 330, Text = maND, Enabled = isAdd };
-            Label lblTen = new Label { Left = 20, Top = 63, Text = "Họ Tên:", AutoSize = true }; TextBox txtTen = new TextBox { Left = 120, Top = 60, Width = 330, Text = hoTen };
-            Label lblNgay = new Label { Left = 20, Top = 103, Text = "Ngày Sinh:", AutoSize = true }; DateTimePicker dtpNgay = new DateTimePicker { Left = 120, Top = 100, Width = 330, Format = DateTimePickerFormat.Short, Value = ngaySinh };
-            Label lblVT = new Label { Left = 20, Top = 143, Text = "Vai Trò:", AutoSize = true }; ComboBox cbVT = new ComboBox { Left = 120, Top = 140, Width = 330, DropDownStyle = ComboBoxStyle.DropDownList };
-            Label lblTT = new Label { Left = 20, Top = 183, Text = "Trạng Thái:", AutoSize = true }; ComboBox cbTT = new ComboBox { Left = 120, Top = 180, Width = 330, DropDownStyle = ComboBoxStyle.DropDownList };
-            cbTT.Items.AddRange(new string[] { "Hoạt động", "Vô hiệu hóa" });
-            cbTT.SelectedItem = string.IsNullOrEmpty(trangThai) ? "Hoạt động" : trangThai;
-            Label lblTS = new Label { Left = 20, Top = 223, Text = "Quản lý TS:", AutoSize = true }; ComboBox cbTS = new ComboBox { Left = 120, Top = 220, Width = 330, DropDownStyle = ComboBoxStyle.DropDownList };
+            Label lblMa = new Label { Left = 20, Top = 23, Text = "Mã ND:", AutoSize = true }; TextBox txtMa = new TextBox { Left = 120, Top = 20, Width = 430, Text = maND, Enabled = false };
+            Label lblTen = new Label { Left = 20, Top = 63, Text = "Họ Tên:", AutoSize = true }; TextBox txtTen = new TextBox { Left = 120, Top = 60, Width = 430, Text = hoTen };
+            Label lblNgay = new Label { Left = 20, Top = 103, Text = "Ngày Sinh:", AutoSize = true }; DateTimePicker dtpNgay = new DateTimePicker { Left = 120, Top = 100, Width = 430, Format = DateTimePickerFormat.Short, Value = ngaySinh };
+            Label lblVT = new Label { Left = 20, Top = 143, Text = "Vai Trò:", AutoSize = true }; ComboBox cbVT = new ComboBox { Left = 120, Top = 140, Width = 430, DropDownStyle = ComboBoxStyle.DropDownList };
 
-            Button btnSave = new Button { Left = 200, Top = 280, Width = 100, Text = "Lưu", BackColor = Color.FromArgb(242, 239, 231), ForeColor = Color.FromArgb(0, 106, 113), FlatStyle = FlatStyle.Flat };
+            Label lblGrid = new Label { Left = 20, Top = 193, Text = "Tài sản Gia đình đang đại diện:", AutoSize = true, Font = new Font("Segoe UI", 9.75F, FontStyle.Bold) };
+            DataGridView dgvTS = new DataGridView { Left = 20, Top = 220, Width = 530, Height = 180, AllowUserToAddRows = false, ReadOnly = true, AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill, RowHeadersVisible = false, AllowUserToDeleteRows = false, SelectionMode = DataGridViewSelectionMode.FullRowSelect, BackgroundColor = Color.White };
 
-            // Load Combobox VaiTro
-            cbVT.DataSource = DatabaseConnection.GetData("SELECT MAVAITRO, TENVAITRO FROM VAITRO");
+            Button btnSave = new Button { Left = 250, Top = 430, Width = 100, Text = "Lưu", BackColor = Color.FromArgb(242, 239, 231), ForeColor = Color.FromArgb(0, 106, 113), FlatStyle = FlatStyle.Flat };
+
+            // Load Combobox VaiTro: Chỉ lấy Chủ gia đình và Người dùng
+            cbVT.DataSource = DatabaseConnection.GetData("SELECT MAVAITRO, TENVAITRO FROM VAITRO WHERE MAVAITRO IN ('VT02', 'VT03')");
             cbVT.DisplayMember = "TENVAITRO"; cbVT.ValueMember = "MAVAITRO"; cbVT.SelectedValue = maVT;
 
-            // Load Combobox Tài Sản
-            DataTable dtTS = DatabaseConnection.GetData($"SELECT MATAISAN, TENTAISAN + ' (' + MATAISAN + ')' AS TENDAYDU FROM TAISAN WHERE (MANGUOIDUNG IS NULL OR LTRIM(RTRIM(MANGUOIDUNG)) = '' OR MANGUOIDUNG = '{maND}') AND PHAMVI = N'Gia đình'");
-            DataRow rowNone = dtTS.NewRow();
-            rowNone["MATAISAN"] = "NONE";
-            rowNone["TENDAYDU"] = "<Không quản lý tài sản nào>";
-            dtTS.Rows.InsertAt(rowNone, 0);
-            cbTS.DataSource = dtTS;
-            cbTS.DisplayMember = "TENDAYDU";
-            cbTS.ValueMember = "MATAISAN";
+            Action loadGridAndCombo = () => {
+                dgvTS.DataSource = DatabaseConnection.GetData($"SELECT MATAISAN AS [Mã TS], TENTAISAN AS [Tên Tài Sản] FROM TAISAN WHERE MANGUOIDUNG = '{maND}' AND PHAMVI = N'Gia đình'");
+                if (!dgvTS.Columns.Contains("Cập nhật"))
+                {
+                    DataGridViewButtonColumn btnCol = new DataGridViewButtonColumn();
+                    btnCol.Name = "Cập nhật";
+                    btnCol.HeaderText = "";
+                    btnCol.Text = "Cập nhật";
+                    btnCol.UseColumnTextForButtonValue = true;
+                    btnCol.Width = 80;
+                    dgvTS.Columns.Add(btnCol);
+                }
+            };
+            loadGridAndCombo();
 
-            if (!isAdd)
-            {
-                DataTable dtCurrentAsset = DatabaseConnection.GetData($"SELECT MATAISAN FROM TAISAN WHERE MANGUOIDUNG = '{maND}'");
-                if (dtCurrentAsset.Rows.Count > 0)
-                    cbTS.SelectedValue = dtCurrentAsset.Rows[0]["MATAISAN"];
-                else
-                    cbTS.SelectedValue = "NONE";
-            }
+            dgvTS.CellClick += (senderGrid, eGrid) => {
+                if (eGrid.RowIndex >= 0 && dgvTS.Columns[eGrid.ColumnIndex].Name == "Cập nhật")
+                {
+                    string maTS = dgvTS.Rows[eGrid.RowIndex].Cells["Mã TS"].Value.ToString();
+
+                    Form fSelect = new Form { Width = 400, Height = 200, Text = "Chọn thành viên đại diện mới", StartPosition = FormStartPosition.CenterParent, BackColor = Color.FromArgb(154, 203, 208) };
+                    Label lblUser = new Label { Left = 20, Top = 33, Text = "Chọn thành viên:", AutoSize = true };
+                    ComboBox cbAssign = new ComboBox { Left = 150, Top = 30, Width = 200, DropDownStyle = ComboBoxStyle.DropDownList };
+
+                    DataTable dtMembers = DatabaseConnection.GetData($"SELECT MANGUOIDUNG, HOTEN + ' (' + MANGUOIDUNG + ')' AS TENDAYDU FROM NGUOIDUNG WHERE MAGIADINH = '{currentMaGD}' AND MANGUOIDUNG != '{maND}'");
+                    if (dtMembers.Rows.Count == 0)
+                    {
+                        MessageBox.Show("Gia đình không có thành viên nào khác để nhận đại diện tài sản này!");
+                        return;
+                    }
+
+                    cbAssign.DataSource = dtMembers;
+                    cbAssign.DisplayMember = "TENDAYDU";
+                    cbAssign.ValueMember = "MANGUOIDUNG";
+
+                    Button btnConfirm = new Button { Left = 150, Top = 100, Width = 100, Text = "Xác nhận", BackColor = Color.FromArgb(242, 239, 231), FlatStyle = FlatStyle.Flat };
+                    btnConfirm.Click += (sC, eC) => {
+                        if (cbAssign.SelectedValue != null)
+                        {
+                            string newOwner = cbAssign.SelectedValue.ToString();
+                            DatabaseConnection.ExecuteQuery($"UPDATE TAISAN SET MANGUOIDUNG = '{newOwner}' WHERE MATAISAN = '{maTS}'");
+                            MessageBox.Show("Cập nhật đại diện tài sản thành công!");
+                            fSelect.DialogResult = DialogResult.OK;
+                            fSelect.Close();
+                            loadGridAndCombo();
+                        }
+                    };
+
+                    fSelect.Controls.AddRange(new Control[] { lblUser, cbAssign, btnConfirm });
+                    fSelect.ShowDialog();
+                }
+            };
 
             btnSave.Click += (s, ev) =>
             {
                 try
                 {
                     string vt = cbVT.SelectedValue.ToString();
-                    string tt = cbTT.SelectedItem.ToString();
                     string dateStr = dtpNgay.Value.ToString("yyyy-MM-dd");
-                    string ts = cbTS.SelectedValue.ToString();
 
-                    if (isAdd)
-                        DatabaseConnection.ExecuteQuery($"INSERT INTO NGUOIDUNG VALUES ('{txtMa.Text}', '{vt}', '{currentMaGD}', N'{txtTen.Text}', '{dateStr}', '123', N'{tt}')");
-                    else
-                        DatabaseConnection.ExecuteQuery($"UPDATE NGUOIDUNG SET MAVAITRO='{vt}', HOTEN=N'{txtTen.Text}', NGAYSINH='{dateStr}', TRANGTHAI=N'{tt}' WHERE MANGUOIDUNG='{txtMa.Text}'");
-
-                    // Cập nhật người quản lý tài sản
-                    DatabaseConnection.ExecuteQuery($"UPDATE TAISAN SET MANGUOIDUNG = NULL WHERE MANGUOIDUNG = '{txtMa.Text}'");
-                    if (ts != "NONE")
-                    {
-                        DatabaseConnection.ExecuteQuery($"UPDATE TAISAN SET MANGUOIDUNG = '{txtMa.Text}' WHERE MATAISAN = '{ts}'");
-                    }
+                    DatabaseConnection.ExecuteQuery($"UPDATE NGUOIDUNG SET MAVAITRO='{vt}', HOTEN=N'{txtTen.Text}', NGAYSINH='{dateStr}' WHERE MANGUOIDUNG='{txtMa.Text}'");
 
                     f.DialogResult = DialogResult.OK;
                     f.Close();
                 }
                 catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
             };
-            f.Controls.AddRange(new Control[] { lblMa, txtMa, lblTen, txtTen, lblNgay, dtpNgay, lblVT, cbVT, lblTT, cbTT, lblTS, cbTS, btnSave });
+            f.Controls.AddRange(new Control[] { lblMa, txtMa, lblTen, txtTen, lblNgay, dtpNgay, lblVT, cbVT, lblGrid, dgvTS, btnSave });
             if (f.ShowDialog() == DialogResult.OK) LoadThanhVien(currentMaGD);
         }
     }

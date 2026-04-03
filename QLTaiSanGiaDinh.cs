@@ -16,13 +16,14 @@ namespace LTUD
 {
     public partial class QLTaiSanGiaDinh : Form
     {
-        string connectString = @"Server =.\SQLEXPRESS; Database = QLTaiSan_LTUD ; Integrated Security = True; TrustServerCertificate=True";
+        string connectString = @"Server =.\SQLEXPRESS; Database = QLTaiSan_LTUD; Integrated Security = True; TrustServerCertificate=True";
         SqlConnection conn;
         string maNguoiDung = "";
         string maGiaDinh = "";
         byte[] imageData = null;
 
         public QLTaiSanGiaDinh(string ma)
+        //public QLTaiSanGiaDinh()
         {
             InitializeComponent();
             maNguoiDung = ma;
@@ -212,7 +213,6 @@ namespace LTUD
                 var p = new SqlParameter("@ha", SqlDbType.NVarChar, -1) { Value = (object)base64 ?? DBNull.Value };
                 cmd.Parameters.Add(p);
                 cmd.ExecuteNonQuery();
-                depreciationUpdate(nextId);
                 MessageBox.Show("Thêm tài sản thành công");
                 loadData();
             }
@@ -257,8 +257,6 @@ namespace LTUD
 
         private void dgvTSGD_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (dgvTSGD.Rows[e.RowIndex].IsNewRow) return;
-
             if (e.RowIndex >= 0)
             {
                 DataGridViewRow row = dgvTSGD.Rows[e.RowIndex];
@@ -269,11 +267,13 @@ namespace LTUD
                 NguyenGia.Text = row.Cells["NGUYENGIA"].Value?.ToString();
 
                 var cellVal = row.Cells["HINHANH"].Value;
+                // default clear
                 imageData = null;
                 pic.Image = null;
 
                 if (cellVal == DBNull.Value || cellVal == null)
                 {
+                    // no image stored
                 }
                 else if (cellVal is byte[])
                 {
@@ -527,7 +527,6 @@ namespace LTUD
                 }
 
                 updateCmd.ExecuteNonQuery();
-                depreciationUpdate(MaTaiSan.Text);
                 MessageBox.Show("Cập nhật tài sản thành công");
                 loadData();
             }
@@ -540,106 +539,5 @@ namespace LTUD
                 conn.Close();
             }
         }
-
-        private void button9_Click(object sender, EventArgs e)
-        {
-            FormTrangchu f = new FormTrangchu(maNguoiDung);
-            this.Hide();
-            f.FormClosed += (s, args) => this.Close();
-            f.Show();
-        }
-
-        void depreciationUpdate(string mts)
-        {
-            connectData();
-
-            string sql = @"
-            SELECT TOP 1 
-                ts.NGAYMUA, 
-                ts.NGUYENGIA,
-                ISNULL(ckh.NAMKHAUHAO, YEAR(ts.NGAYMUA)) as MaxYear,
-                ISNULL(ckh.GIATRICONLAISAUKHAUHAO, ts.NGUYENGIA) as CurrentRemain,
-                (ts.NGUYENGIA / lts.SONAMSUDUNG) as YearlyDepreciation
-            FROM TAISAN ts 
-            JOIN LOAITAISAN lts ON ts.MALOAI = lts.MALOAI
-            LEFT JOIN COKHAUHAO ckh ON TRIM(ts.MATAISAN) = TRIM(ckh.MATAISAN) 
-            WHERE TRIM(ts.MATAISAN) = @ma
-            ORDER BY ckh.NAMKHAUHAO DESC";
-
-            SqlCommand cmd = new SqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@ma", mts.Trim());
-
-            DateTime purchaseDate = DateTime.Now;
-            int lastYear = 0;
-            double currentRemainValue = 0;
-            double depreciationValue = 0;
-            bool hasData = false;
-
-            using (SqlDataReader reader = cmd.ExecuteReader())
-            {
-                if (reader.Read())
-                {
-                    purchaseDate = Convert.ToDateTime(reader["NGAYMUA"]);
-                    lastYear = Convert.ToInt32(reader["MaxYear"]);
-                    currentRemainValue = Convert.ToDouble(reader["CurrentRemain"]);
-                    depreciationValue = Convert.ToDouble(reader["YearlyDepreciation"]);
-                    hasData = true;
-                }
-            }
-
-            if (!hasData) return;
-
-            DateTime today = DateTime.Now.Date;
-
-            while (true)
-            {
-                int nextYear = lastYear + 1;
-
-                DateTime nextDueDate = new DateTime(nextYear, purchaseDate.Month, purchaseDate.Day);
-
-                if (nextYear <= today.Year && today >= nextDueDate)
-                {
-                    string checkSql = "SELECT COUNT(*) FROM THOIDIEMKHAUHAO WHERE NAMKHAUHAO = @nam";
-                    SqlCommand checkCmd = new SqlCommand(checkSql, conn);
-                    checkCmd.Parameters.AddWithValue("@nam", nextYear);
-                    if ((int)checkCmd.ExecuteScalar() == 0)
-                    {
-                        new SqlCommand("INSERT INTO THOIDIEMKHAUHAO (NAMKHAUHAO) VALUES (" + nextYear + ")", conn).ExecuteNonQuery();
-                    }
-
-                    currentRemainValue -= depreciationValue;
-                    if (currentRemainValue < 0) currentRemainValue = 0;
-
-                    if (currentRemainValue == 0)
-                    {
-                        string updateSql = @"UPDATE TAISAN SET TINHTRANG = N'Hết khấu hao' WHERE MATAISAN = @ma";
-                        using (SqlCommand updateCmd = new SqlCommand(updateSql, conn))
-                        {
-                            updateCmd.Parameters.AddWithValue("@ma", mts.Trim());
-                            updateCmd.ExecuteNonQuery();
-                        }
-                    }
-
-                    string insSql = @"INSERT INTO COKHAUHAO (MATAISAN, NAMKHAUHAO, GIATRIKHAUHAO, GIATRICONLAISAUKHAUHAO) 
-                             VALUES (@ma, @dy, @dv, @rv)";
-                    using (SqlCommand insCmd = new SqlCommand(insSql, conn))
-                    {
-                        insCmd.Parameters.AddWithValue("@ma", mts.Trim());
-                        insCmd.Parameters.AddWithValue("@dy", nextYear);
-                        insCmd.Parameters.AddWithValue("@dv", depreciationValue);
-                        insCmd.Parameters.AddWithValue("@rv", currentRemainValue);
-                        insCmd.ExecuteNonQuery();
-                    }
-
-                    lastYear = nextYear;
-                    if (currentRemainValue <= 0) break;
-                }
-                else
-                {
-                    break;
-                }
-            }
-        }
-
     }
 }
