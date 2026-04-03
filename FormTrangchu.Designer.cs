@@ -51,7 +51,7 @@ namespace LTUD
             this.đăngXuấtToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(784, 37);
+            this.menuStrip1.Size = new System.Drawing.Size(784, 49);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -61,7 +61,7 @@ namespace LTUD
             this.thôngTinGiaĐìnhToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(239)))), ((int)(((byte)(231)))));
             this.thôngTinGiaĐìnhToolStripMenuItem.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.thôngTinGiaĐìnhToolStripMenuItem.Name = "thôngTinGiaĐìnhToolStripMenuItem";
-            this.thôngTinGiaĐìnhToolStripMenuItem.Size = new System.Drawing.Size(163, 33);
+            this.thôngTinGiaĐìnhToolStripMenuItem.Size = new System.Drawing.Size(126, 45);
             this.thôngTinGiaĐìnhToolStripMenuItem.Text = "Thông tin gia đình";
             this.thôngTinGiaĐìnhToolStripMenuItem.Click += new System.EventHandler(this.thôngTinGiaĐìnhToolStripMenuItem_Click);
             // 
@@ -71,7 +71,7 @@ namespace LTUD
             this.thôngTinCáNhânToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(239)))), ((int)(((byte)(231)))));
             this.thôngTinCáNhânToolStripMenuItem.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.thôngTinCáNhânToolStripMenuItem.Name = "thôngTinCáNhânToolStripMenuItem";
-            this.thôngTinCáNhânToolStripMenuItem.Size = new System.Drawing.Size(164, 33);
+            this.thôngTinCáNhânToolStripMenuItem.Size = new System.Drawing.Size(126, 45);
             this.thôngTinCáNhânToolStripMenuItem.Text = "Thông tin cá nhân";
             this.thôngTinCáNhânToolStripMenuItem.Click += new System.EventHandler(this.thôngTinCáNhânToolStripMenuItem_Click);
             // 
@@ -83,7 +83,7 @@ namespace LTUD
             this.đăngXuấtToolStripMenuItem.Margin = new System.Windows.Forms.Padding(0, 0, 4, 0);
             this.đăngXuấtToolStripMenuItem.Name = "đăngXuấtToolStripMenuItem";
             this.đăngXuấtToolStripMenuItem.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.đăngXuấtToolStripMenuItem.Size = new System.Drawing.Size(105, 33);
+            this.đăngXuấtToolStripMenuItem.Size = new System.Drawing.Size(86, 45);
             this.đăngXuấtToolStripMenuItem.Text = "Đăng xuất";
             this.đăngXuấtToolStripMenuItem.Click += new System.EventHandler(this.đăngXuấtToolStripMenuItem_Click);
             // 
