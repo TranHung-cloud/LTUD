@@ -13,19 +13,19 @@ namespace LTUD
 {
     public partial class QuanLyThongTinCaNhanCuaNguoiDung : Form
     {
-        // 1. Chuỗi kết nối đã cập nhật tên Database chính xác của Nhi
-        string connectionString = @"Server=(localdb)\MSSQLLocalDB; Database=QLTaiSanCaNhan; Integrated Security=True;";
+        // 1. Chuỗi kết nối đã cập nhật tên Database chính xác của Nhi
+        string connectionString = @"Server=(localdb)\MSSQLLocalDB; Database=QLTaiSanCaNhan; Integrated Security=True;";
 
-        // 2. ID người dùng đăng nhập (Mặc định ND01)
-        string loggedInUserId = "ND01";
+        // 2. ID người dùng đăng nhập (Mặc định ND01)
+        string loggedInUserId = "ND01";
 
         public QuanLyThongTinCaNhanCuaNguoiDung()
         {
             InitializeComponent();
         }
 
-        // 3. Hàm định dạng giao diện (Màu sắc pastel theo yêu cầu)
-        private void ApplyButtonColors(Button btn)
+        // 3. Hàm định dạng giao diện (Màu sắc pastel theo yêu cầu)
+        private void ApplyButtonColors(Button btn)
         {
             btn.BackColor = ColorTranslator.FromHtml("#F2EFE7");
             btn.ForeColor = ColorTranslator.FromHtml("#006A71");
@@ -34,23 +34,23 @@ namespace LTUD
             btn.Font = new Font(btn.Font, FontStyle.Bold);
         }
 
-        // 4. Sự kiện Load Form
-        private void QuanLyThongTinCaNhanCuaNguoiDung_Load(object sender, EventArgs e)
+        // 4. Sự kiện Load Form
+        private void QuanLyThongTinCaNhanCuaNguoiDung_Load(object sender, EventArgs e)
         {
             this.BackColor = ColorTranslator.FromHtml("#9ACBD0");
 
             ApplyButtonColors(btnLuuThongTin);
             ApplyButtonColors(btnDoiMatKhau);
 
-            // Ràng buộc 1: Không cho phép chọn ngày sinh từ hôm nay trở đi ngay trên lịch
-            dtpNgaySinh.MaxDate = DateTime.Now.AddDays(-1);
+            // Ràng buộc 1: Không cho phép chọn ngày sinh từ hôm nay trở đi ngay trên lịch
+            dtpNgaySinh.MaxDate = DateTime.Now.AddDays(-1);
 
-            // Tải dữ liệu ban đầu
-            LoadThongTinCaNhan();
+            // Tải dữ liệu ban đầu
+            LoadThongTinCaNhan();
         }
 
-        // 5. Hàm tải dữ liệu từ SQL (Bỏ Email và SĐT)
-        private void LoadThongTinCaNhan()
+        // 5. Hàm tải dữ liệu từ SQL (Bỏ Email và SĐT)
+        private void LoadThongTinCaNhan()
         {
             try
             {
@@ -58,12 +58,12 @@ namespace LTUD
                 {
                     conn.Open();
                     string query = @"
-                        SELECT N.MANGUOIDUNG, N.HOTEN, N.NGAYSINH, N.TRANGTHAI,
-                               V.TENVAITRO, G.TENGIADINH
-                        FROM NGUOIDUNG N
-                        LEFT JOIN VAITRO V ON N.MAVAITRO = V.MAVAITRO
-                        LEFT JOIN GIADINH G ON N.MAGIADINH = G.MAGIADINH
-                        WHERE N.MANGUOIDUNG = @MaND";
+                        SELECT N.MANGUOIDUNG, N.HOTEN, N.NGAYSINH, N.TRANGTHAI,
+                               V.TENVAITRO, G.TENGIADINH
+                        FROM NGUOIDUNG N
+                        LEFT JOIN VAITRO V ON N.MAVAITRO = V.MAVAITRO
+                        LEFT JOIN GIADINH G ON N.MAGIADINH = G.MAGIADINH
+                        WHERE N.MANGUOIDUNG = @MaND";
 
                     SqlCommand cmd = new SqlCommand(query, conn);
                     cmd.Parameters.AddWithValue("@MaND", loggedInUserId);
@@ -89,18 +89,18 @@ namespace LTUD
             }
         }
 
-        // 6. SỰ KIỆN LƯU THÔNG TIN (Có ràng buộc ngày sinh)
-        private void btnLuuThongTin_Click(object sender, EventArgs e)
+        // 6. SỰ KIỆN LƯU THÔNG TIN (Có ràng buộc ngày sinh)
+        private void btnLuuThongTin_Click(object sender, EventArgs e)
         {
-            // Kiểm tra họ tên trống
-            if (string.IsNullOrWhiteSpace(txtHoTen.Text))
+            // Kiểm tra họ tên trống
+            if (string.IsNullOrWhiteSpace(txtHoTen.Text))
             {
                 MessageBox.Show("Họ tên không được để trống!");
                 return;
             }
 
-            // Ràng buộc 2: Kiểm tra logic ngày sinh một lần nữa trước khi lưu
-            if (dtpNgaySinh.Value.Date >= DateTime.Now.Date)
+            // Ràng buộc 2: Kiểm tra logic ngày sinh một lần nữa trước khi lưu
+            if (dtpNgaySinh.Value.Date >= DateTime.Now.Date)
             {
                 MessageBox.Show("Ngày sinh phải là một ngày trong quá khứ!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -111,10 +111,10 @@ namespace LTUD
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
-                    string query = @"UPDATE NGUOIDUNG 
-                                   SET HOTEN = @HoTen, 
-                                       NGAYSINH = @NgaySinh 
-                                   WHERE MANGUOIDUNG = @MaND";
+                    string query = @"UPDATE NGUOIDUNG 
+                                   SET HOTEN = @HoTen, 
+                                       NGAYSINH = @NgaySinh 
+                                   WHERE MANGUOIDUNG = @MaND";
 
                     SqlCommand cmd = new SqlCommand(query, conn);
                     cmd.Parameters.AddWithValue("@HoTen", txtHoTen.Text.Trim());
@@ -139,12 +139,12 @@ namespace LTUD
             }
         }
 
-        // 7. SỰ KIỆN ĐỔI MẬT KHẨU
-        private void btnDoiMatKhau_Click(object sender, EventArgs e)
+        // 7. SỰ KIỆN ĐỔI MẬT KHẨU
+        private void btnDoiMatKhau_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtMatKhauCu.Text) ||
-                string.IsNullOrWhiteSpace(txtMatKhauMoi.Text) ||
-                string.IsNullOrWhiteSpace(txtXacNhanMK.Text))
+              string.IsNullOrWhiteSpace(txtMatKhauMoi.Text) ||
+              string.IsNullOrWhiteSpace(txtXacNhanMK.Text))
             {
                 MessageBox.Show("Vui lòng nhập đầy đủ các thông tin mật khẩu!");
                 return;
@@ -180,8 +180,8 @@ namespace LTUD
                     updateCmd.ExecuteNonQuery();
                     MessageBox.Show("Đổi mật khẩu thành công!");
 
-                    // Xóa trắng các ô nhập mật khẩu sau khi đổi xong
-                    txtMatKhauCu.Clear();
+                    // Xóa trắng các ô nhập mật khẩu sau khi đổi xong
+                    txtMatKhauCu.Clear();
                     txtMatKhauMoi.Clear();
                     txtXacNhanMK.Clear();
                 }
