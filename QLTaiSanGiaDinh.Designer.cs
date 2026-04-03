@@ -56,6 +56,7 @@
             this.directoryEntry1 = new System.DirectoryServices.DirectoryEntry();
             this.button7 = new System.Windows.Forms.Button();
             this.MaTaiSan = new System.Windows.Forms.TextBox();
+            this.button9 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTSGD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic)).BeginInit();
@@ -255,9 +256,9 @@
             this.button3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(239)))), ((int)(((byte)(231)))));
             this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(106)))), ((int)(((byte)(113)))));
-            this.button3.Location = new System.Drawing.Point(569, 264);
+            this.button3.Location = new System.Drawing.Point(559, 264);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.Size = new System.Drawing.Size(87, 23);
             this.button3.TabIndex = 22;
             this.button3.Text = "Xem Chi Tiết";
             this.button3.UseVisualStyleBackColor = false;
@@ -316,12 +317,26 @@
             this.MaTaiSan.TabIndex = 24;
             this.MaTaiSan.Visible = false;
             // 
+            // button9
+            // 
+            this.button9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(239)))), ((int)(((byte)(231)))));
+            this.button9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(106)))), ((int)(((byte)(113)))));
+            this.button9.Location = new System.Drawing.Point(694, 12);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(94, 27);
+            this.button9.TabIndex = 26;
+            this.button9.Text = "Về Trang Chủ";
+            this.button9.UseVisualStyleBackColor = false;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
+            // 
             // QLTaiSanGiaDinh
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(154)))), ((int)(((byte)(203)))), ((int)(((byte)(208)))));
             this.ClientSize = new System.Drawing.Size(826, 549);
+            this.Controls.Add(this.button9);
             this.Controls.Add(this.MaTaiSan);
             this.Controls.Add(this.button7);
             this.Controls.Add(this.button6);
@@ -388,5 +403,6 @@
         private System.DirectoryServices.DirectoryEntry directoryEntry1;
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.TextBox MaTaiSan;
+        private System.Windows.Forms.Button button9;
     }
 }
