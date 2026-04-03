@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
@@ -9,15 +9,27 @@ namespace LTUD
     {
         private string currentMaGD = "";
         private string adminMaGD = "";
+        private string vaiTroAdmin = "";
 
-        public FormQLGiaDinh(string maGD = "GD01")
+        public FormQLGiaDinh(string maGD = "GD01", string vaiTro = "VT03")
         {
             InitializeComponent();
             adminMaGD = maGD;
-            // Đăng ký sự kiện nút bấm
-            btnThemTV.Click += BtnThemTV_Click;
-            btnSuaTV.Click += BtnSuaTV_Click;
-            btnXoaTV.Click += BtnXoaTV_Click;
+            vaiTroAdmin = vaiTro;
+
+            // Nếu là người dùng thường, không cho phép thêm sửa xóa thành viên
+            if (vaiTroAdmin != "VT03")
+            {
+                btnThemTV.Visible = false;
+                btnSuaTV.Visible = false;
+                btnXoaTV.Visible = false;
+            }
+            else
+            {
+                btnThemTV.Click += BtnThemTV_Click;
+                btnSuaTV.Click += BtnSuaTV_Click;
+                btnXoaTV.Click += BtnXoaTV_Click;
+            }
         }
 
         private void FormQLGiaDinh_Load(object sender, EventArgs e)
@@ -73,8 +85,53 @@ namespace LTUD
         // ======================= CRUD THÀNH VIÊN =======================
         private void BtnThemTV_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(currentMaGD)) { MessageBox.Show("Chọn 1 gia đình trước!"); return; }
-            ShowThanhVienDialog(true, "", "VT02", "", DateTime.Now, "Hoạt động");
+            if (string.IsNullOrEmpty(currentMaGD)) { MessageBox.Show("Vui lòng chọn 1 gia đình trước!"); return; }
+
+            Form f = new Form { Width = 500, Height = 200, Text = "Thêm Thành Viên Vào Gia Đình", StartPosition = FormStartPosition.CenterParent, BackColor = Color.FromArgb(154, 203, 208) };
+            f.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
+
+            Label lblUser = new Label { Left = 20, Top = 33, Text = "Người dùng chưa có GĐ:", AutoSize = true };
+            ComboBox cbUser = new ComboBox { Left = 180, Top = 30, Width = 230, DropDownStyle = ComboBoxStyle.DropDownList };
+
+            DataTable dtUsers = DatabaseConnection.GetData("SELECT MANGUOIDUNG, HOTEN + ' (' + MANGUOIDUNG + ')' AS TENDAYDU FROM NGUOIDUNG WHERE MAGIADINH IS NULL OR LTRIM(RTRIM(MAGIADINH)) = ''");
+
+            if (dtUsers.Rows.Count == 0)
+            {
+                MessageBox.Show("Không có người dùng nào chưa có gia đình để thêm!");
+                return;
+            }
+
+            cbUser.DataSource = dtUsers;
+            cbUser.DisplayMember = "TENDAYDU";
+            cbUser.ValueMember = "MANGUOIDUNG";
+
+            Button btnSave = new Button { Left = 200, Top = 100, Width = 100, Text = "Thêm vào", BackColor = Color.FromArgb(242, 239, 231), ForeColor = Color.FromArgb(0, 106, 113), FlatStyle = FlatStyle.Flat };
+
+            btnSave.Click += (s, ev) =>
+            {
+                try
+                {
+                    if (cbUser.SelectedValue != null)
+                    {
+                        string maUser = cbUser.SelectedValue.ToString();
+                        DatabaseConnection.ExecuteQuery($"UPDATE NGUOIDUNG SET MAGIADINH = '{currentMaGD}' WHERE MANGUOIDUNG = '{maUser}'");
+                        MessageBox.Show("Thêm thành viên vào gia đình thành công!");
+                        f.DialogResult = DialogResult.OK;
+                        f.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi: " + ex.Message);
+                }
+            };
+            
+            f.Controls.AddRange(new Control[] { lblUser, cbUser, btnSave });
+            
+            if (f.ShowDialog() == DialogResult.OK)
+            {
+                LoadThanhVien(currentMaGD);
+            }
         }
 
         private void BtnSuaTV_Click(object sender, EventArgs e)
@@ -111,6 +168,7 @@ namespace LTUD
         private void ShowThanhVienDialog(bool isAdd, string maND, string maVT, string hoTen, DateTime ngaySinh, string trangThai)
         {
             Form f = new Form { Width = 500, Height = 400, Text = isAdd ? "Thêm TV" : "Sửa TV", StartPosition = FormStartPosition.CenterParent, BackColor = Color.FromArgb(154, 203, 208) };
+            f.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
             Label lblMa = new Label { Left = 20, Top = 23, Text = "Mã ND:", AutoSize = true }; TextBox txtMa = new TextBox { Left = 120, Top = 20, Width = 330, Text = maND, Enabled = isAdd };
             Label lblTen = new Label { Left = 20, Top = 63, Text = "Họ Tên:", AutoSize = true }; TextBox txtTen = new TextBox { Left = 120, Top = 60, Width = 330, Text = hoTen };
             Label lblNgay = new Label { Left = 20, Top = 103, Text = "Ngày Sinh:", AutoSize = true }; DateTimePicker dtpNgay = new DateTimePicker { Left = 120, Top = 100, Width = 330, Format = DateTimePickerFormat.Short, Value = ngaySinh };

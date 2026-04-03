@@ -24,7 +24,7 @@ namespace LTUD
         private void FormQLTS_CN_Load(object sender, EventArgs e)
         {
             InitDesign();
-            string connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=QLTaiSan_LTUD;Integrated Security=True;TrustServerCertificate=True";
+            string connectionString = @"Server =TuanThong\SQLEXPRESS; Database = QLTS_LTUD ; Integrated Security = True; TrustServerCertificate=True";
             conn = new SqlConnection(connectionString);
             UpdateDepreciation();
             ShowData();

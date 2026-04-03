@@ -18,6 +18,7 @@ namespace LTUD
             this.lblTitle = new System.Windows.Forms.Label();
             this.btnQLGiaDinh = new System.Windows.Forms.Button();
             this.btnQLBaoTri = new System.Windows.Forms.Button();
+            this.btnDangXuat = new System.Windows.Forms.Button();
             this.pnlDashboard = new System.Windows.Forms.Panel();
             this.lblTongGiaDinh = new System.Windows.Forms.Label();
             this.lblBaoTri = new System.Windows.Forms.Label();
@@ -79,6 +80,20 @@ namespace LTUD
             this.pnlDashboard.Size = new System.Drawing.Size(700, 250);
             this.pnlDashboard.TabIndex = 3;
             // 
+            // btnDangXuat
+            // 
+            this.btnDangXuat.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(239)))), ((int)(((byte)(231)))));
+            this.btnDangXuat.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDangXuat.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.btnDangXuat.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(106)))), ((int)(((byte)(113)))));
+            this.btnDangXuat.Location = new System.Drawing.Point(550, 400);
+            this.btnDangXuat.Name = "btnDangXuat";
+            this.btnDangXuat.Size = new System.Drawing.Size(200, 50);
+            this.btnDangXuat.TabIndex = 5;
+            this.btnDangXuat.Text = "Đăng xuất";
+            this.btnDangXuat.UseVisualStyleBackColor = false;
+            this.btnDangXuat.Click += new System.EventHandler(this.btnDangXuat_Click);
+            // 
             // lblTongGiaDinh
             // 
             this.lblTongGiaDinh.AutoSize = true;
@@ -129,6 +144,7 @@ namespace LTUD
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(154)))), ((int)(((byte)(203)))), ((int)(((byte)(208)))));
             this.ClientSize = new System.Drawing.Size(800, 500);
+            this.Controls.Add(this.btnDangXuat);
             this.Controls.Add(this.pnlDashboard);
             this.Controls.Add(this.btnQLBaoTri);
             this.Controls.Add(this.btnQLGiaDinh);
@@ -146,6 +162,7 @@ namespace LTUD
         private System.Windows.Forms.Label lblTitle;
         private System.Windows.Forms.Button btnQLGiaDinh;
         private System.Windows.Forms.Button btnQLBaoTri;
+        private System.Windows.Forms.Button btnDangXuat;
         private System.Windows.Forms.Panel pnlDashboard;
         private System.Windows.Forms.Label lblTongTaiSan;
         private System.Windows.Forms.Label lblBaoTri;

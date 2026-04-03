@@ -82,13 +82,12 @@ namespace LTUD
                     return;
                 }
 
-                // Default Vai tro (VT02 - User or set as needed) and Gia Dinh (Empty or default GD01)
+                // Mặc định VT02 (Người dùng bình thường), chưa có gia đình (MAGIADINH = NULL)
                 string defaultVT = "VT02"; 
-                string defaultGD = "GD01"; 
                 string status = "Hoạt động";
                 string dateStr = ngaySinh.ToString("yyyy-MM-dd");
 
-                DatabaseConnection.ExecuteQuery($"INSERT INTO NGUOIDUNG VALUES ('{maND}', '{defaultVT}', '{defaultGD}', N'{hoTen}', '{dateStr}', '{matKhau}', N'{status}')");
+                DatabaseConnection.ExecuteQuery($"INSERT INTO NGUOIDUNG (MANGUOIDUNG, MAVAITRO, MAGIADINH, HOTEN, NGAYSINH, MATKHAU, TRANGTHAI) VALUES ('{maND}', '{defaultVT}', NULL, N'{hoTen}', '{dateStr}', '{matKhau}', N'{status}')");
                 
                 MessageBox.Show("Đăng ký thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.Close();

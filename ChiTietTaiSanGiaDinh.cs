@@ -16,7 +16,7 @@ namespace LTUD
 {
     public partial class ChiTietTaiSanGiaDinh : Form
     {
-        string connectString = @"Server=Hung\SQLEXPRESS; Database=QLTaiSan_LTUD; Integrated Security=True";
+        string connectString = @"Server =TuanThong\SQLEXPRESS; Database = QLTS_LTUD ; Integrated Security = True; TrustServerCertificate=True";
         SqlConnection conn;
         String maTaiSan = "";
         public ChiTietTaiSanGiaDinh(String ma)

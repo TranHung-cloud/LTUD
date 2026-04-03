@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Data;
@@ -35,16 +35,26 @@ namespace LTUD
                     string vaiTro = dt.Rows[0]["MAVAITRO"].ToString().Trim();
                     string maGD = dt.Rows[0]["MAGIADINH"].ToString().Trim();
 
-                    if (vaiTro == "VT03") // Chủ gia đình
+                    if (vaiTro == "VT01")
                     {
-                        FormAdminHome fAdmin = new FormAdminHome(maGD);
+                        TrangChuAdmin fAdminAll = new TrangChuAdmin();
+                        this.Hide();
+                        fAdminAll.FormClosed += (s, args) => this.Close();
+                        fAdminAll.Show();
+                    }
+                    else if (vaiTro == "VT03" || string.IsNullOrEmpty(maGD)) // Chủ gia đình hoặc chưa có gia đình
+                    {
+                        FormAdminHome fAdmin = new FormAdminHome(maGD, maND, vaiTro);
                         this.Hide();
                         fAdmin.FormClosed += (s, args) => this.Close();
                         fAdmin.Show();
                     }
                     else
                     {
-                        MessageBox.Show("Chức năng cho vai trò này đang được phát triển!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        FormTrangchu fTrangChu = new FormTrangchu(maND, maGD, vaiTro);
+                        this.Hide();
+                        fTrangChu.FormClosed += (s, args) => this.Close();
+                        fTrangChu.Show();
                     }
                 }
                 else
@@ -84,3 +94,5 @@ namespace LTUD
         }
     }
 }
+
+

@@ -8,11 +8,15 @@ namespace LTUD
     public partial class FormQLBaoTri : Form
     {
         private string adminMaGD = "";
+        private string maNguoiDung = "";
+        private string vaiTro = "";
 
-        public FormQLBaoTri(string maGD = "GD01")
+        public FormQLBaoTri(string maGD = "GD01", string mND = "", string vTro = "")
         {
             InitializeComponent();
             adminMaGD = maGD;
+            maNguoiDung = mND;
+            vaiTro = vTro;
             btnThem.Click += BtnThem_Click;
             btnSua.Click += BtnSua_Click;
             btnXoa.Click += BtnXoa_Click;
@@ -128,10 +132,70 @@ namespace LTUD
             ShowBaoTriDialog(true, "", "", DateTime.Now, "Đang xử lý", "0", "");
         }
 
+        private bool KiemTraQuyenThucHien(string maLich = "", string maTS_Input = "")
+        {
+            if (vaiTro == "VT01") return true; // Cấp quyền cao nhất (nếu có)
+
+            string phamVi = "";
+            string nguoiSoHuu = "";
+
+            if (!string.IsNullOrEmpty(maLich))
+            {
+                DataTable dt = DatabaseConnection.GetData($"SELECT T.PHAMVI, T.MANGUOIDUNG FROM THONGTINBAOTRI B JOIN TAISAN T ON B.MATAISAN = T.MATAISAN WHERE B.MALICH = '{maLich}'");
+                if (dt.Rows.Count > 0)
+                {
+                    phamVi = dt.Rows[0]["PHAMVI"].ToString().Trim();
+                    nguoiSoHuu = dt.Rows[0]["MANGUOIDUNG"].ToString().Trim();
+                }
+            }
+            else if (!string.IsNullOrEmpty(maTS_Input))
+            {
+                DataTable dt = DatabaseConnection.GetData($"SELECT PHAMVI, MANGUOIDUNG FROM TAISAN WHERE MATAISAN = '{maTS_Input}'");
+                if (dt.Rows.Count > 0)
+                {
+                    phamVi = dt.Rows[0]["PHAMVI"].ToString().Trim();
+                    nguoiSoHuu = dt.Rows[0]["MANGUOIDUNG"].ToString().Trim();
+                }
+            }
+            else
+            {
+                return true; // Thêm mới, quyền sẽ check ở lúc chọn tài sản (loadTS)
+            }
+
+            if (vaiTro == "VT03") // Chủ gia đình
+            {
+                bool isGiaDinh = phamVi.Equals("Gia đình", StringComparison.OrdinalIgnoreCase);
+                bool isCaNhan = phamVi.Equals("Cá nhân", StringComparison.OrdinalIgnoreCase);
+                bool isOwner = nguoiSoHuu.Equals(maNguoiDung, StringComparison.OrdinalIgnoreCase);
+
+                if (!isGiaDinh && !(isCaNhan && isOwner))
+                {
+                    MessageBox.Show("Chủ gia đình có quyền sửa lịch bảo trì tài sản Gia đình hoặc tài sản Cá nhân của chính mình!", "Quyền truy cập", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return false;
+                }
+            }
+            else if (vaiTro == "VT02") // Người dùng
+            {
+                bool isCaNhan = phamVi.Equals("Cá nhân", StringComparison.OrdinalIgnoreCase);
+                bool isOwner = nguoiSoHuu.Equals(maNguoiDung, StringComparison.OrdinalIgnoreCase);
+
+                if (!isCaNhan || !isOwner)
+                {
+                    MessageBox.Show("Người dùng chỉ có quyền sửa/xóa các lịch bảo trì của tài sản thuộc phạm vi Cá Nhân và do chính mình sở hữu!", "Quyền truy cập", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         private void BtnSua_Click(object sender, EventArgs e)
         {
             if (dgvBaoTri.CurrentRow == null) return;
             string maLich = dgvBaoTri.CurrentRow.Cells[0].Value.ToString();
+
+            if (!KiemTraQuyenThucHien(maLich)) return;
+
             string maTS = dgvBaoTri.CurrentRow.Cells[2].Value.ToString();
             DateTime ngay = Convert.ToDateTime(dgvBaoTri.CurrentRow.Cells[4].Value);
             string tt = dgvBaoTri.CurrentRow.Cells[5].Value.ToString();
@@ -144,6 +208,9 @@ namespace LTUD
         {
             if (dgvBaoTri.CurrentRow == null) return;
             string maLich = dgvBaoTri.CurrentRow.Cells[0].Value.ToString();
+
+            if (!KiemTraQuyenThucHien(maLich)) return;
+
             if (MessageBox.Show("Xác nhận xóa lịch bảo trì này?", "Cảnh báo", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 DatabaseConnection.ExecuteQuery($"DELETE FROM THONGTINBAOTRI WHERE MALICH = '{maLich}'");
@@ -154,6 +221,7 @@ namespace LTUD
         private void ShowBaoTriDialog(bool isAdd, string mLich, string mTS, DateTime nBaoTri, string trThai, string cPhi, string nnDung)
         {
             Form f = new Form { Width = 500, Height = 420, Text = isAdd ? "Thêm Bảo Trì" : "Sửa Bảo Trì", StartPosition = FormStartPosition.CenterParent, BackColor = Color.FromArgb(154, 203, 208) };
+            f.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
             Label lblLich = new Label { Left = 20, Top = 23, Text = "Mã Lịch:", AutoSize = true }; TextBox txtLich = new TextBox { Left = 120, Top = 20, Width = 330, Text = mLich, Enabled = isAdd };
 
             Label lblPV = new Label { Left = 20, Top = 63, Text = "Phạm Vi:", AutoSize = true }; ComboBox cbPV = new ComboBox { Left = 120, Top = 60, DropDownStyle = ComboBoxStyle.DropDownList, Width = 330 };
@@ -170,10 +238,24 @@ namespace LTUD
 
             Action loadTS = () => {
                 string pv = cbPV.SelectedItem?.ToString();
-                cbTS.DataSource = DatabaseConnection.GetData($@"
+                string query = $@"
                     SELECT MATAISAN, TENTAISAN + ' (' + MATAISAN + ')' AS TENDAYDU 
                     FROM TAISAN 
-                    WHERE PHAMVI = N'{pv}' AND MANGUOIDUNG IN (SELECT MANGUOIDUNG FROM NGUOIDUNG WHERE MAGIADINH = '{adminMaGD}')");
+                    WHERE PHAMVI = N'{pv}' AND MANGUOIDUNG IN (SELECT MANGUOIDUNG FROM NGUOIDUNG WHERE MAGIADINH = '{adminMaGD}')";
+
+                if (vaiTro == "VT03") // Chủ gia đình 
+                {
+                    if (pv != null && pv.Equals("Cá nhân", StringComparison.OrdinalIgnoreCase))
+                    {
+                        query += $" AND MANGUOIDUNG = '{maNguoiDung}'";
+                    }
+                }
+                else if (vaiTro == "VT02") // Người dùng
+                {
+                    query += $" AND MANGUOIDUNG = '{maNguoiDung}'";
+                }
+
+                cbTS.DataSource = DatabaseConnection.GetData(query);
                 cbTS.DisplayMember = "TENDAYDU"; cbTS.ValueMember = "MATAISAN";
             };
 

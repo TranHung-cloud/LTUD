@@ -12,12 +12,16 @@ namespace LTUD
 {
     public partial class FormTrangchu : System.Windows.Forms.Form
     {
-        //string maNguoiDung;
-        //string maND
-        public FormTrangchu()
+        string maNguoiDung;
+        string maGiaDinh;
+        string vaiTro;
+
+        public FormTrangchu(string maND, string maGD = "", string vTro = "VT02")
         {
             InitializeComponent();
-            //maNguoiDung = maND;
+            maNguoiDung = maND;
+            maGiaDinh = maGD;
+            vaiTro = vTro;
         }
 
         private void FormTrangchu_Load(object sender, EventArgs e)
@@ -54,7 +58,8 @@ namespace LTUD
 
         private void btnThongtinbaotri_Click(object sender, EventArgs e)
         {
-
+            FormQLBaoTri frm = new FormQLBaoTri(maGiaDinh, maNguoiDung, vaiTro);
+            frm.Show();
         }
 
         

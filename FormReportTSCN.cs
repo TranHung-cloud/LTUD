@@ -39,8 +39,8 @@ namespace LTUD
                                  ; 
             DataTable dt = new DataTable();          
             // Thay thế hàm MyPublics.OpenData bằng kết nối trực tiếp đến DataBase
-            string connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=QLTaiSan_LTUD;Integrated Security=True;TrustServerCertificate=True";
-            
+            string connectionString = @"Server =TuanThong\SQLEXPRESS; Database = QLTS_LTUD ; Integrated Security = True; TrustServerCertificate=True";
+
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 var cmd = new SqlCommand(sql, conn);
