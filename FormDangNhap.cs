@@ -37,23 +37,16 @@ namespace LTUD
 
                     if (vaiTro == "VT01")
                     {
-                        TrangChuAdmin fAdminAll = new TrangChuAdmin();
+                        TrangChuAdmin fAdminAll = new TrangChuAdmin(maND);
                         this.Hide();
                         fAdminAll.FormClosed += (s, args) => this.Close();
                         fAdminAll.Show();
                     }
-                    else if (string.IsNullOrEmpty(maGD)) // Chưa có gia đình
-                    {
-                        FormAdminHome fAdmin = new FormAdminHome(maGD, maND, vaiTro);
-                        this.Hide();
-                        fAdmin.FormClosed += (s, args) => this.Close();
-                        fAdmin.Show();
-                    }
-                    else // Đã có gia đình (Bao gồm VT02, VT03)
+                    else
                     {
                         FormTrangchu fTrangChu = new FormTrangchu(maND, maGD, vaiTro, this);
                         this.Hide();
-                        //fTrangChu.FormClosed += (s, args) => this.Close();
+                        fTrangChu.FormClosed += (s, args) => this.Close();
                         fTrangChu.Show();
                     }
                 }

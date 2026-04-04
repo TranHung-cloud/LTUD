@@ -29,7 +29,42 @@ namespace LTUD
 
         private void FormTrangchu_Load(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(maGiaDinh))
+            {
+                btnTaisangiadinh.Enabled = false;
+                btnThongtinbaotri.Enabled = false;
+                btnQuanlygiadinh.Enabled = false;
+                taoGiaDinhToolStripMenuItem.Visible = true;
+            }
+            else
+            {
+                btnTaisangiadinh.Enabled = true;
+                btnThongtinbaotri.Enabled = true;
+                btnQuanlygiadinh.Enabled = true;
+                taoGiaDinhToolStripMenuItem.Visible = false;
+            }
+        }
 
+        private void taoGiaDinhToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FormTaoGiaDinh f = new FormTaoGiaDinh(maNguoiDung);
+            this.Hide();
+            f.FormClosed += (s, ev) => 
+            {
+                try
+                {
+                    DataTable dtUser = DatabaseConnection.GetData($"SELECT MAGIADINH, MAVAITRO FROM NGUOIDUNG WHERE MANGUOIDUNG = '{maNguoiDung}'");
+                    if (dtUser.Rows.Count > 0)
+                    {
+                        maGiaDinh = dtUser.Rows[0]["MAGIADINH"].ToString().Trim();
+                        vaiTro = dtUser.Rows[0]["MAVAITRO"].ToString().Trim();
+                    }
+                }
+                catch { }
+                FormTrangchu_Load(null, null);
+                this.Show();
+            };
+            f.Show();
         }
 
         private void thôngTinGiaĐìnhToolStripMenuItem_Click(object sender, EventArgs e)
@@ -68,13 +103,16 @@ namespace LTUD
         private void btnThongtinbaotri_Click(object sender, EventArgs e)
         {
             FormQLBaoTri frm = new FormQLBaoTri(maGiaDinh, maNguoiDung, vaiTro);
-            //this.Hide();
+            this.Hide();
+            frm.FormClosed += (s, args) => this.Show();
             frm.Show();
         }
 
         private void btnQuanlygiadinh_Click(object sender, EventArgs e)
         {
             FormQLGiaDinh f = new FormQLGiaDinh(maGiaDinh, vaiTro);
+            this.Hide();
+            f.FormClosed += (s, args) => this.Show();
             f.Show();
         }
 

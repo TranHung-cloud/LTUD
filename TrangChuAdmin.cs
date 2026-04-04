@@ -12,9 +12,30 @@ namespace LTUD
 {
     public partial class TrangChuAdmin : Form
     {
-        public TrangChuAdmin()
+        private string maNguoiDung;
+
+        public TrangChuAdmin(string maND = "")
         {
             InitializeComponent();
+            maNguoiDung = maND;
+            this.Load += TrangChuAdmin_Load;
+        }
+
+        private void TrangChuAdmin_Load(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(maNguoiDung))
+            {
+                try
+                {
+                    DataTable dtUser = DatabaseConnection.GetData($"SELECT HOTEN FROM NGUOIDUNG WHERE MANGUOIDUNG = '{maNguoiDung}'");
+                    if (dtUser.Rows.Count > 0)
+                    {
+                        string hoTen = dtUser.Rows[0]["HOTEN"].ToString();
+                        this.Text = $"Trang Chủ Admin - Xin chào: {hoTen}";
+                    }
+                }
+                catch { }
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
