@@ -13,11 +13,14 @@ namespace LTUD
     public partial class TrangChuAdmin : Form
     {
         private string maNguoiDung;
+        private readonly FormDangNhap formDangNhap;
+        private bool isExit = true;
 
-        public TrangChuAdmin(string maND = "")
+        public TrangChuAdmin(string maND = "", FormDangNhap formDangNhap = null)
         {
             InitializeComponent();
             maNguoiDung = maND;
+            this.formDangNhap = formDangNhap;
             this.Load += TrangChuAdmin_Load;
         }
 
@@ -40,7 +43,10 @@ namespace LTUD
 
         private void button1_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Xin chào, đây là phần mềm đầu tiên của tôi!");
+            QuanLyLoaiTaiSan formLoaiTaiSan = new QuanLyLoaiTaiSan();
+            this.Hide();
+            formLoaiTaiSan.ShowDialog();
+            this.Show();
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -50,13 +56,31 @@ namespace LTUD
 
         private void button3_Click(object sender, EventArgs e)
         {
-            RegisterForm formDangKy = new RegisterForm();
-            formDangKy.ShowDialog();
+            //RegisterForm formDangKy = new RegisterForm();
+            //formDangKy.ShowDialog();
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Đăng nhập thành công! Chào mừng bạn đến với phần mềm Quản lý tài sản.");
+            formDangNhap.Show();
+            isExit = false;
+            this.Close();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            QuanLyPhuongPhapKhauHao formKhauHao = new QuanLyPhuongPhapKhauHao();
+            this.Hide();
+            formKhauHao.ShowDialog();
+            this.Show();
+        }
+
+        private void TrangChuAdmin_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (isExit)
+            {
+                Application.Exit();
+            }
         }
     }
 }

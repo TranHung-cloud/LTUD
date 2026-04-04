@@ -417,7 +417,6 @@
             this.Name = "FormQLTS_CN";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "FormQLTS_CN";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormQLTS_CN_FormClosed);
             this.Load += new System.EventHandler(this.FormQLTS_CN_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).EndInit();
             this.groupBoxTS.ResumeLayout(false);

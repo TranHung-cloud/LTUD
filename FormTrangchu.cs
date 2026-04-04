@@ -16,7 +16,7 @@ namespace LTUD
         string maGiaDinh;
         string vaiTro;
         private readonly FormDangNhap formDangNhap;
-        private bool returnLogin = false;
+        private bool isExit = true;
 
         public FormTrangchu(string maND, string maGD = "", string vTro = "VT02", FormDangNhap formDangNhap = null)
         {
@@ -75,22 +75,24 @@ namespace LTUD
 
         private void thôngTinCáNhânToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            QuanLyThongTinCaNhanCuaNguoiDung quanLyThongTinCaNhanCuaNguoiDung = new QuanLyThongTinCaNhanCuaNguoiDung(maNguoiDung, this);
+            QuanLyThongTinCaNhanCuaNguoiDung quanLyThongTinCaNhanCuaNguoiDung = new QuanLyThongTinCaNhanCuaNguoiDung(maNguoiDung);
             this.Hide();
-            quanLyThongTinCaNhanCuaNguoiDung.Show();
+            quanLyThongTinCaNhanCuaNguoiDung.ShowDialog();
+            this.Show();
         }
         private void đăngXuấtToolStripMenuItem_Click(object sender, EventArgs e)
         {
             formDangNhap.Show();
-            returnLogin = true;
+            isExit = false;
             this.Close();
 
         }
         private void btnTaisancanhan_Click(object sender, EventArgs e)
         {
-            FormQLTS_CN f = new FormQLTS_CN(maNguoiDung, this);
+            FormQLTS_CN f = new FormQLTS_CN(maNguoiDung);
             this.Hide();
-            f.Show();
+            f.ShowDialog();
+            this.Show();
         }
 
         private void btnTaisangiadinh_Click(object sender, EventArgs e)
@@ -118,9 +120,9 @@ namespace LTUD
 
         private void FormTrangchu_FormClosed(object sender, FormClosedEventArgs e)
         {
-            if (!returnLogin)
+            if (isExit)
             {
-                formDangNhap.Show();
+                Application.Exit();
             }
         }
     }

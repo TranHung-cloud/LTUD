@@ -18,13 +18,11 @@ namespace LTUD
 
         // 2. ID người dùng đăng nhập (Mặc định ND01)
         string loggedInUserId;
-        private readonly FormTrangchu formTrangchu;
 
-        public QuanLyThongTinCaNhanCuaNguoiDung(string loggedInUserId, FormTrangchu formTrangchu)
+        public QuanLyThongTinCaNhanCuaNguoiDung(string loggedInUserId)
         {
             InitializeComponent();
             this.loggedInUserId = loggedInUserId;
-            this.formTrangchu = formTrangchu;
         }
 
         // 3. Hàm định dạng giao diện (Màu sắc pastel theo yêu cầu)
@@ -197,7 +195,7 @@ namespace LTUD
 
         private void QuanLyThongTinCaNhanCuaNguoiDung_FormClosed(object sender, FormClosedEventArgs e)
         {
-            formTrangchu.Show();
+            
         }
     }
 }

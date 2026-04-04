@@ -37,16 +37,16 @@ namespace LTUD
 
                     if (vaiTro == "VT01")
                     {
-                        TrangChuAdmin fAdminAll = new TrangChuAdmin(maND);
+                        TrangChuAdmin fAdminAll = new TrangChuAdmin(maND, this);
                         this.Hide();
-                        fAdminAll.FormClosed += (s, args) => this.Close();
+                        //fAdminAll.FormClosed += (s, args) => this.Close();
                         fAdminAll.Show();
                     }
                     else
                     {
                         FormTrangchu fTrangChu = new FormTrangchu(maND, maGD, vaiTro, this);
                         this.Hide();
-                        fTrangChu.FormClosed += (s, args) => this.Close();
+                        //fTrangChu.FormClosed += (s, args) => this.Close();
                         fTrangChu.Show();
                     }
                 }
@@ -83,7 +83,9 @@ namespace LTUD
         private void BtnMoDangKy_Click(object sender, EventArgs e)
         {
             FormDangKy frm = new FormDangKy();
+            this.Hide();
             frm.ShowDialog();
+            this.Show();
         }
 
         private void FormDangNhap_FormClosed(object sender, FormClosedEventArgs e)

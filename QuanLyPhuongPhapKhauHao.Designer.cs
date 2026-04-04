@@ -189,6 +189,7 @@
             this.Controls.Add(this.label1);
             this.Name = "QuanLyPhuongPhapKhauHao";
             this.Text = "QuanLyPhuongPhapKhauHao";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.QuanLyPhuongPhapKhauHao_FormClosed);
             this.Load += new System.EventHandler(this.QuanLyPhuongPhapKhauHao_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvPhuongPhap)).EndInit();
             this.ResumeLayout(false);

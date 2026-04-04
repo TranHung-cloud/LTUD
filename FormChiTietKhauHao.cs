@@ -15,14 +15,12 @@ namespace LTUD
     {
         private readonly string maTaiSan;
         private readonly SqlConnection conn;
-        private readonly FormQLTS_CN formQLTS_CN;
 
-        public FormChiTietKhauHao(string maTaiSan, SqlConnection conn, FormQLTS_CN formQLTS_CN)
+        public FormChiTietKhauHao(string maTaiSan, SqlConnection conn)
         {
             InitializeComponent();
             this.maTaiSan = maTaiSan;
             this.conn = conn;
-            this.formQLTS_CN = formQLTS_CN;
         }
 
         private void FormChiTietKhauHao_Load(object sender, EventArgs e)
@@ -64,7 +62,6 @@ namespace LTUD
         private void FormChiTietKhauHao_FormClosed(object sender, FormClosedEventArgs e)
         {
             this.Close();
-            formQLTS_CN.Show();
         }
     }
 }

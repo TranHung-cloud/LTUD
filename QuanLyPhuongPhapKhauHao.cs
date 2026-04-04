@@ -316,5 +316,10 @@ namespace LTUD
                 }
             }
         }
+
+        private void QuanLyPhuongPhapKhauHao_FormClosed(object sender, FormClosedEventArgs e)
+        {
+
+        }
     }
 }

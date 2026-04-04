@@ -15,14 +15,11 @@ namespace LTUD
     {
         private SqlConnection conn;
         private string userId ;
-        private readonly FormTrangchu formTrangchu;
-        private bool returnToMain = false;
 
-        public FormQLTS_CN(string userId, FormTrangchu formTrangchu)
+        public FormQLTS_CN(string userId)
         {
             InitializeComponent();
             this.userId = userId;
-            this.formTrangchu = formTrangchu;
         }
 
         private void FormQLTS_CN_Load(object sender, EventArgs e)
@@ -512,9 +509,10 @@ namespace LTUD
 
         private void btnXemRP_Click(object sender, EventArgs e)
         {
-            FormReportTSCN formReport = new FormReportTSCN(this, userId);
+            FormReportTSCN formReport = new FormReportTSCN(userId);
             this.Hide();
             formReport.ShowDialog();
+            this.Show();
         }
 
         private void btnChiTiet_Click(object sender, EventArgs e)
@@ -537,24 +535,15 @@ namespace LTUD
                 MessageBox.Show("Tài sản này chưa có khấu hao nên không có chi tiết khấu hao để hiển thị.");
                 return;
             }
-            FormChiTietKhauHao formChiTiet = new FormChiTietKhauHao(txtMaTaiSan.Text.Trim(), conn, this);
+            FormChiTietKhauHao formChiTiet = new FormChiTietKhauHao(txtMaTaiSan.Text.Trim(), conn);
             this.Hide();
             formChiTiet.ShowDialog();
+            this.Show();
         }
 
         private void btnToMain_Click(object sender, EventArgs e)
         {
-            formTrangchu.Show();
-            returnToMain = true;
             this.Close();
-        }
-
-        private void FormQLTS_CN_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            if (!returnToMain)
-            {
-                formTrangchu.Show();
-            }
         }
     }
 }

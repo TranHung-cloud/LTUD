@@ -14,13 +14,11 @@ namespace LTUD
 {
     public partial class FormReportTSCN : Form
     {
-        private readonly FormQLTS_CN formQLTS_CN;
         private readonly string userId;
 
-        public FormReportTSCN(FormQLTS_CN formQLTS_CN, string userId)
+        public FormReportTSCN(string userId)
         {
             InitializeComponent();
-            this.formQLTS_CN = formQLTS_CN;
             this.userId = userId;
         }
         private void FormReportTSCN_Load(object sender, EventArgs e)
@@ -91,12 +89,6 @@ namespace LTUD
                 MessageBox.Show("Không có dữ liệu làm nguồn cho Report!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information); 
                 this.Close();
             }
-        }
-
-        private void FormReportTSCN_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            this.Close();
-            formQLTS_CN.Show();
         }
     }
 }

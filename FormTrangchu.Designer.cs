@@ -83,7 +83,7 @@ namespace LTUD
             this.taoGiaDinhToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(239)))), ((int)(((byte)(231)))));
             this.taoGiaDinhToolStripMenuItem.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.taoGiaDinhToolStripMenuItem.Name = "taoGiaDinhToolStripMenuItem";
-            this.taoGiaDinhToolStripMenuItem.Size = new System.Drawing.Size(126, 45);
+            this.taoGiaDinhToolStripMenuItem.Size = new System.Drawing.Size(95, 45);
             this.taoGiaDinhToolStripMenuItem.Text = "Tạo gia đình";
             this.taoGiaDinhToolStripMenuItem.Click += new System.EventHandler(this.taoGiaDinhToolStripMenuItem_Click);
             // 

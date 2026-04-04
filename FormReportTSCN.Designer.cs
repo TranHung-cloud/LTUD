@@ -39,7 +39,6 @@
             this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "FormReportTSCN";
             this.Text = "FormReportTSCN";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormReportTSCN_FormClosed);
             this.Load += new System.EventHandler(this.FormReportTSCN_Load);
             this.ResumeLayout(false);
 

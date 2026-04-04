@@ -230,6 +230,7 @@
             this.Controls.Add(this.label1);
             this.Name = "QuanLyLoaiTaiSan";
             this.Text = "QuanLyLoaiTaiSan";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.QuanLyLoaiTaiSan_FormClosed);
             this.Load += new System.EventHandler(this.QuanLyLoaiTaiSan_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvLoaiTaiSan)).EndInit();
             this.ResumeLayout(false);

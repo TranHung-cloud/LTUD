@@ -315,5 +315,10 @@ namespace LTUD
                 }
             }
         }
+
+        private void QuanLyLoaiTaiSan_FormClosed(object sender, FormClosedEventArgs e)
+        {
+
+        }
     }
 }
