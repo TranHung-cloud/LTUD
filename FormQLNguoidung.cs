@@ -18,7 +18,7 @@ namespace LTUD
         void KetNoi()
         {
             conn = new SqlConnection(
-              @"Server =TuanThong\SQLEXPRESS; Database = QLTS_LTUD ; Integrated Security = True; TrustServerCertificate=True");
+              @"Server =.\SQLEXPRESS; Database = QLTaiSan_LTUD; Integrated Security = True; TrustServerCertificate=True");
             //conn = new SqlConnection(
             //  @"Data Source=.\SQLEXPRESS;Initial Catalog=QLTaiSan_LTUD;Integrated Security=True;TrustServerCertificate=True");
             conn.Open();

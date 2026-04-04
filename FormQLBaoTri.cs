@@ -53,7 +53,8 @@ namespace LTUD
                 string query = $@"
                     SELECT MATAISAN, TENTAISAN + ' (' + MATAISAN + ')' AS TENDAYDU 
                     FROM TAISAN 
-                    WHERE MANGUOIDUNG IN (SELECT MANGUOIDUNG FROM NGUOIDUNG WHERE MAGIADINH = '{adminMaGD}')";
+                    WHERE MANGUOIDUNG IN (SELECT MANGUOIDUNG FROM NGUOIDUNG WHERE MAGIADINH = '{adminMaGD}')
+                    AND (PHAMVI = N'Gia đình' OR (PHAMVI = N'Cá nhân' AND MANGUOIDUNG = '{maNguoiDung}'))";
 
                 if (selectedPV != "Tất cả")
                 {
@@ -106,7 +107,8 @@ namespace LTUD
                         B.NOIDUNGBAOTRI AS [Nội Dung]
                     FROM THONGTINBAOTRI B
                     INNER JOIN TAISAN T ON B.MATAISAN = T.MATAISAN
-                    WHERE T.MANGUOIDUNG IN (SELECT MANGUOIDUNG FROM NGUOIDUNG WHERE MAGIADINH = '{adminMaGD}')";
+                    WHERE T.MANGUOIDUNG IN (SELECT MANGUOIDUNG FROM NGUOIDUNG WHERE MAGIADINH = '{adminMaGD}')
+                    AND (T.PHAMVI = N'Gia đình' OR (T.PHAMVI = N'Cá nhân' AND T.MANGUOIDUNG = '{maNguoiDung}'))";
 
                 if (selectedPV != "Tất cả")
                 {
@@ -225,7 +227,8 @@ namespace LTUD
             Label lblLich = new Label { Left = 20, Top = 23, Text = "Mã Lịch:", AutoSize = true }; TextBox txtLich = new TextBox { Left = 120, Top = 20, Width = 330, Text = mLich, Enabled = isAdd };
 
             Label lblPV = new Label { Left = 20, Top = 63, Text = "Phạm Vi:", AutoSize = true }; ComboBox cbPV = new ComboBox { Left = 120, Top = 60, DropDownStyle = ComboBoxStyle.DropDownList, Width = 330 };
-            cbPV.Items.AddRange(new string[] { "Gia đình", "Cá nhân" });
+            if (vaiTro == "VT03") cbPV.Items.AddRange(new string[] { "Gia đình", "Cá nhân" });
+            else cbPV.Items.AddRange(new string[] { "Cá nhân" });
 
             Label lblTS = new Label { Left = 20, Top = 103, Text = "Tài Sản:", AutoSize = true }; ComboBox cbTS = new ComboBox { Left = 120, Top = 100, DropDownStyle = ComboBoxStyle.DropDownList, Width = 330 };
             Label lblNgay = new Label { Left = 20, Top = 143, Text = "Ngày BT:", AutoSize = true }; DateTimePicker dtpNgay = new DateTimePicker { Left = 120, Top = 140, Width = 330, Format = DateTimePickerFormat.Short, Value = nBaoTri };
@@ -277,9 +280,23 @@ namespace LTUD
             btnSave.Click += (s, ev) =>
             {
                 if(cbTS.SelectedValue == null) { MessageBox.Show("Vui lòng chọn Tài sản!"); return; }
+
+                // Kiểm tra bảo mật lần cuối trước khi lưu
+                string ts = cbTS.SelectedValue.ToString();
+                DataTable dtCheck = DatabaseConnection.GetData($"SELECT PHAMVI, MANGUOIDUNG FROM TAISAN WHERE MATAISAN = '{ts}'");
+                if (dtCheck.Rows.Count > 0)
+                {
+                    string pvCheck = dtCheck.Rows[0]["PHAMVI"].ToString().Trim();
+                    string ownerCheck = dtCheck.Rows[0]["MANGUOIDUNG"].ToString().Trim();
+                    if (vaiTro == "VT02" && (pvCheck == "Gia đình" || ownerCheck != maNguoiDung))
+                    {
+                        MessageBox.Show("Người dùng chỉ có quyền thêm lịch bảo trì cho tài sản thuộc phạm vi Cá Nhân và do chính mình sở hữu!", "Quyền truy cập", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+                }
+
                 try
                 {
-                    string ts = cbTS.SelectedValue.ToString();
                     string tt = cbTT.SelectedItem.ToString();
                     string dateStr = dtpNgay.Value.ToString("yyyy-MM-dd");
                     if (isAdd)

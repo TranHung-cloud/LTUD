@@ -42,14 +42,14 @@ namespace LTUD
                         fAdminAll.FormClosed += (s, args) => this.Close();
                         fAdminAll.Show();
                     }
-                    else if (vaiTro == "VT03" || string.IsNullOrEmpty(maGD)) // Chủ gia đình hoặc chưa có gia đình
+                    else if (string.IsNullOrEmpty(maGD)) // Chưa có gia đình
                     {
                         FormAdminHome fAdmin = new FormAdminHome(maGD, maND, vaiTro);
                         this.Hide();
                         fAdmin.FormClosed += (s, args) => this.Close();
                         fAdmin.Show();
                     }
-                    else
+                    else // Đã có gia đình (Bao gồm VT02, VT03)
                     {
                         FormTrangchu fTrangChu = new FormTrangchu(maND, maGD, vaiTro);
                         this.Hide();

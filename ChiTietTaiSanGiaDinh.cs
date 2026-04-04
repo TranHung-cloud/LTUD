@@ -16,7 +16,7 @@ namespace LTUD
 {
     public partial class ChiTietTaiSanGiaDinh : Form
     {
-        string connectString = @"Server =TuanThong\SQLEXPRESS; Database = QLTS_LTUD ; Integrated Security = True; TrustServerCertificate=True";
+        string connectString = @"Server = .\SQLEXPRESS; Database = QLTaiSan_LTUD ; Integrated Security = True; TrustServerCertificate=True";
         SqlConnection conn;
         String maTaiSan = "";
         public ChiTietTaiSanGiaDinh(String ma)
@@ -113,17 +113,17 @@ namespace LTUD
             connectData();
 
             string sql = @"
-        SELECT TOP 1 
-            ts.NGAYMUA, 
-            ts.NGUYENGIA,
-            ISNULL(ckh.NAMKHAUHAO, YEAR(ts.NGAYMUA)) as MaxYear,
-            ISNULL(ckh.GIATRICONLAISAUKHAUHAO, ts.NGUYENGIA) as CurrentRemain,
-            (ts.NGUYENGIA / lts.SONAMSUDUNG) as YearlyDepreciation
-        FROM TAISAN ts 
-        JOIN LOAITAISAN lts ON ts.MALOAI = lts.MALOAI
-        LEFT JOIN COKHAUHAO ckh ON TRIM(ts.MATAISAN) = TRIM(ckh.MATAISAN) 
-        WHERE TRIM(ts.MATAISAN) = @ma
-        ORDER BY ckh.NAMKHAUHAO DESC";
+            SELECT TOP 1 
+                ts.NGAYMUA, 
+                ts.NGUYENGIA,
+                ISNULL(ckh.NAMKHAUHAO, YEAR(ts.NGAYMUA)) as MaxYear,
+                ISNULL(ckh.GIATRICONLAISAUKHAUHAO, ts.NGUYENGIA) as CurrentRemain,
+                (ts.NGUYENGIA / lts.SONAMSUDUNG) as YearlyDepreciation
+            FROM TAISAN ts 
+            JOIN LOAITAISAN lts ON ts.MALOAI = lts.MALOAI
+            LEFT JOIN COKHAUHAO ckh ON TRIM(ts.MATAISAN) = TRIM(ckh.MATAISAN) 
+            WHERE TRIM(ts.MATAISAN) = @ma
+            ORDER BY ckh.NAMKHAUHAO DESC";
 
             SqlCommand cmd = new SqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@ma", maTaiSan.Trim());
@@ -168,6 +168,16 @@ namespace LTUD
 
                     currentRemainValue -= depreciationValue;
                     if (currentRemainValue < 0) currentRemainValue = 0;
+
+                    if(currentRemainValue == 0)
+                    {
+                        string updateSql = @"UPDATE TAISAN SET TINHTRANG = N'Hết khấu hao' WHERE MATAISAN = @ma";
+                        using (SqlCommand updateCmd = new SqlCommand(updateSql, conn))
+                        {
+                            updateCmd.Parameters.AddWithValue("@ma", maTaiSan.Trim());
+                            updateCmd.ExecuteNonQuery();
+                        }
+                    }
 
                     string insSql = @"INSERT INTO COKHAUHAO (MATAISAN, NAMKHAUHAO, GIATRIKHAUHAO, GIATRICONLAISAUKHAUHAO) 
                              VALUES (@ma, @dy, @dv, @rv)";

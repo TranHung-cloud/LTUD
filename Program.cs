@@ -16,12 +16,12 @@ namespace LTUD
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new QLTaiSanGiaDinh());
+            Application.Run(new QLTaiSanGiaDinh("ND01"));
             //Application.Run(new FormQLNguoidung());
             //Application.Run(new FormReportTSCN());
             //Application.Run(new FormQLNguoidung());
             // Giả lập Admin thuộc gia đình GD01 đang đăng nhập
-            Application.Run(new FormDangNhap());
+            //Application.Run(new FormDangNhap());
             //Application.Run(new FormAdminHome("GD01"));
 
         }
