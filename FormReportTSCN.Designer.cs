@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // FormReportTSCN
@@ -45,5 +46,7 @@
         }
 
         #endregion
+
+        private System.Windows.Forms.Label label1;
     }
 }

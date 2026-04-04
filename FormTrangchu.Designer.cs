@@ -157,6 +157,7 @@ namespace LTUD
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "FormTrangchu";
             this.Text = "Trang chủ";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormTrangchu_FormClosed);
             this.Load += new System.EventHandler(this.FormTrangchu_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

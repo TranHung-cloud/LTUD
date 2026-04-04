@@ -15,13 +15,16 @@ namespace LTUD
         string maNguoiDung;
         string maGiaDinh;
         string vaiTro;
+        private readonly FormDangNhap formDangNhap;
+        private bool returnLogin = false;
 
-        public FormTrangchu(string maND, string maGD = "", string vTro = "VT02")
+        public FormTrangchu(string maND, string maGD = "", string vTro = "VT02", FormDangNhap formDangNhap = null)
         {
             InitializeComponent();
             maNguoiDung = maND;
             maGiaDinh = maGD;
             vaiTro = vTro;
+            this.formDangNhap = formDangNhap;
         }
 
         private void FormTrangchu_Load(object sender, EventArgs e)
@@ -37,19 +40,21 @@ namespace LTUD
 
         private void thôngTinCáNhânToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //FormThongtincanhan f = new FormThongtincanhan(maNguoiDung);
-            //f.Show();
+            QuanLyThongTinCaNhanCuaNguoiDung quanLyThongTinCaNhanCuaNguoiDung = new QuanLyThongTinCaNhanCuaNguoiDung(maNguoiDung, this);
+            this.Hide();
+            quanLyThongTinCaNhanCuaNguoiDung.Show();
         }
         private void đăngXuấtToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FormDangNhap f = new FormDangNhap();
-            this.Hide();
-            f.Show();
+            formDangNhap.Show();
+            returnLogin = true;
+            this.Close();
+
         }
         private void btnTaisancanhan_Click(object sender, EventArgs e)
         {
-            FormQLTS_CN f = new FormQLTS_CN(maNguoiDung);
-            //this.Hide();
+            FormQLTS_CN f = new FormQLTS_CN(maNguoiDung, this);
+            this.Hide();
             f.Show();
         }
 
@@ -71,6 +76,14 @@ namespace LTUD
         {
             FormQLGiaDinh f = new FormQLGiaDinh(maGiaDinh, vaiTro);
             f.Show();
+        }
+
+        private void FormTrangchu_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (!returnLogin)
+            {
+                formDangNhap.Show();
+            }
         }
     }
 }

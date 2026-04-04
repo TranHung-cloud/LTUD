@@ -21,11 +21,12 @@ namespace LTUD
             //Application.Run(new FormReportTSCN());
             //Application.Run(new FormQLNguoidung());
             // Giả lập Admin thuộc gia đình GD01 đang đăng nhập
-            //Application.Run(new FormDangNhap());
+            Application.Run(new FormDangNhap());
             //Application.Run(new FormAdminHome("GD01"));
-            //Application.Run(new FormQLTS_CN("ND01"));
+            //Application.Run(new FormQLTS_CN());
             //Application.Run(new QuanLyPhuongPhapKhauHao());
-            Application.Run(new QuanLyLoaiTaiSan());
+            //Application.Run(new QuanLyLoaiTaiSan());
+            //Application.Run(new QuanLyThongTinCaNhanCuaNguoiDung());
         }
     }
 }

@@ -51,9 +51,9 @@ namespace LTUD
                     }
                     else // Đã có gia đình (Bao gồm VT02, VT03)
                     {
-                        FormTrangchu fTrangChu = new FormTrangchu(maND, maGD, vaiTro);
+                        FormTrangchu fTrangChu = new FormTrangchu(maND, maGD, vaiTro, this);
                         this.Hide();
-                        fTrangChu.FormClosed += (s, args) => this.Close();
+                        //fTrangChu.FormClosed += (s, args) => this.Close();
                         fTrangChu.Show();
                     }
                 }
@@ -91,6 +91,11 @@ namespace LTUD
         {
             FormDangKy frm = new FormDangKy();
             frm.ShowDialog();
+        }
+
+        private void FormDangNhap_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            
         }
     }
 }

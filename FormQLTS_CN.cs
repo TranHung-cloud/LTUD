@@ -15,10 +15,14 @@ namespace LTUD
     {
         private SqlConnection conn;
         private string userId ;
-        public FormQLTS_CN(string userId)
+        private readonly FormTrangchu formTrangchu;
+        private bool returnToMain = false;
+
+        public FormQLTS_CN(string userId, FormTrangchu formTrangchu)
         {
             InitializeComponent();
             this.userId = userId;
+            this.formTrangchu = formTrangchu;
         }
 
         private void FormQLTS_CN_Load(object sender, EventArgs e)
@@ -536,6 +540,21 @@ namespace LTUD
             FormChiTietKhauHao formChiTiet = new FormChiTietKhauHao(txtMaTaiSan.Text.Trim(), conn, this);
             this.Hide();
             formChiTiet.ShowDialog();
+        }
+
+        private void btnToMain_Click(object sender, EventArgs e)
+        {
+            formTrangchu.Show();
+            returnToMain = true;
+            this.Close();
+        }
+
+        private void FormQLTS_CN_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (!returnToMain)
+            {
+                formTrangchu.Show();
+            }
         }
     }
 }

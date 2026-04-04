@@ -41,7 +41,7 @@ namespace LTUD
             this.lblMaNguoiDung.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblMaNguoiDung.Location = new System.Drawing.Point(30, 80);
             this.lblMaNguoiDung.Name = "lblMaNguoiDung";
-            this.lblMaNguoiDung.Size = new System.Drawing.Size(135, 21);
+            this.lblMaNguoiDung.Size = new System.Drawing.Size(137, 21);
             this.lblMaNguoiDung.TabIndex = 1;
             this.lblMaNguoiDung.Text = "Mã Người Dùng:";
             // 
@@ -60,7 +60,7 @@ namespace LTUD
             this.lblMatKhau.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblMatKhau.Location = new System.Drawing.Point(30, 130);
             this.lblMatKhau.Name = "lblMatKhau";
-            this.lblMatKhau.Size = new System.Drawing.Size(86, 21);
+            this.lblMatKhau.Size = new System.Drawing.Size(87, 21);
             this.lblMatKhau.TabIndex = 3;
             this.lblMatKhau.Text = "Mật Khẩu:";
             // 
@@ -114,6 +114,7 @@ namespace LTUD
             this.Name = "FormDangNhap";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Đăng Nhập";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormDangNhap_FormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();
 
