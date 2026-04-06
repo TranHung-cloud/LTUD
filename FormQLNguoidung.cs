@@ -246,5 +246,10 @@ namespace LTUD
             FormXemtaisan f = new FormXemtaisan(txtMaND.Text);
             f.Show();
         }
+
+        private void btnBack_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

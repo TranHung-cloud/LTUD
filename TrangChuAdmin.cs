@@ -56,8 +56,8 @@ namespace LTUD
 
         private void button3_Click(object sender, EventArgs e)
         {
-            //RegisterForm formDangKy = new RegisterForm();
-            //formDangKy.ShowDialog();
+            FormQLNguoidung f = new FormQLNguoidung(); 
+            f.ShowDialog();
         }
 
         private void button4_Click(object sender, EventArgs e)
