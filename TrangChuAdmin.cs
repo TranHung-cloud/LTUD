@@ -57,7 +57,9 @@ namespace LTUD
         private void button3_Click(object sender, EventArgs e)
         {
             FormQLNguoidung f = new FormQLNguoidung(); 
+            this.Hide();    
             f.ShowDialog();
+            this.Show();
         }
 
         private void button4_Click(object sender, EventArgs e)

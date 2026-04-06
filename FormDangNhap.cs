@@ -29,9 +29,16 @@ namespace LTUD
 
             try
             {
-                DataTable dt = DatabaseConnection.GetData($"SELECT MAVAITRO, MAGIADINH FROM NGUOIDUNG WHERE MANGUOIDUNG = '{maND}' AND MATKHAU = '{mk}'");
+                DataTable dt = DatabaseConnection.GetData($"SELECT MAVAITRO, MAGIADINH, TRANGTHAI FROM NGUOIDUNG WHERE MANGUOIDUNG = '{maND}' AND MATKHAU = '{mk}'");
                 if (dt.Rows.Count > 0)
                 {
+                    string trangThai = dt.Rows[0]["TRANGTHAI"].ToString().Trim();
+                    if (trangThai.Equals("Bị khóa", StringComparison.OrdinalIgnoreCase))
+                    {
+                        MessageBox.Show("Tài khoản của bạn đã bị khóa! Vui lòng liên hệ quản trị viên.", "Tài khoản bị khóa", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
                     string vaiTro = dt.Rows[0]["MAVAITRO"].ToString().Trim();
                     string maGD = dt.Rows[0]["MAGIADINH"].ToString().Trim();
 

@@ -107,20 +107,28 @@ namespace LTUD
         }
         string TaoMaTuTang()
         {
-            string sql = "SELECT TOP 1 MANGUOIDUNG FROM NGUOIDUNG ORDER BY MANGUOIDUNG DESC";
-            SqlCommand cmd = new SqlCommand(sql, conn);
+            string sql = "SELECT MANGUOIDUNG FROM NGUOIDUNG WHERE MANGUOIDUNG LIKE 'ND%'";
+            SqlDataAdapter da = new SqlDataAdapter(sql, conn);
+            DataTable dt = new DataTable();
+            da.Fill(dt);
 
-            object result = cmd.ExecuteScalar();
+            int maxNumber = 0;
+            foreach (DataRow row in dt.Rows)
+            {
+                string currentID = row["MANGUOIDUNG"].ToString().Trim();
+                string numPart = new string(currentID.SkipWhile(c => !char.IsDigit(c)).ToArray());
 
-            if (result == null || result.ToString() == "")
-                return "ND01";
+                if (int.TryParse(numPart, out int currentNum))
+                {
+                    if (currentNum > maxNumber)
+                    {
+                        maxNumber = currentNum;
+                    }
+                }
+            }
 
-            string lastID = result.ToString(); // 
-
-            int number = int.Parse(lastID.Substring(2)); // lấy số phía sau
-            number++;
-
-            return "ND" + number.ToString("D2"); // 
+            int nextNumber = maxNumber + 1;
+            return "ND" + nextNumber.ToString("D2");
         }
         private void btnThem_Click(object sender, EventArgs e)
         {
