@@ -214,6 +214,17 @@ namespace LTUD
             if (dgvNguoiDung.CurrentRow == null) return;
             string ma = dgvNguoiDung.CurrentRow.Cells[0].Value.ToString();
 
+            // Lấy thông tin user hiện tại đang đăng nhập để so sánh
+            // current_user_id có thể lấy từ hàm gọi Form hoặc phải truyền vào, ở đây tôi tìm người đang đăng nhập qua adminMaGD và vaiTro
+            // Giả sử có thể tìm từ DB người có vai trò bằng VT03 trong gia đình này, 
+            // Nếu người cần xóa có VT03 thì báo lỗi không cho xóa (vì chủ gia đình không tự xóa mình và cũng không có 2 chủ GD)
+            string vaiTroCuaNguoiCanXoa = dgvNguoiDung.CurrentRow.Cells[1].Value.ToString();
+            if (vaiTroCuaNguoiCanXoa == "VT03")
+            {
+                MessageBox.Show("Không thể xóa Chủ Gia Đình ra khỏi gia đình!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             DataTable checkTS = DatabaseConnection.GetData($"SELECT * FROM TAISAN WHERE MANGUOIDUNG = '{ma}' AND PHAMVI = N'Gia đình'");
             if (checkTS.Rows.Count > 0)
             {
@@ -221,10 +232,10 @@ namespace LTUD
                 return;
             }
 
-            if (MessageBox.Show("Bạn có chắc chắn muốn xóa thành viên này?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            if (MessageBox.Show("Bạn có chắc chắn muốn xóa thành viên này khỏi gia đình?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                DatabaseConnection.ExecuteQuery($"UPDATE TAISAN SET MANGUOIDUNG = NULL WHERE MANGUOIDUNG = '{ma}'");
-                DatabaseConnection.ExecuteQuery($"DELETE FROM NGUOIDUNG WHERE MANGUOIDUNG = '{ma}'");
+                // Cập nhật MAGIADINH về NULL thay vì xóa hẳn khỏi hệ thống
+                DatabaseConnection.ExecuteQuery($"UPDATE NGUOIDUNG SET MAGIADINH = NULL WHERE MANGUOIDUNG = '{ma}'");
                 LoadThanhVien(currentMaGD);
             }
         }
