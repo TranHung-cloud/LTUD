@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Data;
 
 namespace LTUD
 {
@@ -10,7 +10,7 @@ namespace LTUD
         public FormDangNhap()
         {
             InitializeComponent();
-            btnDangNhap.Click += BtnDangNhap_Click;
+            //btnDangNhap.Click += BtnDangNhap_Click;
             btnMoDangKy.Click += BtnMoDangKy_Click;
             this.Load += FormDangNhap_Load;
             this.Resize += FormDangNhap_Load;
@@ -97,7 +97,7 @@ namespace LTUD
 
         private void FormDangNhap_FormClosed(object sender, FormClosedEventArgs e)
         {
-            
+
         }
     }
 }
