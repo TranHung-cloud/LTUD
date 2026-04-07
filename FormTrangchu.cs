@@ -98,8 +98,9 @@ namespace LTUD
         private void btnTaisangiadinh_Click(object sender, EventArgs e)
         {
             QLTaiSanGiaDinh f = new QLTaiSanGiaDinh(maNguoiDung);
-            //this.Hide();
-            f.Show();
+            this.Hide();
+            f.ShowDialog();
+            this.Show();
         }
 
         private void btnThongtinbaotri_Click(object sender, EventArgs e)
