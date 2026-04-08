@@ -1,16 +1,11 @@
 ﻿using Microsoft.Reporting.WinForms;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 
 namespace LTUD
 {
@@ -56,7 +51,7 @@ namespace LTUD
             da.SelectCommand.Parameters.AddWithValue("@ma", maGiaDinh);
             DataTable dt = new DataTable();
             da.Fill(dt);
-            
+
             dgvTSGD.DataSource = dt;
 
             dgvTSGD.Columns[0].HeaderText = "Mã Tài Sản";
@@ -142,7 +137,7 @@ namespace LTUD
         private void button2_Click(object sender, EventArgs e)
         {
 
-            if(NgayMua.Value > DateTime.Now)
+            if (NgayMua.Value > DateTime.Now)
             {
                 MessageBox.Show("Ngày mua không thể lớn hơn ngày hiện tại!");
                 return;

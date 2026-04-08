@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace LTUD
@@ -14,7 +9,7 @@ namespace LTUD
     public partial class FormQLTS_CN : Form
     {
         private SqlConnection conn;
-        private string userId ;
+        private string userId;
 
         public FormQLTS_CN(string userId)
         {
@@ -178,7 +173,7 @@ namespace LTUD
         }
         private void btnTimKiem_Click(object sender, EventArgs e)
         {
-            if(txtTimKiem.Text.Trim() == "")
+            if (txtTimKiem.Text.Trim() == "")
             {
                 ShowData();
                 return;
@@ -275,7 +270,7 @@ namespace LTUD
                 cmd.Parameters.AddWithValue("@ngaymua", dtp.Value.Date);
                 cmd.Parameters.AddWithValue("@nguyengia", decimal.Parse(txtNguyenGia.Text.Trim()));
                 cmd.Parameters.AddWithValue("@manguoidung", userId);
-                string sourceImagePath = pictureBox.ImageLocation; 
+                string sourceImagePath = pictureBox.ImageLocation;
                 string imageName = txtMaTaiSan.Text.Trim() + System.IO.Path.GetExtension(sourceImagePath);
                 cmd.Parameters.AddWithValue("@hinhanh", imageName);
                 conn.Open();
@@ -333,7 +328,7 @@ namespace LTUD
             foreach (DataGridViewRow row in dgv.Rows)
             {
                 if (row.IsNewRow) continue;
-                if (row.Cells["mataisan"].Value != null && 
+                if (row.Cells["mataisan"].Value != null &&
                     row.Cells["mataisan"].Value.ToString().Trim() == txtMaTaiSan.Text.Trim())
                 {
                     if (row.Cells["hinhanh"].Value != null)
@@ -350,11 +345,15 @@ namespace LTUD
             }
             pictureBox.ImageLocation = null;
             string sql = "delete from cokhauhao where mataisan = @mataisan; delete from taisan where mataisan = @mataisan";
+            string sql2 = "delete from thongtinbaotri where mataisan = @mataisan";
+            var cmd2 = new SqlCommand(sql2, conn);
+            cmd2.Parameters.AddWithValue("@mataisan", txtMaTaiSan.Text.Trim());
             var cmd = new SqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@mataisan", txtMaTaiSan.Text.Trim());
             conn.Open();
             try
             {
+                cmd2.ExecuteNonQuery();
                 cmd.ExecuteNonQuery();
                 conn.Close();
                 if (!string.IsNullOrEmpty(imageName))
@@ -362,7 +361,7 @@ namespace LTUD
                     string imagePath = System.IO.Path.Combine(Application.StartupPath, "Images", imageName);
                     if (System.IO.File.Exists(imagePath))
                     {
-                        try 
+                        try
                         {
                             System.IO.File.Delete(imagePath);
                         }
@@ -371,7 +370,7 @@ namespace LTUD
                             MessageBox.Show("Đã xóa trên Hệ thống, nhưng không thể xóa file vật lý do bị khóa: " + fileEx.Message);
                         }
                     }
-                }            
+                }
                 MessageBox.Show("Xóa tài sản thành công.");
             }
             catch (Exception ex)
@@ -380,9 +379,9 @@ namespace LTUD
             }
             finally
             {
-                if(conn.State == ConnectionState.Open)
+                if (conn.State == ConnectionState.Open)
                     conn.Close();
-            }          
+            }
             ShowData();
             btnDatLai_Click(sender, e);
         }
@@ -397,7 +396,7 @@ namespace LTUD
             string sql = "select 1 from cokhauhao where mataisan = @mataisan";
             var cmd = new SqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@mataisan", txtMaTaiSan.Text.Trim());
-            if(conn.State == ConnectionState.Closed)
+            if (conn.State == ConnectionState.Closed)
                 conn.Open();
             var reader = cmd.ExecuteReader();
             var hasDepreciation = reader.Read();
@@ -429,7 +428,7 @@ namespace LTUD
                         cmd = new SqlCommand(sql, conn);
                         cmd.Parameters.AddWithValue("@tentaisan", txtTenTaiSan.Text.Trim());
                         cmd.Parameters.AddWithValue("@mataisan", txtMaTaiSan.Text.Trim());
-                        
+
                     }
                     else
                     {

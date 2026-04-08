@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Data;
 
 namespace LTUD
 {
@@ -97,7 +97,7 @@ namespace LTUD
 
         private void FormDangNhap_FormClosed(object sender, FormClosedEventArgs e)
         {
-            
+
         }
     }
 }
