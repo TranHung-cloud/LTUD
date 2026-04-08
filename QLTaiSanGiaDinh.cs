@@ -225,6 +225,11 @@ namespace LTUD
 
         private void button4_Click(object sender, EventArgs e)
         {
+            if (String.IsNullOrEmpty(MaTaiSan.Text))
+            {
+                MessageBox.Show("Vui lòng chọn tài sản cần xóa!");
+                return;
+            }
             try
             {
                 connectData();
@@ -240,7 +245,9 @@ namespace LTUD
                 DialogResult dr = MessageBox.Show("Bạn có chắc muốn xóa tài sản này không?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (dr == DialogResult.Yes)
                 {
-                    String delSql = "DELETE FROM TAISAN WHERE MATAISAN = @ma";
+                    String delSql = @"DELETE FROM COKHAUHAO WHERE MATAISAN = @ma;
+                                    DELETE FROM THONGTINBAOTRI WHERE MATAISAN = @ma;
+                                    DELETE FROM TAISAN WHERE MATAISAN = @ma";
                     SqlCommand delCmd = new SqlCommand(delSql, conn);
                     delCmd.Parameters.AddWithValue("@ma", MaTaiSan.Text);
                     delCmd.ExecuteNonQuery();
@@ -257,6 +264,10 @@ namespace LTUD
 
         private void dgvTSGD_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            if (e.RowIndex < 0 || e.RowIndex >= dgvTSGD.Rows.Count || dgvTSGD.Rows[e.RowIndex].IsNewRow)
+            {
+                return;
+            }
             if (e.RowIndex >= 0)
             {
                 DataGridViewRow row = dgvTSGD.Rows[e.RowIndex];

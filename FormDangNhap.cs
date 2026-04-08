@@ -10,7 +10,7 @@ namespace LTUD
         public FormDangNhap()
         {
             InitializeComponent();
-            btnDangNhap.Click += BtnDangNhap_Click;
+            //btnDangNhap.Click += BtnDangNhap_Click;
             btnMoDangKy.Click += BtnMoDangKy_Click;
             this.Load += FormDangNhap_Load;
             this.Resize += FormDangNhap_Load;
