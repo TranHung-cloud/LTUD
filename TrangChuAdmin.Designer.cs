@@ -99,6 +99,7 @@
             this.Name = "TrangChuAdmin";
             this.Text = "TrangChuAdmin";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.TrangChuAdmin_FormClosed);
+            this.Load += new System.EventHandler(this.TrangChuAdmin_Load_1);
             this.ResumeLayout(false);
 
         }

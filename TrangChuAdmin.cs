@@ -84,5 +84,10 @@ namespace LTUD
                 Application.Exit();
             }
         }
+
+        private void TrangChuAdmin_Load_1(object sender, EventArgs e)
+        {
+
+        }
     }
 }
