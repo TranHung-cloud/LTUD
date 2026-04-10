@@ -2,6 +2,7 @@ using System;
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace LTUD
 {
@@ -129,9 +130,34 @@ namespace LTUD
             }
         }
 
+        private string TaoMaLichTuTang()
+        {
+            DataTable dt = DatabaseConnection.GetData("SELECT MALICH FROM THONGTINBAOTRI WHERE MALICH LIKE 'BT%'");
+            if (dt.Rows.Count == 0) return "BT01";
+
+            int maxNumber = 0;
+            foreach (DataRow row in dt.Rows)
+            {
+                string currentID = row["MALICH"].ToString().Trim();
+                string numPart = new string(currentID.SkipWhile(c => !char.IsDigit(c)).ToArray());
+
+                if (int.TryParse(numPart, out int currentNum))
+                {
+                    if (currentNum > maxNumber)
+                    {
+                        maxNumber = currentNum;
+                    }
+                }
+            }
+
+            int nextNumber = maxNumber + 1;
+            return "BT" + nextNumber.ToString("D2");
+        }
+
         private void BtnThem_Click(object sender, EventArgs e)
         {
-            ShowBaoTriDialog(true, "", "", DateTime.Now, "Đang xử lý", "0", "");
+            string newMaLich = TaoMaLichTuTang();
+            ShowBaoTriDialog(true, newMaLich, "", DateTime.Now, "Đang xử lý", "0", "");
         }
 
         private bool KiemTraQuyenThucHien(string maLich = "", string maTS_Input = "")
@@ -224,7 +250,7 @@ namespace LTUD
         {
             Form f = new Form { Width = 500, Height = 420, Text = isAdd ? "Thêm Bảo Trì" : "Sửa Bảo Trì", StartPosition = FormStartPosition.CenterParent, BackColor = Color.FromArgb(154, 203, 208) };
             f.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
-            Label lblLich = new Label { Left = 20, Top = 23, Text = "Mã Lịch:", AutoSize = true }; TextBox txtLich = new TextBox { Left = 120, Top = 20, Width = 330, Text = mLich, Enabled = isAdd };
+            Label lblLich = new Label { Left = 20, Top = 23, Text = "Mã Lịch:", AutoSize = true }; TextBox txtLich = new TextBox { Left = 120, Top = 20, Width = 330, Text = mLich, Enabled = false };
 
             Label lblPV = new Label { Left = 20, Top = 63, Text = "Phạm Vi:", AutoSize = true }; ComboBox cbPV = new ComboBox { Left = 120, Top = 60, DropDownStyle = ComboBoxStyle.DropDownList, Width = 330 };
             if (vaiTro == "VT03") cbPV.Items.AddRange(new string[] { "Gia đình", "Cá nhân" });

@@ -69,7 +69,18 @@ namespace LTUD
         {
             try
             {
-                string query = $"SELECT MANGUOIDUNG AS [Mã ND], MAVAITRO AS [Mã Vai Trò], HOTEN AS [Họ Tên], NGAYSINH AS [Ngày Sinh], TRANGTHAI AS [Trạng Thái] FROM NGUOIDUNG WHERE MAGIADINH = '{maGD}' ORDER BY MANGUOIDUNG ASC";
+                string query = $@"
+                    SELECT 
+                        N.MANGUOIDUNG AS [Mã ND], 
+                        N.MAVAITRO AS [Mã Vai Trò], 
+                        V.TENVAITRO AS [Vai Trò], 
+                        N.HOTEN AS [Họ Tên], 
+                        N.NGAYSINH AS [Ngày Sinh], 
+                        N.TRANGTHAI AS [Trạng Thái] 
+                    FROM NGUOIDUNG N
+                    LEFT JOIN VAITRO V ON N.MAVAITRO = V.MAVAITRO
+                    WHERE N.MAGIADINH = '{maGD}' 
+                    ORDER BY N.MANGUOIDUNG ASC";
                 dgvNguoiDung.DataSource = DatabaseConnection.GetData(query);
 
                 if (dgvNguoiDung.Columns.Contains("Mã ND")) dgvNguoiDung.Columns["Mã ND"].Visible = false;
@@ -202,23 +213,22 @@ namespace LTUD
         {
             if (dgvNguoiDung.CurrentRow == null) return;
             string ma = dgvNguoiDung.CurrentRow.Cells[0].Value.ToString();
-            string vaitro = dgvNguoiDung.CurrentRow.Cells[1].Value.ToString();
-            string hoten = dgvNguoiDung.CurrentRow.Cells[2].Value.ToString();
-            DateTime ngay = Convert.ToDateTime(dgvNguoiDung.CurrentRow.Cells[3].Value);
-            string tt = dgvNguoiDung.CurrentRow.Cells[4].Value.ToString();
+
+            // Sửa lại Index các cột vì số cột hiển thị đã thay đổi (Cột MAVAITRO vẫn ở vị trí 1, biến cột 2 là Vai Trò, 3 là Họ Tên,...)
+            string vaitro = dgvNguoiDung.CurrentRow.Cells["Mã Vai Trò"].Value.ToString();
+            string hoten = dgvNguoiDung.CurrentRow.Cells["Họ Tên"].Value.ToString();
+            DateTime ngay = Convert.ToDateTime(dgvNguoiDung.CurrentRow.Cells["Ngày Sinh"].Value);
+            string tt = dgvNguoiDung.CurrentRow.Cells["Trạng Thái"].Value.ToString();
             ShowThanhVienDialog(false, ma, vaitro, hoten, ngay, tt);
         }
 
         private void BtnXoaTV_Click(object sender, EventArgs e)
         {
             if (dgvNguoiDung.CurrentRow == null) return;
-            string ma = dgvNguoiDung.CurrentRow.Cells[0].Value.ToString();
+            string ma = dgvNguoiDung.CurrentRow.Cells["Mã ND"].Value.ToString().Trim();
 
-            // Lấy thông tin user hiện tại đang đăng nhập để so sánh
-            // current_user_id có thể lấy từ hàm gọi Form hoặc phải truyền vào, ở đây tôi tìm người đang đăng nhập qua adminMaGD và vaiTro
-            // Giả sử có thể tìm từ DB người có vai trò bằng VT03 trong gia đình này, 
-            // Nếu người cần xóa có VT03 thì báo lỗi không cho xóa (vì chủ gia đình không tự xóa mình và cũng không có 2 chủ GD)
-            string vaiTroCuaNguoiCanXoa = dgvNguoiDung.CurrentRow.Cells[1].Value.ToString();
+            // Nhận diện vai trò của người chuẩn bị xóa qua cột Mã Vai Trò
+            string vaiTroCuaNguoiCanXoa = dgvNguoiDung.CurrentRow.Cells["Mã Vai Trò"].Value.ToString().Trim();
             if (vaiTroCuaNguoiCanXoa == "VT03")
             {
                 MessageBox.Show("Không thể xóa Chủ Gia Đình ra khỏi gia đình!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -245,8 +255,8 @@ namespace LTUD
             Form f = new Form { Width = 600, Height = 530, Text = "Sửa Thành Viên", StartPosition = FormStartPosition.CenterParent, BackColor = Color.FromArgb(154, 203, 208) };
             f.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
             Label lblMa = new Label { Left = 20, Top = 23, Text = "Mã ND:", AutoSize = true }; TextBox txtMa = new TextBox { Left = 120, Top = 20, Width = 430, Text = maND, Enabled = false };
-            Label lblTen = new Label { Left = 20, Top = 63, Text = "Họ Tên:", AutoSize = true }; TextBox txtTen = new TextBox { Left = 120, Top = 60, Width = 430, Text = hoTen };
-            Label lblNgay = new Label { Left = 20, Top = 103, Text = "Ngày Sinh:", AutoSize = true }; DateTimePicker dtpNgay = new DateTimePicker { Left = 120, Top = 100, Width = 430, Format = DateTimePickerFormat.Short, Value = ngaySinh };
+            Label lblTen = new Label { Left = 20, Top = 63, Text = "Họ Tên:", AutoSize = true }; TextBox txtTen = new TextBox { Left = 120, Top = 60, Width = 430, Text = hoTen, Enabled = false };
+            Label lblNgay = new Label { Left = 20, Top = 103, Text = "Ngày Sinh:", AutoSize = true }; DateTimePicker dtpNgay = new DateTimePicker { Left = 120, Top = 100, Width = 430, Format = DateTimePickerFormat.Short, Value = ngaySinh, Enabled = false };
             Label lblVT = new Label { Left = 20, Top = 143, Text = "Vai Trò:", AutoSize = true }; ComboBox cbVT = new ComboBox { Left = 120, Top = 140, Width = 430, DropDownStyle = ComboBoxStyle.DropDownList };
 
             Label lblGrid = new Label { Left = 20, Top = 193, Text = "Tài sản Gia đình đang đại diện:", AutoSize = true, Font = new Font("Segoe UI", 9.75F, FontStyle.Bold) };
@@ -257,6 +267,12 @@ namespace LTUD
             // Load Combobox VaiTro: Chỉ lấy Chủ gia đình và Người dùng
             cbVT.DataSource = DatabaseConnection.GetData("SELECT MAVAITRO, TENVAITRO FROM VAITRO WHERE MAVAITRO IN ('VT02', 'VT03')");
             cbVT.DisplayMember = "TENVAITRO"; cbVT.ValueMember = "MAVAITRO"; cbVT.SelectedValue = maVT;
+
+            // Nếu người cần sửa là VT03 (Chủ gia đình) thì không cho phép đổi vai trò sang người dùng thường để tránh gia đình vô chủ
+            if (maVT == "VT03")
+            {
+                cbVT.Enabled = false;
+            }
 
             Action loadGridAndCombo = () => {
                 dgvTS.DataSource = DatabaseConnection.GetData($"SELECT MATAISAN AS [Mã TS], TENTAISAN AS [Tên Tài Sản] FROM TAISAN WHERE MANGUOIDUNG = '{maND}' AND PHAMVI = N'Gia đình'");
