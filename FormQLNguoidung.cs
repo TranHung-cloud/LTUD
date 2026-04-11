@@ -94,12 +94,19 @@ namespace LTUD
             int i = e.RowIndex;
             if (i < 0) return;
 
+            // Đổ dữ liệu lên các Control
             txtMaND.Text = dataGridView1.Rows[i].Cells["MANGUOIDUNG"].Value.ToString();
             txtHoten.Text = dataGridView1.Rows[i].Cells["HOTEN"].Value.ToString();
             cboGiadinh.Text = dataGridView1.Rows[i].Cells["TENGIADINH"].Value.ToString();
             cboVaitro.Text = dataGridView1.Rows[i].Cells["TENVAITRO"].Value.ToString();
             dtpNgaysinh.Value = Convert.ToDateTime(dataGridView1.Rows[i].Cells["NGAYSINH"].Value);
             cboTrangthai.Text = dataGridView1.Rows[i].Cells["TRANGTHAI"].Value.ToString();
+
+            // --- KHÓA CÁC TRƯỜNG THEO YÊU CẦU ---
+            txtHoten.ReadOnly = true;        // Khóa Họ tên
+            dtpNgaysinh.Enabled = false;     // Khóa Ngày sinh
+            cboGiadinh.Enabled = false;      // Khóa Gia đình
+            txtMaND.ReadOnly = true;         // Mã người dùng luôn phải khóa
         }
         string TaoMaTuTang()
         {
@@ -194,14 +201,15 @@ namespace LTUD
         {
             txtMaND.Text = TaoMaTuTang();
             txtHoten.Clear();
-
             cboGiadinh.SelectedIndex = -1;
-
-            // 🔥 mặc định lại vai trò
             cboVaitro.SelectedValue = "VT02";
-
             cboTrangthai.SelectedIndex = -1;
             dtpNgaysinh.Value = DateTime.Now.Date;
+
+            // --- MỞ KHÓA LẠI ĐỂ NHẬP MỚI ---
+            txtHoten.ReadOnly = false;
+            dtpNgaysinh.Enabled = true;
+            cboGiadinh.Enabled = true;
         }
 
         private void btnXoa_Click(object sender, EventArgs e)
@@ -252,77 +260,70 @@ namespace LTUD
 
         private void btnSua_Click(object sender, EventArgs e)
         {
-            // 1. Kiểm tra mã người dùng (phải có mã mới sửa được)
+            // 1. Kiểm tra mã người dùng
             if (string.IsNullOrEmpty(txtMaND.Text))
             {
                 MessageBox.Show("Vui lòng chọn người dùng cần sửa từ danh sách!");
                 return;
             }
 
-            // 2. Kiểm tra họ tên trống
-            if (string.IsNullOrWhiteSpace(txtHoten.Text))
+            // 2. Lấy dữ liệu từ giao diện
+            string vaitroMoi = cboVaitro.SelectedValue?.ToString().Trim().ToUpper();
+            string trangthaiMoi = cboTrangthai.Text.Trim();
+
+            // 3. Lấy vai trò HIỆN TẠI từ Database
+            string vaitroCu = "";
+            using (SqlCommand cmdCheck = new SqlCommand("SELECT MAVAITRO FROM NGUOIDUNG WHERE MANGUOIDUNG = @ma", conn))
             {
-                MessageBox.Show("Họ tên không được để trống!");
+                cmdCheck.Parameters.AddWithValue("@ma", txtMaND.Text);
+                object result = cmdCheck.ExecuteScalar();
+                vaitroCu = result?.ToString().Trim().ToUpper() ?? "";
+            }
+
+            // --- KIỂM TRA CÁC RÀNG BUỘC CHẶT CHẼ ---
+
+            // A. KHÔNG CHO PHÉP sửa thành Chủ gia đình (Yêu cầu mới của bạn)
+            // Nếu vai trò hiện tại KHÔNG PHẢI VT03 mà chọn MỚI là VT03 thì chặn
+            if (vaitroCu != "VT03" && vaitroMoi == "VT03")
+            {
+                MessageBox.Show("LỖI: Hệ thống không cho phép chuyển người dùng thường thành Chủ gia đình tại đây!",
+                                "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                cboVaitro.SelectedValue = vaitroCu; // Trả về vai trò cũ
                 return;
             }
 
-            // 3. Lấy giá trị Vai trò và chuẩn hóa
-            // Ép kiểu an toàn và xóa khoảng trắng thừa
-            string maVaitro = cboVaitro.SelectedValue != null ? cboVaitro.SelectedValue.ToString().Trim() : "";
-            string tenVaitro = cboVaitro.Text.Trim();
-
-            // 4. KIỂM TRA LOGIC CHỦ GIA ĐÌNH (Sửa tại đây)
-            // Kiểm tra cả mã (VT03) HOẶC tên hiển thị (Chủ gia đình) để tránh sai sót
-            if (maVaitro == "VT03" || tenVaitro == "Chủ gia đình")
+            // B. Chặn từ Chủ gia đình (VT03) sang Quản trị viên (VT01)
+            if (vaitroCu == "VT03" && vaitroMoi == "VT01")
             {
-                if (cboGiadinh.SelectedValue == null || cboGiadinh.SelectedIndex == -1)
-                {
-                    MessageBox.Show("LỖI: Khi thay đổi vai trò thành 'Chủ gia đình', bạn bắt buộc phải chọn Gia đình cho họ!",
-                                    "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    cboGiadinh.Focus();
-                    return; // NGĂN CHẶN việc chạy xuống lệnh UPDATE phía dưới
-                }
+                MessageBox.Show("LỖI: Không được phép thay đổi vai trò từ Chủ gia đình sang Quản trị viên!",
+                                "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                cboVaitro.SelectedValue = "VT03";
+                return;
             }
 
-            // 5. Thực hiện cập nhật nếu vượt qua kiểm tra
+            // 4. THỰC HIỆN CẬP NHẬT (Chỉ cập nhật Vai trò và Trạng thái)
             try
             {
-                string sql = @"
-            UPDATE NGUOIDUNG
-            SET HOTEN = @ten,
-                MAVAITRO = @vt,
-                MAGIADINH = @gd,
-                NGAYSINH = @ns,
-                TRANGTHAI = @tt
-            WHERE MANGUOIDUNG = @ma";
+                // Loại bỏ hoàn toàn MAGIADINH, HOTEN, NGAYSINH khỏi câu lệnh UPDATE
+                string sql = @"UPDATE NGUOIDUNG 
+                       SET MAVAITRO = @vt, 
+                           TRANGTHAI = @tt 
+                       WHERE MANGUOIDUNG = @ma";
 
                 SqlCommand cmd = new SqlCommand(sql, conn);
-
                 cmd.Parameters.AddWithValue("@ma", txtMaND.Text);
-                cmd.Parameters.AddWithValue("@ten", txtHoten.Text);
-                cmd.Parameters.AddWithValue("@vt", maVaitro);
+                cmd.Parameters.AddWithValue("@vt", vaitroMoi);
+                cmd.Parameters.AddWithValue("@tt", trangthaiMoi);
 
-                // Nếu không chọn gia đình (cho các vai trò khác) thì lưu NULL vào DB
-                cmd.Parameters.AddWithValue("@gd", cboGiadinh.SelectedValue ?? DBNull.Value);
-
-                cmd.Parameters.AddWithValue("@ns", dtpNgaysinh.Value);
-                cmd.Parameters.AddWithValue("@tt", cboTrangthai.Text);
-
-                int result = cmd.ExecuteNonQuery();
-
-                if (result > 0)
+                if (cmd.ExecuteNonQuery() > 0)
                 {
                     LoadGrid();
-                    MessageBox.Show("Cập nhật thông tin thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                else
-                {
-                    MessageBox.Show("Không tìm thấy người dùng để cập nhật!");
+                    MessageBox.Show("Cập nhật thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi sửa: " + ex.Message);
+                MessageBox.Show("Lỗi hệ thống: " + ex.Message);
             }
         }
 
