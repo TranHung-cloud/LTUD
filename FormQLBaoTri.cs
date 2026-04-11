@@ -242,12 +242,13 @@ namespace LTUD
             }
             else if (vaiTro == "VT02") // Người dùng
             {
+                bool isGiaDinh = phamVi.Equals("Gia đình", StringComparison.OrdinalIgnoreCase);
                 bool isCaNhan = phamVi.Equals("Cá nhân", StringComparison.OrdinalIgnoreCase);
                 bool isOwner = nguoiSoHuu.Equals(maNguoiDung, StringComparison.OrdinalIgnoreCase);
 
-                if (!isCaNhan || !isOwner)
+                if (!isOwner)
                 {
-                    MessageBox.Show("Người dùng chỉ có quyền sửa/xóa các lịch bảo trì của tài sản thuộc phạm vi Cá Nhân và do chính mình sở hữu!", "Quyền truy cập", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Người dùng chỉ có quyền sửa/xóa các lịch bảo trì của tài sản thuộc phạm vi Cá Nhân do mình sở hữu, hoặc tài sản Gia đình mà mình làm đại diện!", "Quyền truy cập", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return false;
                 }
             }
@@ -290,12 +291,11 @@ namespace LTUD
             f.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
             Label lblLich = new Label { Left = 20, Top = 23, Text = "Mã Lịch:", AutoSize = true }; TextBox txtLich = new TextBox { Left = 120, Top = 20, Width = 330, Text = mLich, Enabled = false };
 
-            Label lblPV = new Label { Left = 20, Top = 63, Text = "Phạm Vi:", AutoSize = true }; ComboBox cbPV = new ComboBox { Left = 120, Top = 60, DropDownStyle = ComboBoxStyle.DropDownList, Width = 330 };
+            Label lblPV = new Label { Left = 20, Top = 63, Text = "Phạm Vi:", AutoSize = true }; ComboBox cbPV = new ComboBox { Left = 120, Top = 60, DropDownStyle = ComboBoxStyle.DropDownList, Width = 330, Enabled = isAdd };
             if (string.IsNullOrEmpty(adminMaGD)) cbPV.Items.AddRange(new string[] { "Cá nhân" });
-            else if (vaiTro == "VT03") cbPV.Items.AddRange(new string[] { "Gia đình", "Cá nhân" });
-            else cbPV.Items.AddRange(new string[] { "Cá nhân" });
+            else cbPV.Items.AddRange(new string[] { "Gia đình", "Cá nhân" });
 
-            Label lblTS = new Label { Left = 20, Top = 103, Text = "Tài Sản:", AutoSize = true }; ComboBox cbTS = new ComboBox { Left = 120, Top = 100, DropDownStyle = ComboBoxStyle.DropDownList, Width = 330 };
+            Label lblTS = new Label { Left = 20, Top = 103, Text = "Tài Sản:", AutoSize = true }; ComboBox cbTS = new ComboBox { Left = 120, Top = 100, DropDownStyle = ComboBoxStyle.DropDownList, Width = 330, Enabled = isAdd };
             Label lblNgay = new Label { Left = 20, Top = 143, Text = "Ngày BT:", AutoSize = true }; DateTimePicker dtpNgay = new DateTimePicker { Left = 120, Top = 140, Width = 330, Format = DateTimePickerFormat.Short, Value = nBaoTri };
             Label lblTT = new Label { Left = 20, Top = 183, Text = "Trạng Thái:", AutoSize = true }; ComboBox cbTT = new ComboBox { Left = 120, Top = 180, Width = 330, DropDownStyle = ComboBoxStyle.DropDownList };
             cbTT.Items.AddRange(new string[] { "Hoàn thành", "Đang xử lý", "Chưa xử lý" });
@@ -364,7 +364,12 @@ namespace LTUD
                 {
                     string pvCheck = dtCheck.Rows[0]["PHAMVI"].ToString().Trim();
                     string ownerCheck = dtCheck.Rows[0]["MANGUOIDUNG"].ToString().Trim();
-                    if (vaiTro == "VT02" && (pvCheck == "Gia đình" || ownerCheck != maNguoiDung))
+                    if (vaiTro == "VT02" && (pvCheck == "Gia đình" && !ownerCheck.Equals(maNguoiDung, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        MessageBox.Show("Người dùng chỉ có quyền thêm lịch bảo trì cho tài sản thuộc phạm vi Cá Nhân hoặc tài sản Gia đình mà mình là người đại diện!", "Quyền truy cập", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+                    if (vaiTro == "VT02" && (pvCheck == "Cá nhân" && !ownerCheck.Equals(maNguoiDung, StringComparison.OrdinalIgnoreCase)))
                     {
                         MessageBox.Show("Người dùng chỉ có quyền thêm lịch bảo trì cho tài sản thuộc phạm vi Cá Nhân và do chính mình sở hữu!", "Quyền truy cập", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;

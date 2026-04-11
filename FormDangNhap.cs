@@ -18,7 +18,7 @@ namespace LTUD
 
         private void BtnDangNhap_Click(object sender, EventArgs e)
         {
-            string maND = txtMaNguoiDung.Text.Trim();
+            string maND = txtMaNguoiDung.Text.Trim().ToUpper();
             string mk = txtMatKhau.Text;
 
             if (maND == "" || mk == "")
