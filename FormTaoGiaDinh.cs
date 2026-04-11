@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Data;
+using System.Linq;
 
 namespace LTUD
 {
@@ -26,13 +27,26 @@ namespace LTUD
         
         private string TaoMaGiaDinhTuTang()
         {
-            DataTable dt = DatabaseConnection.GetData("SELECT TOP 1 MAGIADINH FROM GIADINH ORDER BY MAGIADINH DESC");
+            DataTable dt = DatabaseConnection.GetData("SELECT MAGIADINH FROM GIADINH WHERE MAGIADINH LIKE 'GD%'");
             if (dt.Rows.Count == 0) return "GD01";
-            
-            string lastID = dt.Rows[0][0].ToString();
-            int number = int.Parse(lastID.Substring(2));
-            number++;
-            return "GD" + number.ToString("D2");
+
+            int maxNumber = 0;
+            foreach (DataRow row in dt.Rows)
+            {
+                string currentID = row["MAGIADINH"].ToString().Trim();
+                string numPart = new string(currentID.SkipWhile(c => !char.IsDigit(c)).ToArray());
+
+                if (int.TryParse(numPart, out int currentNum))
+                {
+                    if (currentNum > maxNumber)
+                    {
+                        maxNumber = currentNum;
+                    }
+                }
+            }
+
+            int nextNumber = maxNumber + 1;
+            return "GD" + nextNumber.ToString("D2");
         }
 
         private void BtnLuu_Click(object sender, EventArgs e)
