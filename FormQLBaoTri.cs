@@ -33,7 +33,14 @@ namespace LTUD
             try
             {
                 cbPhamViFilter.Items.Clear();
-                cbPhamViFilter.Items.AddRange(new string[] { "Tất cả", "Gia đình", "Cá nhân" });
+                if (string.IsNullOrEmpty(adminMaGD))
+                {
+                    cbPhamViFilter.Items.Add("Cá nhân");
+                }
+                else
+                {
+                    cbPhamViFilter.Items.AddRange(new string[] { "Tất cả", "Gia đình", "Cá nhân" });
+                }
                 cbPhamViFilter.SelectedIndex = 0;
                 cbPhamViFilter.SelectedIndexChanged += (s, ev) => LoadComboBoxTaiSanFilter();
                 LoadComboBoxTaiSanFilter();
@@ -51,15 +58,26 @@ namespace LTUD
 
             try
             {
-                string query = $@"
-                    SELECT MATAISAN, TENTAISAN + ' (' + MATAISAN + ')' AS TENDAYDU 
-                    FROM TAISAN 
-                    WHERE MANGUOIDUNG IN (SELECT MANGUOIDUNG FROM NGUOIDUNG WHERE MAGIADINH = '{adminMaGD}')
-                    AND (PHAMVI = N'Gia đình' OR (PHAMVI = N'Cá nhân' AND MANGUOIDUNG = '{maNguoiDung}'))";
-
-                if (selectedPV != "Tất cả")
+                string query;
+                if (string.IsNullOrEmpty(adminMaGD))
                 {
-                    query += $" AND PHAMVI = N'{selectedPV}'";
+                    query = $@"
+                        SELECT MATAISAN, TENTAISAN + ' (' + MATAISAN + ')' AS TENDAYDU 
+                        FROM TAISAN 
+                        WHERE MANGUOIDUNG = '{maNguoiDung}' AND PHAMVI = N'Cá nhân'";
+                }
+                else
+                {
+                    query = $@"
+                        SELECT MATAISAN, TENTAISAN + ' (' + MATAISAN + ')' AS TENDAYDU 
+                        FROM TAISAN 
+                        WHERE MANGUOIDUNG IN (SELECT MANGUOIDUNG FROM NGUOIDUNG WHERE MAGIADINH = '{adminMaGD}')
+                        AND (PHAMVI = N'Gia đình' OR (PHAMVI = N'Cá nhân' AND MANGUOIDUNG = '{maNguoiDung}'))";
+
+                    if (selectedPV != "Tất cả")
+                    {
+                        query += $" AND PHAMVI = N'{selectedPV}'";
+                    }
                 }
 
                 DataTable dtTS = DatabaseConnection.GetData(query);
@@ -96,24 +114,44 @@ namespace LTUD
 
             try
             {
-                string query = $@"
-                    SELECT 
-                        B.MALICH AS [Mã Lịch],
-                        T.TENTAISAN AS [Tên Tài Sản],
-                        T.MATAISAN AS [Mã Tài Sản],
-                        T.PHAMVI AS [Phạm Vi],
-                        B.NGAYBAOTRI AS [Ngày Bảo Trì],
-                        B.TRANGTHAI AS [Trạng Thái],
-                        B.CHIPHI AS [Chi Phí],
-                        B.NOIDUNGBAOTRI AS [Nội Dung]
-                    FROM THONGTINBAOTRI B
-                    INNER JOIN TAISAN T ON B.MATAISAN = T.MATAISAN
-                    WHERE T.MANGUOIDUNG IN (SELECT MANGUOIDUNG FROM NGUOIDUNG WHERE MAGIADINH = '{adminMaGD}')
-                    AND (T.PHAMVI = N'Gia đình' OR (T.PHAMVI = N'Cá nhân' AND T.MANGUOIDUNG = '{maNguoiDung}'))";
-
-                if (selectedPV != "Tất cả")
+                string query;
+                if (string.IsNullOrEmpty(adminMaGD))
                 {
-                    query += $" AND T.PHAMVI = N'{selectedPV}'";
+                    query = $@"
+                        SELECT 
+                            B.MALICH AS [Mã Lịch],
+                            T.TENTAISAN AS [Tên Tài Sản],
+                            T.MATAISAN AS [Mã Tài Sản],
+                            T.PHAMVI AS [Phạm Vi],
+                            B.NGAYBAOTRI AS [Ngày Bảo Trì],
+                            B.TRANGTHAI AS [Trạng Thái],
+                            B.CHIPHI AS [Chi Phí],
+                            B.NOIDUNGBAOTRI AS [Nội Dung]
+                        FROM THONGTINBAOTRI B
+                        INNER JOIN TAISAN T ON B.MATAISAN = T.MATAISAN
+                        WHERE T.MANGUOIDUNG = '{maNguoiDung}' AND T.PHAMVI = N'Cá nhân'";
+                }
+                else
+                {
+                    query = $@"
+                        SELECT 
+                            B.MALICH AS [Mã Lịch],
+                            T.TENTAISAN AS [Tên Tài Sản],
+                            T.MATAISAN AS [Mã Tài Sản],
+                            T.PHAMVI AS [Phạm Vi],
+                            B.NGAYBAOTRI AS [Ngày Bảo Trì],
+                            B.TRANGTHAI AS [Trạng Thái],
+                            B.CHIPHI AS [Chi Phí],
+                            B.NOIDUNGBAOTRI AS [Nội Dung]
+                        FROM THONGTINBAOTRI B
+                        INNER JOIN TAISAN T ON B.MATAISAN = T.MATAISAN
+                        WHERE T.MANGUOIDUNG IN (SELECT MANGUOIDUNG FROM NGUOIDUNG WHERE MAGIADINH = '{adminMaGD}')
+                        AND (T.PHAMVI = N'Gia đình' OR (T.PHAMVI = N'Cá nhân' AND T.MANGUOIDUNG = '{maNguoiDung}'))";
+
+                    if (selectedPV != "Tất cả")
+                    {
+                        query += $" AND T.PHAMVI = N'{selectedPV}'";
+                    }
                 }
 
                 if (selectedTS != "ALL")
@@ -253,7 +291,8 @@ namespace LTUD
             Label lblLich = new Label { Left = 20, Top = 23, Text = "Mã Lịch:", AutoSize = true }; TextBox txtLich = new TextBox { Left = 120, Top = 20, Width = 330, Text = mLich, Enabled = false };
 
             Label lblPV = new Label { Left = 20, Top = 63, Text = "Phạm Vi:", AutoSize = true }; ComboBox cbPV = new ComboBox { Left = 120, Top = 60, DropDownStyle = ComboBoxStyle.DropDownList, Width = 330 };
-            if (vaiTro == "VT03") cbPV.Items.AddRange(new string[] { "Gia đình", "Cá nhân" });
+            if (string.IsNullOrEmpty(adminMaGD)) cbPV.Items.AddRange(new string[] { "Cá nhân" });
+            else if (vaiTro == "VT03") cbPV.Items.AddRange(new string[] { "Gia đình", "Cá nhân" });
             else cbPV.Items.AddRange(new string[] { "Cá nhân" });
 
             Label lblTS = new Label { Left = 20, Top = 103, Text = "Tài Sản:", AutoSize = true }; ComboBox cbTS = new ComboBox { Left = 120, Top = 100, DropDownStyle = ComboBoxStyle.DropDownList, Width = 330 };
@@ -267,21 +306,32 @@ namespace LTUD
 
             Action loadTS = () => {
                 string pv = cbPV.SelectedItem?.ToString().Trim();
-                string query = $@"
-                    SELECT LTRIM(RTRIM(MATAISAN)) AS MATAISAN, TENTAISAN + ' (' + LTRIM(RTRIM(MATAISAN)) + ')' AS TENDAYDU 
-                    FROM TAISAN 
-                    WHERE PHAMVI = N'{pv}' AND MANGUOIDUNG IN (SELECT MANGUOIDUNG FROM NGUOIDUNG WHERE MAGIADINH = '{adminMaGD}')";
-
-                if (vaiTro == "VT03") // Chủ gia đình 
+                string query;
+                if (string.IsNullOrEmpty(adminMaGD))
                 {
-                    if (pv != null && pv.Equals("Cá nhân", StringComparison.OrdinalIgnoreCase))
+                    query = $@"
+                        SELECT LTRIM(RTRIM(MATAISAN)) AS MATAISAN, TENTAISAN + ' (' + LTRIM(RTRIM(MATAISAN)) + ')' AS TENDAYDU 
+                        FROM TAISAN 
+                        WHERE PHAMVI = N'Cá nhân' AND MANGUOIDUNG = '{maNguoiDung}'";
+                }
+                else
+                {
+                    query = $@"
+                        SELECT LTRIM(RTRIM(MATAISAN)) AS MATAISAN, TENTAISAN + ' (' + LTRIM(RTRIM(MATAISAN)) + ')' AS TENDAYDU 
+                        FROM TAISAN 
+                        WHERE PHAMVI = N'{pv}' AND MANGUOIDUNG IN (SELECT MANGUOIDUNG FROM NGUOIDUNG WHERE MAGIADINH = '{adminMaGD}')";
+
+                    if (vaiTro == "VT03") // Chủ gia đình 
+                    {
+                        if (pv != null && pv.Equals("Cá nhân", StringComparison.OrdinalIgnoreCase))
+                        {
+                            query += $" AND MANGUOIDUNG = '{maNguoiDung}'";
+                        }
+                    }
+                    else if (vaiTro == "VT02") // Người dùng
                     {
                         query += $" AND MANGUOIDUNG = '{maNguoiDung}'";
                     }
-                }
-                else if (vaiTro == "VT02") // Người dùng
-                {
-                    query += $" AND MANGUOIDUNG = '{maNguoiDung}'";
                 }
 
                 cbTS.DataSource = DatabaseConnection.GetData(query);

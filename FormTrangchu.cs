@@ -32,17 +32,16 @@ namespace LTUD
             if (string.IsNullOrEmpty(maGiaDinh))
             {
                 btnTaisangiadinh.Enabled = false;
-                btnThongtinbaotri.Enabled = false;
                 btnQuanlygiadinh.Enabled = false;
                 taoGiaDinhToolStripMenuItem.Visible = true;
             }
             else
             {
                 btnTaisangiadinh.Enabled = true;
-                btnThongtinbaotri.Enabled = true;
                 btnQuanlygiadinh.Enabled = true;
                 taoGiaDinhToolStripMenuItem.Visible = false;
             }
+            btnThongtinbaotri.Enabled = true;
         }
 
         private void taoGiaDinhToolStripMenuItem_Click(object sender, EventArgs e)

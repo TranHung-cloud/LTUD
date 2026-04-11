@@ -229,9 +229,18 @@ namespace LTUD
 
             // Nhận diện vai trò của người chuẩn bị xóa qua cột Mã Vai Trò
             string vaiTroCuaNguoiCanXoa = dgvNguoiDung.CurrentRow.Cells["Mã Vai Trò"].Value.ToString().Trim();
+
+            // Xử lý logic không cho phép xóa Chủ Gia Đình
             if (vaiTroCuaNguoiCanXoa == "VT03")
             {
-                MessageBox.Show("Không thể xóa Chủ Gia Đình ra khỏi gia đình!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                if (ma == adminMaGD) // Giả sử dùng để check chính mình or đơn giản check vai trò
+                {
+                    MessageBox.Show("Bạn không thể tự xóa chính mình ra khỏi gia đình!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else
+                {
+                    MessageBox.Show("Không thể xóa thành viên có vai trò Chủ Gia Đình ra khỏi gia đình!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
                 return;
             }
 
@@ -245,7 +254,7 @@ namespace LTUD
             if (MessageBox.Show("Bạn có chắc chắn muốn xóa thành viên này khỏi gia đình?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 // Cập nhật MAGIADINH về NULL thay vì xóa hẳn khỏi hệ thống
-                DatabaseConnection.ExecuteQuery($"UPDATE NGUOIDUNG SET MAGIADINH = NULL WHERE MANGUOIDUNG = '{ma}'");
+                DatabaseConnection.ExecuteQuery($"UPDATE NGUOIDUNG SET MAGIADINH = NULL, MAVAITRO = 'VT02' WHERE MANGUOIDUNG = '{ma}'");
                 LoadThanhVien(currentMaGD);
             }
         }
