@@ -129,7 +129,7 @@ namespace LTUD
 
                 try
                 {
-                    DataTable dt = DatabaseConnection.GetData($"SELECT MANGUOIDUNG, HOTEN, NGAYSINH, MAGIADINH, MAVAITRO FROM NGUOIDUNG WHERE MANGUOIDUNG = '{searchMa}'");
+                    DataTable dt = DatabaseConnection.GetData($"SELECT MANGUOIDUNG, HOTEN, NGAYSINH, MAGIADINH, MAVAITRO, TRANGTHAI FROM NGUOIDUNG WHERE MANGUOIDUNG = '{searchMa}'");
                     if (dt.Rows.Count > 0)
                     {
                         string maND = dt.Rows[0]["MANGUOIDUNG"].ToString();
@@ -141,6 +141,7 @@ namespace LTUD
                         }
                         string maGD = dt.Rows[0]["MAGIADINH"].ToString().Trim();
                         string vaiTro = dt.Rows[0]["MAVAITRO"].ToString().Trim();
+                        string trangThai = dt.Rows[0]["TRANGTHAI"].ToString().Trim();
 
                         lblResMa.Text = "Mã ND: " + maND;
                         lblResTen.Text = "Họ Tên: " + hoTen;
@@ -149,6 +150,12 @@ namespace LTUD
                         if (vaiTro == "VT01")
                         {
                             lblResStatus.Text = "Không thể thêm Quản trị viên vào gia đình!";
+                            lblResStatus.ForeColor = Color.Red;
+                            btnSave.Enabled = false;
+                        }
+                        else if (trangThai.Equals("Bị khóa", StringComparison.OrdinalIgnoreCase))
+                        {
+                            lblResStatus.Text = "Chưa thể thêm. Tài khoản này đang bị khóa!";
                             lblResStatus.ForeColor = Color.Red;
                             btnSave.Enabled = false;
                         }
