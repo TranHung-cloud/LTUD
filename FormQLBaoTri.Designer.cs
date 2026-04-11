@@ -49,46 +49,6 @@ namespace LTUD
             this.dgvBaoTri.TabIndex = 1;
             this.dgvBaoTri.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvBaoTri_CellContentClick);
             // 
-            // lblPhamViFilter
-            // 
-            this.lblPhamViFilter.AutoSize = true;
-            this.lblPhamViFilter.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.lblPhamViFilter.Location = new System.Drawing.Point(50, 75);
-            this.lblPhamViFilter.Name = "lblPhamViFilter";
-            this.lblPhamViFilter.Size = new System.Drawing.Size(127, 21);
-            this.lblPhamViFilter.TabIndex = 5;
-            this.lblPhamViFilter.Text = "Chọn Phạm vi:";
-            // 
-            // cbPhamViFilter
-            // 
-            this.cbPhamViFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbPhamViFilter.Font = new System.Drawing.Font("Segoe UI", 12F);
-            this.cbPhamViFilter.FormattingEnabled = true;
-            this.cbPhamViFilter.Location = new System.Drawing.Point(180, 72);
-            this.cbPhamViFilter.Name = "cbPhamViFilter";
-            this.cbPhamViFilter.Size = new System.Drawing.Size(150, 29);
-            this.cbPhamViFilter.TabIndex = 6;
-            // 
-            // lblTaiSanFilter
-            // 
-            this.lblTaiSanFilter.AutoSize = true;
-            this.lblTaiSanFilter.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.lblTaiSanFilter.Location = new System.Drawing.Point(340, 75);
-            this.lblTaiSanFilter.Name = "lblTaiSanFilter";
-            this.lblTaiSanFilter.Size = new System.Drawing.Size(71, 21);
-            this.lblTaiSanFilter.TabIndex = 7;
-            this.lblTaiSanFilter.Text = "Tài sản:";
-            // 
-            // cbTaiSanFilter
-            // 
-            this.cbTaiSanFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbTaiSanFilter.Font = new System.Drawing.Font("Segoe UI", 12F);
-            this.cbTaiSanFilter.FormattingEnabled = true;
-            this.cbTaiSanFilter.Location = new System.Drawing.Point(420, 72);
-            this.cbTaiSanFilter.Name = "cbTaiSanFilter";
-            this.cbTaiSanFilter.Size = new System.Drawing.Size(330, 29);
-            this.cbTaiSanFilter.TabIndex = 8;
-            // 
             // btnThem
             // 
             this.btnThem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(239)))), ((int)(((byte)(231)))));
@@ -114,6 +74,7 @@ namespace LTUD
             this.btnSua.TabIndex = 3;
             this.btnSua.Text = "Sửa";
             this.btnSua.UseVisualStyleBackColor = false;
+            this.btnSua.Click += new System.EventHandler(this.btnSua_Click_1);
             // 
             // btnXoa
             // 
@@ -127,6 +88,46 @@ namespace LTUD
             this.btnXoa.TabIndex = 4;
             this.btnXoa.Text = "Xóa";
             this.btnXoa.UseVisualStyleBackColor = false;
+            // 
+            // lblPhamViFilter
+            // 
+            this.lblPhamViFilter.AutoSize = true;
+            this.lblPhamViFilter.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.lblPhamViFilter.Location = new System.Drawing.Point(50, 75);
+            this.lblPhamViFilter.Name = "lblPhamViFilter";
+            this.lblPhamViFilter.Size = new System.Drawing.Size(120, 21);
+            this.lblPhamViFilter.TabIndex = 5;
+            this.lblPhamViFilter.Text = "Chọn Phạm vi:";
+            // 
+            // cbPhamViFilter
+            // 
+            this.cbPhamViFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbPhamViFilter.Font = new System.Drawing.Font("Segoe UI", 12F);
+            this.cbPhamViFilter.FormattingEnabled = true;
+            this.cbPhamViFilter.Location = new System.Drawing.Point(180, 72);
+            this.cbPhamViFilter.Name = "cbPhamViFilter";
+            this.cbPhamViFilter.Size = new System.Drawing.Size(150, 29);
+            this.cbPhamViFilter.TabIndex = 6;
+            // 
+            // lblTaiSanFilter
+            // 
+            this.lblTaiSanFilter.AutoSize = true;
+            this.lblTaiSanFilter.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.lblTaiSanFilter.Location = new System.Drawing.Point(340, 75);
+            this.lblTaiSanFilter.Name = "lblTaiSanFilter";
+            this.lblTaiSanFilter.Size = new System.Drawing.Size(66, 21);
+            this.lblTaiSanFilter.TabIndex = 7;
+            this.lblTaiSanFilter.Text = "Tài sản:";
+            // 
+            // cbTaiSanFilter
+            // 
+            this.cbTaiSanFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbTaiSanFilter.Font = new System.Drawing.Font("Segoe UI", 12F);
+            this.cbTaiSanFilter.FormattingEnabled = true;
+            this.cbTaiSanFilter.Location = new System.Drawing.Point(420, 72);
+            this.cbTaiSanFilter.Name = "cbTaiSanFilter";
+            this.cbTaiSanFilter.Size = new System.Drawing.Size(330, 29);
+            this.cbTaiSanFilter.TabIndex = 8;
             // 
             // FormQLBaoTri
             // 

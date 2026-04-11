@@ -232,6 +232,7 @@ namespace LTUD
                 SqlCommand checkCmd = new SqlCommand(checkSql, conn);
                 checkCmd.Parameters.AddWithValue("@ma", MaTaiSan.Text);
                 object result = checkCmd.ExecuteScalar();
+       
                 if (result.ToString().Trim() != maNguoiDung.Trim())
                 {
                     MessageBox.Show("Bạn không thể xóa tài sản của người khác!");

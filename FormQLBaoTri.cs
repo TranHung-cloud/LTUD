@@ -220,15 +220,15 @@ namespace LTUD
         private void BtnSua_Click(object sender, EventArgs e)
         {
             if (dgvBaoTri.CurrentRow == null) return;
-            string maLich = dgvBaoTri.CurrentRow.Cells[0].Value.ToString();
+            string maLich = dgvBaoTri.CurrentRow.Cells["Mã Lịch"].Value.ToString().Trim();
 
             if (!KiemTraQuyenThucHien(maLich)) return;
 
-            string maTS = dgvBaoTri.CurrentRow.Cells[2].Value.ToString();
-            DateTime ngay = Convert.ToDateTime(dgvBaoTri.CurrentRow.Cells[4].Value);
-            string tt = dgvBaoTri.CurrentRow.Cells[5].Value.ToString();
-            string chiphi = dgvBaoTri.CurrentRow.Cells[6].Value.ToString();
-            string nDung = dgvBaoTri.CurrentRow.Cells[7].Value.ToString();
+            string maTS = dgvBaoTri.CurrentRow.Cells["Mã Tài Sản"].Value.ToString().Trim();
+            DateTime ngay = Convert.ToDateTime(dgvBaoTri.CurrentRow.Cells["Ngày Bảo Trì"].Value);
+            string tt = dgvBaoTri.CurrentRow.Cells["Trạng Thái"].Value.ToString().Trim();
+            string chiphi = dgvBaoTri.CurrentRow.Cells["Chi Phí"].Value.ToString().Trim();
+            string nDung = dgvBaoTri.CurrentRow.Cells["Nội Dung"].Value.ToString().Trim();
             ShowBaoTriDialog(false, maLich, maTS, ngay, tt, chiphi, nDung);
         }
 
@@ -266,9 +266,9 @@ namespace LTUD
             Button btnSave = new Button { Left = 200, Top = 320, Width = 100, Text = "Lưu", BackColor = Color.FromArgb(242, 239, 231), ForeColor = Color.FromArgb(0, 106, 113), FlatStyle = FlatStyle.Flat };
 
             Action loadTS = () => {
-                string pv = cbPV.SelectedItem?.ToString();
+                string pv = cbPV.SelectedItem?.ToString().Trim();
                 string query = $@"
-                    SELECT MATAISAN, TENTAISAN + ' (' + MATAISAN + ')' AS TENDAYDU 
+                    SELECT LTRIM(RTRIM(MATAISAN)) AS MATAISAN, TENTAISAN + ' (' + LTRIM(RTRIM(MATAISAN)) + ')' AS TENDAYDU 
                     FROM TAISAN 
                     WHERE PHAMVI = N'{pv}' AND MANGUOIDUNG IN (SELECT MANGUOIDUNG FROM NGUOIDUNG WHERE MAGIADINH = '{adminMaGD}')";
 
@@ -293,7 +293,7 @@ namespace LTUD
             if (!isAdd && !string.IsNullOrEmpty(mTS))
             {
                 DataTable dtTSInfo = DatabaseConnection.GetData($"SELECT PHAMVI FROM TAISAN WHERE MATAISAN = '{mTS}'");
-                if (dtTSInfo.Rows.Count > 0) cbPV.SelectedItem = dtTSInfo.Rows[0]["PHAMVI"].ToString();
+                if (dtTSInfo.Rows.Count > 0) cbPV.SelectedItem = dtTSInfo.Rows[0]["PHAMVI"].ToString().Trim();
                 else cbPV.SelectedIndex = 0;
                 loadTS();
                 cbTS.SelectedValue = mTS;
@@ -340,6 +340,11 @@ namespace LTUD
         }
 
         private void dgvBaoTri_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void btnSua_Click_1(object sender, EventArgs e)
         {
 
         }
