@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 
 namespace LTUD
 {
@@ -56,7 +57,7 @@ namespace LTUD
 
         private void button3_Click(object sender, EventArgs e)
         {
-            FormQLNguoidung f = new FormQLNguoidung(); 
+            FormQLNguoidung f = new FormQLNguoidung(maNguoiDung); 
             this.Hide();    
             f.ShowDialog();
             this.Show();
