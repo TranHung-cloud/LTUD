@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using Microsoft.Data.SqlClient;
+using System;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Microsoft.Data.SqlClient;
 
 namespace LTUD
 {
@@ -34,7 +29,7 @@ namespace LTUD
             LoadGrid();
             LoadGiaDinh();
             LoadVaiTro();
-            LoadTrangThai(); 
+            LoadTrangThai();
             txtMaND.Text = TaoMaTuTang();
             dtpNgaysinh.MaxDate = DateTime.Now;
         }
@@ -60,7 +55,7 @@ namespace LTUD
             dataGridView1.Columns["NGAYSINH"].HeaderText = "Ngày sinh";
             dataGridView1.Columns["TRANGTHAI"].HeaderText = "Trạng thái";
 
-           
+
         }
         void LoadVaiTro()
         {
@@ -242,7 +237,7 @@ namespace LTUD
             cmd.Parameters.AddWithValue("@gd", cboGiadinh.SelectedValue);
             cmd.Parameters.AddWithValue("@ns", dtpNgaysinh.Value);
             cmd.Parameters.AddWithValue("@tt", cboTrangthai.Text);
-            
+
             cmd.ExecuteNonQuery();
 
             LoadGrid();
