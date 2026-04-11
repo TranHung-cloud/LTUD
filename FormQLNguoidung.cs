@@ -3,13 +3,14 @@ using System;
 using System.Data;
 using System.Linq;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 
 namespace LTUD
 {
     public partial class FormQLNguoidung : System.Windows.Forms.Form
     {
         SqlConnection conn;
-
+        string currentUser;
         void KetNoi()
         {
             conn = new SqlConnection(
@@ -18,9 +19,10 @@ namespace LTUD
             //  @"Data Source=.\SQLEXPRESS;Initial Catalog=QLTaiSan_LTUD;Integrated Security=True;TrustServerCertificate=True");
             conn.Open();
         }
-        public FormQLNguoidung()
+        public FormQLNguoidung(string maND)
         {
             InitializeComponent();
+            currentUser = maND;
         }
 
         private void FormQLNguoidung_Load(object sender, EventArgs e)
@@ -214,7 +216,12 @@ namespace LTUD
 
         private void btnXoa_Click(object sender, EventArgs e)
         {
-
+            if (txtMaND.Text.Trim().ToUpper() == currentUser.Trim().ToUpper())
+            {
+                MessageBox.Show("Bạn không thể tự xóa chính mình!",
+                                "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             // Xác nhận
             DialogResult kq = MessageBox.Show(
                 "Bạn có chắc muốn xóa người dùng này không?",
@@ -300,7 +307,12 @@ namespace LTUD
                 cboVaitro.SelectedValue = "VT03";
                 return;
             }
-
+            if (txtMaND.Text.Trim().ToUpper() == currentUser.Trim().ToUpper())
+            {
+                MessageBox.Show("Bạn không được phép tự sửa thông tin của chính mình!",
+                                "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             // 4. THỰC HIỆN CẬP NHẬT (Chỉ cập nhật Vai trò và Trạng thái)
             try
             {
