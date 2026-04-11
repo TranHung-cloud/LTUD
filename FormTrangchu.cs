@@ -29,6 +29,18 @@ namespace LTUD
 
         private void FormTrangchu_Load(object sender, EventArgs e)
         {
+            // Verify roles and family from database again to ensure real-time security
+            try
+            {
+                DataTable dt = DatabaseConnection.GetData($"SELECT MAGIADINH, MAVAITRO FROM NGUOIDUNG WHERE MANGUOIDUNG = '{maNguoiDung}'");
+                if (dt.Rows.Count > 0)
+                {
+                    maGiaDinh = dt.Rows[0]["MAGIADINH"].ToString().Trim();
+                    vaiTro = dt.Rows[0]["MAVAITRO"].ToString().Trim();
+                }
+            }
+            catch { }
+
             if (string.IsNullOrEmpty(maGiaDinh))
             {
                 btnTaisangiadinh.Enabled = false;
@@ -114,7 +126,11 @@ namespace LTUD
         {
             FormQLGiaDinh f = new FormQLGiaDinh(maGiaDinh, vaiTro);
             this.Hide();
-            f.FormClosed += (s, args) => this.Show();
+            f.FormClosed += (s, args) => 
+            {
+                this.Show();
+                FormTrangchu_Load(null, null); // Refresh real-time user info
+            };
             f.Show();
         }
 

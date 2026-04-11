@@ -219,13 +219,13 @@ namespace LTUD
         private void BtnSuaTV_Click(object sender, EventArgs e)
         {
             if (dgvNguoiDung.CurrentRow == null) return;
-            string ma = dgvNguoiDung.CurrentRow.Cells[0].Value.ToString();
+            string ma = dgvNguoiDung.CurrentRow.Cells["Mã ND"].Value.ToString().Trim();
 
-            // Sửa lại Index các cột vì số cột hiển thị đã thay đổi (Cột MAVAITRO vẫn ở vị trí 1, biến cột 2 là Vai Trò, 3 là Họ Tên,...)
-            string vaitro = dgvNguoiDung.CurrentRow.Cells["Mã Vai Trò"].Value.ToString();
-            string hoten = dgvNguoiDung.CurrentRow.Cells["Họ Tên"].Value.ToString();
+            // Sửa lại Index các cột vì số cột hiển thị đã thay đổi
+            string vaitro = dgvNguoiDung.CurrentRow.Cells["Mã Vai Trò"].Value.ToString().Trim();
+            string hoten = dgvNguoiDung.CurrentRow.Cells["Họ Tên"].Value.ToString().Trim();
             DateTime ngay = Convert.ToDateTime(dgvNguoiDung.CurrentRow.Cells["Ngày Sinh"].Value);
-            string tt = dgvNguoiDung.CurrentRow.Cells["Trạng Thái"].Value.ToString();
+            string tt = dgvNguoiDung.CurrentRow.Cells["Trạng Thái"].Value.ToString().Trim();
             ShowThanhVienDialog(false, ma, vaitro, hoten, ngay, tt);
         }
 
@@ -284,11 +284,8 @@ namespace LTUD
             cbVT.DataSource = DatabaseConnection.GetData("SELECT MAVAITRO, TENVAITRO FROM VAITRO WHERE MAVAITRO IN ('VT02', 'VT03')");
             cbVT.DisplayMember = "TENVAITRO"; cbVT.ValueMember = "MAVAITRO"; cbVT.SelectedValue = maVT;
 
-            // Nếu người cần sửa là VT03 (Chủ gia đình) thì không cho phép đổi vai trò sang người dùng thường để tránh gia đình vô chủ
-            if (maVT == "VT03")
-            {
-                cbVT.Enabled = false;
-            }
+            // Bỏ vô hiệu hóa ComboBox để người dùng có thể tự giáng cấp nếu đủ điều kiện
+            // if (maVT == "VT03") { cbVT.Enabled = false; }
 
             Action loadGridAndCombo = () => {
                 dgvTS.DataSource = DatabaseConnection.GetData($"SELECT MATAISAN AS [Mã TS], TENTAISAN AS [Tên Tài Sản] FROM TAISAN WHERE MANGUOIDUNG = '{maND}' AND PHAMVI = N'Gia đình'");
@@ -347,10 +344,27 @@ namespace LTUD
             {
                 try
                 {
-                    string vt = cbVT.SelectedValue.ToString();
+                    string vt = cbVT.SelectedValue.ToString().Trim();
+
+                    if (maVT.Trim() == "VT03" && vt == "VT02")
+                    {
+                        DataTable dtCheck = DatabaseConnection.GetData($"SELECT COUNT(*) FROM NGUOIDUNG WHERE MAGIADINH = '{currentMaGD}' AND MAVAITRO = 'VT03' AND MANGUOIDUNG != '{txtMa.Text.Trim()}'");
+                        int countVT03 = 0;
+                        if (dtCheck.Rows.Count > 0)
+                        {
+                            countVT03 = Convert.ToInt32(dtCheck.Rows[0][0]);
+                        }
+
+                        if (countVT03 == 0)
+                        {
+                            MessageBox.Show("Gia đình cần có ít nhất một Chủ Gia Đình! Vui lòng cập nhật một thành viên khác lên làm Chủ Gia Đình trước khi giáng cấp chính mình.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+                    }
+
                     string dateStr = dtpNgay.Value.ToString("yyyy-MM-dd");
 
-                    DatabaseConnection.ExecuteQuery($"UPDATE NGUOIDUNG SET MAVAITRO='{vt}', HOTEN=N'{txtTen.Text}', NGAYSINH='{dateStr}' WHERE MANGUOIDUNG='{txtMa.Text}'");
+                    DatabaseConnection.ExecuteQuery($"UPDATE NGUOIDUNG SET MAVAITRO='{vt}', HOTEN=N'{txtTen.Text}', NGAYSINH='{dateStr}' WHERE MANGUOIDUNG='{txtMa.Text.Trim()}'");
 
                     f.DialogResult = DialogResult.OK;
                     f.Close();

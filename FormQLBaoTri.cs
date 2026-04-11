@@ -359,7 +359,7 @@ namespace LTUD
 
                 // Kiểm tra bảo mật lần cuối trước khi lưu
                 string ts = cbTS.SelectedValue.ToString();
-                DataTable dtCheck = DatabaseConnection.GetData($"SELECT PHAMVI, MANGUOIDUNG FROM TAISAN WHERE MATAISAN = '{ts}'");
+                DataTable dtCheck = DatabaseConnection.GetData($"SELECT PHAMVI, MANGUOIDUNG, NGAYMUA FROM TAISAN WHERE MATAISAN = '{ts}'");
                 if (dtCheck.Rows.Count > 0)
                 {
                     string pvCheck = dtCheck.Rows[0]["PHAMVI"].ToString().Trim();
@@ -373,6 +373,16 @@ namespace LTUD
                     {
                         MessageBox.Show("Người dùng chỉ có quyền thêm lịch bảo trì cho tài sản thuộc phạm vi Cá Nhân và do chính mình sở hữu!", "Quyền truy cập", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;
+                    }
+
+                    if (dtCheck.Rows[0]["NGAYMUA"] != DBNull.Value)
+                    {
+                        DateTime ngayMua = Convert.ToDateTime(dtCheck.Rows[0]["NGAYMUA"]);
+                        if (dtpNgay.Value.Date <= ngayMua.Date)
+                        {
+                            MessageBox.Show($"Ngày bảo trì phải lớn hơn ngày mua tài sản ({ngayMua:dd/MM/yyyy})!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
                     }
                 }
 
