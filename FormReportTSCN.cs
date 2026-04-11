@@ -1,13 +1,7 @@
 ﻿using Microsoft.Reporting.WinForms;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient; // Thêm thư viện này
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace LTUD
@@ -34,8 +28,8 @@ namespace LTUD
                                  INNER JOIN NGUOIDUNG ON TAISAN.MANGUOIDUNG = NGUOIDUNG.MANGUOIDUNG 
                                  INNER JOIN LOAITAISAN ON TAISAN.MALOAI = LOAITAISAN.MALOAI
                                  WHERE NGUOIDUNG.MANGUOIDUNG = @userId"
-                                 ; 
-            DataTable dt = new DataTable();          
+                                 ;
+            DataTable dt = new DataTable();
             // Thay thế hàm MyPublics.OpenData bằng kết nối trực tiếp đến DataBase
             string connectionString = @"Server =.\SQLEXPRESS; Database = QLTaiSan_LTUD; Integrated Security = True; TrustServerCertificate=True";
 
@@ -72,9 +66,9 @@ namespace LTUD
 
                 // Tạo nguồn dữ liệu cho báo cáo 
                 ReportDataSource rdsTaiSan = new ReportDataSource();
-                
+
                 // Thay thế bằng tên DataSet mà bạn khai báo trong file report
-                rdsTaiSan.Name = "datasetTSCN"; 
+                rdsTaiSan.Name = "datasetTSCN";
                 rdsTaiSan.Value = dt;
 
                 // Xóa dữ liệu của báo cáo cũ và thêm dữ liệu mới
@@ -86,7 +80,7 @@ namespace LTUD
             }
             else
             {
-                MessageBox.Show("Không có dữ liệu làm nguồn cho Report!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information); 
+                MessageBox.Show("Không có dữ liệu làm nguồn cho Report!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.Close();
             }
         }
