@@ -16,9 +16,9 @@ namespace LTUD
         string maNguoiDung = "";
         string maGiaDinh = "";
         byte[] imageData = null;
+        string maVaiTro = "";
 
         public QLTaiSanGiaDinh(string ma)
-        //public QLTaiSanGiaDinh()
         {
             InitializeComponent();
             maNguoiDung = ma;
@@ -28,6 +28,7 @@ namespace LTUD
             checkGiaDinh();
             loadData();
             loadCbo();
+            getVaiTro();
             cboLoaiTaiSan.SelectedIndex = -1;
         }
 
@@ -38,6 +39,27 @@ namespace LTUD
             {
                 conn.Open();
             }
+        }
+
+        void getVaiTro()
+        {
+            try
+            {
+                connectData();
+                string sql = "SELECT MAVAITRO FROM NGUOIDUNG WHERE MANGUOIDUNG = @ma";
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@ma", maNguoiDung);
+                object result = cmd.ExecuteScalar();
+                if (result != null && result != DBNull.Value)
+                {
+                    maVaiTro = result.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi: " + ex.Message);
+            }
+            finally { conn.Close(); }
         }
 
         void loadData()
@@ -232,7 +254,15 @@ namespace LTUD
                 SqlCommand checkCmd = new SqlCommand(checkSql, conn);
                 checkCmd.Parameters.AddWithValue("@ma", MaTaiSan.Text);
                 object result = checkCmd.ExecuteScalar();
-                if (result.ToString().Trim().ToUpper() != maNguoiDung.Trim().ToUpper())
+                string currentMaNguoiDung = "";
+                using (SqlDataReader reader = checkCmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        currentMaNguoiDung = reader["MANGUOIDUNG"].ToString().Trim();
+                    }
+                }
+                if (maVaiTro.Trim() != "VT03" && currentMaNguoiDung.ToUpper() != maNguoiDung.Trim().ToUpper())
                 {
                     MessageBox.Show("Bạn không thể xóa tài sản của người khác!");
                     return;
@@ -489,7 +519,7 @@ namespace LTUD
                 }
 
 
-                if (currentMaNguoiDung.ToUpper() != maNguoiDung.Trim().ToUpper())
+                if (maVaiTro.Trim() != "VT03" && currentMaNguoiDung.ToUpper() != maNguoiDung.Trim().ToUpper())
                 {
                     MessageBox.Show("Bạn không có quyền sửa tài sản này!");
                     return;
