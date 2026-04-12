@@ -15,8 +15,6 @@ namespace LTUD
         {
             conn = new SqlConnection(
               @"Server =.\SQLEXPRESS; Database = QLTaiSan_LTUD; Integrated Security = True; TrustServerCertificate=True");
-            //conn = new SqlConnection(
-            //  @"Data Source=.\SQLEXPRESS;Initial Catalog=QLTaiSan_LTUD;Integrated Security=True;TrustServerCertificate=True");
             conn.Open();
         }
         public FormQLNguoidung(string maND)
@@ -95,8 +93,6 @@ namespace LTUD
         {
             int i = e.RowIndex;
             if (i < 0) return;
-
-            // Đổ dữ liệu lên các Control
             txtMaND.Text = dataGridView1.Rows[i].Cells["MANGUOIDUNG"].Value.ToString();
             txtHoten.Text = dataGridView1.Rows[i].Cells["HOTEN"].Value.ToString();
             cboGiadinh.Text = dataGridView1.Rows[i].Cells["TENGIADINH"].Value.ToString();
@@ -104,11 +100,10 @@ namespace LTUD
             dtpNgaysinh.Value = Convert.ToDateTime(dataGridView1.Rows[i].Cells["NGAYSINH"].Value);
             cboTrangthai.Text = dataGridView1.Rows[i].Cells["TRANGTHAI"].Value.ToString();
 
-            // --- KHÓA CÁC TRƯỜNG THEO YÊU CẦU ---
-            txtHoten.ReadOnly = true;        // Khóa Họ tên
-            dtpNgaysinh.Enabled = false;     // Khóa Ngày sinh
-            cboGiadinh.Enabled = false;      // Khóa Gia đình
-            txtMaND.ReadOnly = true;         // Mã người dùng luôn phải khóa
+            txtHoten.ReadOnly = true;       
+            dtpNgaysinh.Enabled = false;    
+            cboGiadinh.Enabled = false;     
+            txtMaND.ReadOnly = true;        
         }
         string TaoMaTuTang()
         {
@@ -137,25 +132,19 @@ namespace LTUD
         }
         private void btnThem_Click(object sender, EventArgs e)
         {
-            // 1. Kiểm tra họ tên
             if (string.IsNullOrWhiteSpace(txtHoten.Text))
             {
                 MessageBox.Show("Vui lòng nhập họ tên!");
                 return;
             }
 
-            // 2. Kiểm tra vai trò
             if (cboVaitro.SelectedValue == null)
             {
                 MessageBox.Show("Vui lòng chọn vai trò!");
                 return;
             }
 
-            // Lấy mã vai trò và chuẩn hóa (viết hoa, xóa khoảng trắng thừa)
             string vaitro = cboVaitro.SelectedValue.ToString().Trim().ToUpper();
-
-            // 3. KIỂM TRA CHẶT CHẼ: Nếu là Chủ gia đình
-            // Bạn hãy kiểm tra lại trong bảng VAITRO xem mã chính xác là gì (Ví dụ: VT03)
             if (vaitro == "VT03")
             {
                 if (cboGiadinh.SelectedValue == null ||
@@ -165,11 +154,9 @@ namespace LTUD
                     MessageBox.Show("LỖI: Vai trò Chủ gia đình bắt buộc phải chọn một gia đình cụ thể!",
                                     "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     cboGiadinh.Focus();
-                    return; // Dừng hàm ngay lập tức, không cho chạy xuống lệnh INSERT
+                    return;
                 }
             }
-
-            // 4. Nếu vượt qua các kiểm tra trên mới thực hiện thêm vào DB
             try
             {
                 string ma = TaoMaTuTang();
@@ -179,8 +166,6 @@ namespace LTUD
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@ma", ma);
                 cmd.Parameters.AddWithValue("@vt", vaitro);
-
-                // Gán giá trị Gia đình hoặc NULL nếu không chọn
                 cmd.Parameters.AddWithValue("@gd", cboGiadinh.SelectedValue ?? DBNull.Value);
 
                 cmd.Parameters.AddWithValue("@ten", txtHoten.Text);
@@ -198,7 +183,6 @@ namespace LTUD
                 MessageBox.Show("Lỗi hệ thống: " + ex.Message);
             }
         }
-
         private void btnDatlai_Click(object sender, EventArgs e)
         {
             txtMaND.Text = TaoMaTuTang();
@@ -207,8 +191,6 @@ namespace LTUD
             cboVaitro.SelectedValue = "VT02";
             cboTrangthai.SelectedIndex = -1;
             dtpNgaysinh.Value = DateTime.Now.Date;
-
-            // --- MỞ KHÓA LẠI ĐỂ NHẬP MỚI ---
             txtHoten.ReadOnly = false;
             dtpNgaysinh.Enabled = true;
             cboGiadinh.Enabled = true;
@@ -222,7 +204,6 @@ namespace LTUD
                                 "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            // Xác nhận
             DialogResult kq = MessageBox.Show(
                 "Bạn có chắc muốn xóa người dùng này không?",
                 "Xác nhận",
@@ -232,8 +213,6 @@ namespace LTUD
 
             if (kq == DialogResult.No)
                 return;
-
-            // Kiểm tra tài sản
             string checkSql = "SELECT COUNT(*) FROM TAISAN WHERE MANGUOIDUNG = @ma";
             SqlCommand checkCmd = new SqlCommand(checkSql, conn);
             checkCmd.Parameters.AddWithValue("@ma", txtMaND.Text);
@@ -245,13 +224,11 @@ namespace LTUD
                 MessageBox.Show("Người dùng đang sở hữu tài sản, không thể xóa");
                 return;
             }
-
-            // Xóa
             string deleteSql = "DELETE FROM NGUOIDUNG WHERE MANGUOIDUNG = @ma";
             SqlCommand deleteCmd = new SqlCommand(deleteSql, conn);
             deleteCmd.Parameters.AddWithValue("@ma", txtMaND.Text);
 
-            int rows = deleteCmd.ExecuteNonQuery(); // 🔥 quan trọng
+            int rows = deleteCmd.ExecuteNonQuery(); 
 
             if (rows > 0)
             {
@@ -267,18 +244,13 @@ namespace LTUD
 
         private void btnSua_Click(object sender, EventArgs e)
         {
-            // 1. Kiểm tra mã người dùng
             if (string.IsNullOrEmpty(txtMaND.Text))
             {
                 MessageBox.Show("Vui lòng chọn người dùng cần sửa từ danh sách!");
                 return;
             }
-
-            // 2. Lấy dữ liệu từ giao diện
             string vaitroMoi = cboVaitro.SelectedValue?.ToString().Trim().ToUpper();
             string trangthaiMoi = cboTrangthai.Text.Trim();
-
-            // 3. Lấy vai trò HIỆN TẠI từ Database
             string vaitroCu = "";
             using (SqlCommand cmdCheck = new SqlCommand("SELECT MAVAITRO FROM NGUOIDUNG WHERE MANGUOIDUNG = @ma", conn))
             {
@@ -286,20 +258,13 @@ namespace LTUD
                 object result = cmdCheck.ExecuteScalar();
                 vaitroCu = result?.ToString().Trim().ToUpper() ?? "";
             }
-
-            // --- KIỂM TRA CÁC RÀNG BUỘC CHẶT CHẼ ---
-
-            // A. KHÔNG CHO PHÉP sửa thành Chủ gia đình (Yêu cầu mới của bạn)
-            // Nếu vai trò hiện tại KHÔNG PHẢI VT03 mà chọn MỚI là VT03 thì chặn
             if (vaitroCu != "VT03" && vaitroMoi == "VT03")
             {
                 MessageBox.Show("LỖI: Hệ thống không cho phép chuyển người dùng thường thành Chủ gia đình tại đây!",
                                 "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                cboVaitro.SelectedValue = vaitroCu; // Trả về vai trò cũ
+                cboVaitro.SelectedValue = vaitroCu;
                 return;
             }
-
-            // B. Chặn từ Chủ gia đình (VT03) sang Quản trị viên (VT01)
             if (vaitroCu == "VT03" && vaitroMoi == "VT01")
             {
                 MessageBox.Show("LỖI: Không được phép thay đổi vai trò từ Chủ gia đình sang Quản trị viên!",
@@ -313,10 +278,8 @@ namespace LTUD
                                 "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            // 4. THỰC HIỆN CẬP NHẬT (Chỉ cập nhật Vai trò và Trạng thái)
             try
-            {
-                // Loại bỏ hoàn toàn MAGIADINH, HOTEN, NGAYSINH khỏi câu lệnh UPDATE
+            {         
                 string sql = @"UPDATE NGUOIDUNG 
                        SET MAVAITRO = @vt, 
                            TRANGTHAI = @tt 
